@@ -135,17 +135,23 @@
 
         .canvas-container {
             position: relative;
-            width: 200px;
-            height: 200px;
+            width: 206px;
+            height: 206px;
             cursor: crosshair;
             border-radius: 50%;
             border: 3px solid #ffffff;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         canvas {
             display: block;
             border-radius: 50%;
+            width: 200px;
+            height: 200px;
         }
 
         /* Selector Handle Ring */
@@ -160,6 +166,7 @@
             transform: translate(-50%, -50%);
             top: 50%;
             left: 50%;
+            z-index: 5;
         }
 
         /* Right Element: Selected Color Square */
@@ -178,8 +185,8 @@
         }
 
         .color-preview {
-            width: 200px;
-            height: 200px;
+            width: 206px;
+            height: 206px;
             background-color: #FFFFFF;
             border-radius: 24px;
             border: 3px solid #ffffff;
@@ -245,6 +252,9 @@
         // Trigger screen transition on Enter key press
         nameBox.addEventListener('keydown', function(event) {
             if (event.key === 'Enter' && nameBox.value.trim() !== '') {
+                // Drop focus immediately to avoid keyboard layout shifts or ghost input
+                nameBox.blur();
+
                 nameCard.classList.add('slide-down');
 
                 setTimeout(() => {
@@ -268,7 +278,6 @@
 
                     const hue = angle;
                     const saturation = distFromCenter / radius; 
-                    // Lightness starts at 1.0 (white) in the center and drops to 0.5 at the rim
                     const lightness = 1.0 - (saturation * 0.5);
 
                     const [red, green, blue] = hslToRgb(hue / 360, saturation, lightness);

@@ -90,7 +90,7 @@
             align-items: center;
             gap: 1.25rem;
             width: 100%;
-            max-width: 420px;
+            max-width: 540px; /* Widened slightly to fit bigger list items */
             z-index: 2;
             position: relative;
         }
@@ -168,13 +168,13 @@
             color: #ffffff;
         }
 
-        /* Scrollable Picked Colors List */
+        /* Scrollable Picked Colors List (Enlarged Container) */
         .list-container {
             width: 100%;
             background-color: #1c1c21;
             border-radius: 20px;
             border: 1px solid #2e2e36;
-            padding: 1.25rem;
+            padding: 1.5rem;
             box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
 
@@ -189,11 +189,11 @@
 
         .color-list {
             list-style: none;
-            max-height: 220px;
+            max-height: 320px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 1rem;
             padding-right: 0.25rem;
         }
 
@@ -206,13 +206,14 @@
             border-radius: 4px;
         }
 
+        /* Enlarged List Items (~3x bigger sizing) */
         .color-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
             background-color: #2a2a32;
-            padding: 0.75rem 1rem;
-            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            border-radius: 16px;
             border: 1px solid #3f3f46;
         }
 
@@ -221,7 +222,8 @@
             font-weight: 700;
             color: #71717a;
             font-family: monospace;
-            margin-right: 0.5rem;
+            font-size: 1.35rem;
+            margin-right: 0.75rem;
         }
 
         .rank-num.first-place { color: #eab308; }
@@ -229,28 +231,36 @@
         .rank-num.third-place { color: #cd7f32; }
 
         .user-name {
-            font-weight: 500;
+            font-weight: 600;
             color: #f4f4f5;
+            font-size: 1.35rem; /* ~3x larger name */
         }
 
         .color-info {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1.25rem;
         }
 
         .swatch {
-            width: 22px;
-            height: 22px;
-            border-radius: 6px;
-            border: 1px solid #ffffff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            width: 64px;  /* ~3x larger swatch width (was 22px) */
+            height: 64px; /* ~3x larger swatch height (was 22px) */
+            border-radius: 12px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
         }
 
         .hex-code {
             font-family: monospace;
-            font-size: 0.9rem;
+            font-size: 1.25rem; /* ~3x larger hex font */
             color: #a1a1aa;
+        }
+
+        .score-match {
+            font-weight: 700;
+            color: #4ade80;
+            font-family: monospace;
+            font-size: 1.35rem;
         }
 
         /* Predefined Name Selection Card */
@@ -406,7 +416,7 @@
             align-items: center;
             gap: 1.25rem;
             width: 100%;
-            max-width: 480px;
+            max-width: 540px;
             z-index: 5;
         }
 
@@ -416,7 +426,7 @@
             justify-content: space-between;
             width: 100%;
             background-color: #1c1c21;
-            padding: 1rem 1.25rem;
+            padding: 1.25rem 1.5rem;
             border-radius: 16px;
             border: 1px solid #a855f7;
             box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
@@ -431,12 +441,6 @@
             border-radius: 4px;
             text-transform: uppercase;
             margin-left: 0.5rem;
-        }
-
-        .score-match {
-            font-weight: 700;
-            color: #4ade80;
-            font-family: monospace;
         }
     </style>
 </head>
@@ -560,8 +564,15 @@
         let masterColorHex = "#FFFFFF";
         let selectedPlayerName = "";
 
+        // Default pre-filled entries if storage is empty
+        const defaultEntries = [
+            { name: "Alex", hex: "#FF4500" },
+            { name: "Sarah", hex: "#00E5FF" },
+            { name: "Mark", hex: "#A855F7" }
+        ];
+
         // Persistent storage states
-        let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || '[]');
+        let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || JSON.stringify(defaultEntries));
         let myStoredName = localStorage.getItem('myStoredName') || '';
 
         // Render saved entries into the UI list
@@ -582,7 +593,7 @@
             });
         }
 
-        // Update Claim Button label without embedding the name in the button text
+        // Update Claim Button label
         function updateClaimButton() {
             if (myStoredName) {
                 startClaimBtn.textContent = "Edit Your Pick";
@@ -620,7 +631,6 @@
                 submitColorBtn.style.display = "block";
                 checkResultsBtn.style.display = "none";
 
-                // Find existing pick for this user to preset picker position
                 const existing = savedEntries.find(e => e.name === selectedPlayerName);
                 const targetHex = existing ? existing.hex : '#FFFFFF';
 
@@ -695,7 +705,6 @@
             let closestY = radius;
             let minDiff = Infinity;
 
-            // Scan canvas pixels to find the closest matching color coordinate
             for (let x = 0; x < canvas.width; x += 2) {
                 for (let y = 0; y < canvas.height; y += 2) {
                     const dx = x - radius;
@@ -716,7 +725,7 @@
             handle.style.top = `${closestY}px`;
         }
 
-        // Submit / Update Player Color (Edits only their entry)
+        // Submit / Update Player Color
         submitColorBtn.addEventListener('click', () => {
             const existingIndex = savedEntries.findIndex(e => e.name === selectedPlayerName);
             
@@ -822,11 +831,11 @@
             }, 400);
         });
 
-        // Reset game & clear local storage
+        // Reset game & clear local storage (restores default entries)
         resetGameBtn.addEventListener('click', () => {
             localStorage.removeItem('savedEntries');
             localStorage.removeItem('myStoredName');
-            savedEntries = [];
+            savedEntries = JSON.parse(JSON.stringify(defaultEntries));
             myStoredName = '';
             renderEntries();
             updateClaimButton();

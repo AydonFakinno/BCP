@@ -69,7 +69,7 @@
             margin-top: 5vh;
         }
 
-        /* Default Content: Claim Button + Scrollable List */
+        /* Default Content: List first, Claim Button under list */
         .default-view {
             display: flex;
             flex-direction: column;
@@ -78,17 +78,19 @@
             width: 100%;
             max-width: 420px;
             z-index: 2;
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
-        .default-view.hidden {
+        .default-view.fade-out {
             opacity: 0;
+            visibility: hidden;
             pointer-events: none;
-            transform: scale(0.95);
             position: absolute;
         }
 
-        /* Submission Confirmation Banner */
+        /* Timed Submission Feedback Banner */
         .success-banner {
             background-color: rgba(34, 197, 94, 0.15);
             border: 1px solid #22c55e;
@@ -97,12 +99,15 @@
             border-radius: 9999px;
             font-size: 0.9rem;
             font-weight: 500;
-            display: none;
             text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
-        .success-banner.show {
-            display: block;
+        .success-banner.fade-in {
+            opacity: 1;
+            visibility: visible;
         }
 
         .claim-btn, .submit-btn {
@@ -115,7 +120,7 @@
             border-radius: 9999px;
             cursor: pointer;
             box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
-            transition: all 0.2s ease-in-out;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .claim-btn:hover, .submit-btn:hover {
@@ -177,7 +182,6 @@
             color: #f4f4f5;
         }
 
-        /* Swatch container aligned right before hex code */
         .color-info {
             display: flex;
             align-items: center;
@@ -198,7 +202,7 @@
             color: #a1a1aa;
         }
 
-        /* Name Card Setup */
+        /* Name Card Modal (Fade Transition) */
         .card {
             background-color: #1c1c21;
             padding: 2.5rem 2rem;
@@ -208,19 +212,16 @@
             text-align: center;
             width: 100%;
             max-width: 360px;
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
             z-index: 3;
             position: absolute;
         }
 
-        .card.hidden {
-            display: none;
-        }
-
-        .card.slide-down {
-            transform: translateY(120vh);
-            opacity: 0;
-            pointer-events: none;
+        .card.fade-in {
+            opacity: 1;
+            visibility: visible;
         }
 
         h2 {
@@ -246,7 +247,7 @@
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
         }
 
-        /* Color Selection Screen Container */
+        /* Color Selection Screen Container (Fade Transition) */
         .picker-container {
             position: absolute;
             display: flex;
@@ -255,7 +256,16 @@
             gap: 2.5rem;
             width: 100%;
             max-width: 800px;
+            opacity: 0;
+            visibility: hidden;
             pointer-events: none;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        .picker-container.fade-in {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
         }
 
         .picker-elements {
@@ -266,35 +276,12 @@
             width: 100%;
         }
 
-        .wheel-wrapper {
-            transform: translateX(-120vw);
-            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        .wheel-wrapper, .square-wrapper, .submit-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 1rem;
             position: relative;
-        }
-
-        .square-wrapper {
-            transform: translateX(120vw);
-            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .submit-wrapper {
-            transform: translateY(120vh);
-            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .wheel-wrapper.slide-in,
-        .square-wrapper.slide-in,
-        .submit-wrapper.slide-in {
-            transform: translate(0);
-            pointer-events: auto;
         }
 
         .canvas-container {
@@ -360,10 +347,10 @@
     <!-- Interactive Workspace -->
     <main class="interactive-section">
 
-        <!-- Default Screen: Claim Button & Submitted List -->
+        <!-- Default Screen: List on top, Claim Button underneath -->
         <div class="default-view" id="defaultView">
             <div class="success-banner" id="successBanner">Your color has been submitted!</div>
-            <button class="claim-btn" id="startClaimBtn">Claim Your Color</button>
+            
             <div class="list-container">
                 <div class="list-title">Claimed Colors</div>
                 <ul class="color-list" id="colorList">
@@ -397,31 +384,33 @@
                     </li>
                 </ul>
             </div>
+
+            <button class="claim-btn" id="startClaimBtn">Claim Your Color</button>
         </div>
 
-        <!-- Name Card Modal -->
-        <div class="card hidden" id="nameCard">
+        <!-- Name Card Modal (Fades in) -->
+        <div class="card" id="nameCard">
             <h2>Enter Your Name</h2>
             <input type="text" id="nameBox" placeholder="Type your name here..." autocomplete="off">
         </div>
 
-        <!-- Interactive Color Picker UI -->
-        <div class="picker-container">
+        <!-- Interactive Color Picker UI (Fades in) -->
+        <div class="picker-container" id="pickerContainer">
             <div class="picker-elements">
-                <div class="wheel-wrapper" id="wheelWrapper">
+                <div class="wheel-wrapper">
                     <div class="canvas-container" id="canvasContainer">
                         <canvas id="colorWheel" width="200" height="200"></canvas>
                         <div class="color-handle" id="colorHandle"></div>
                     </div>
                     <span class="label">Pick a Color</span>
                 </div>
-                <div class="square-wrapper" id="squareWrapper">
+                <div class="square-wrapper">
                     <div class="color-preview" id="colorPreview"></div>
                     <span class="label" id="hexLabel">#FFFFFF</span>
                 </div>
             </div>
             
-            <div class="submit-wrapper" id="submitWrapper">
+            <div class="submit-wrapper">
                 <button class="submit-btn" id="submitColorBtn">Submit Color</button>
             </div>
         </div>
@@ -432,9 +421,7 @@
         const startClaimBtn = document.getElementById('startClaimBtn');
         const nameBox = document.getElementById('nameBox');
         const nameCard = document.getElementById('nameCard');
-        const wheelWrapper = document.getElementById('wheelWrapper');
-        const squareWrapper = document.getElementById('squareWrapper');
-        const submitWrapper = document.getElementById('submitWrapper');
+        const pickerContainer = document.getElementById('pickerContainer');
         const submitColorBtn = document.getElementById('submitColorBtn');
         const colorList = document.getElementById('colorList');
         const successBanner = document.getElementById('successBanner');
@@ -448,6 +435,7 @@
         const deviceBadge = document.getElementById('deviceBadge');
 
         let currentPickedHex = "#FFFFFF";
+        let bannerTimeout = null;
 
         // Device & Orientation Detection
         function updateDeviceStatus() {
@@ -460,31 +448,33 @@
         window.addEventListener('DOMContentLoaded', updateDeviceStatus);
         window.addEventListener('resize', updateDeviceStatus);
 
-        // Click "Claim Your Color" -> Show Name Card
+        // Click "Claim Your Color" -> Fade Out Default View, Fade In Name Card
         startClaimBtn.addEventListener('click', () => {
-            successBanner.classList.remove('show');
-            defaultView.classList.add('hidden');
-            nameCard.classList.remove('hidden');
-            nameBox.focus();
+            clearTimeout(bannerTimeout);
+            successBanner.classList.remove('fade-in');
+            defaultView.classList.add('fade-out');
+            
+            setTimeout(() => {
+                nameCard.classList.add('fade-in');
+                nameBox.focus();
+            }, 200);
         });
 
-        // Submit Name -> Slide Down Card & Bring in Picker
+        // Submit Name -> Fade Out Card, Fade In Picker Container
         nameBox.addEventListener('keydown', function(event) {
             if (event.key === 'Enter' && nameBox.value.trim() !== '') {
                 nameBox.blur();
                 nameBox.disabled = true;
 
-                nameCard.classList.add('slide-down');
+                nameCard.classList.remove('fade-in');
 
                 setTimeout(() => {
-                    wheelWrapper.classList.add('slide-in');
-                    squareWrapper.classList.add('slide-in');
-                    submitWrapper.classList.add('slide-in');
-                }, 200);
+                    pickerContainer.classList.add('fade-in');
+                }, 300);
             }
         });
 
-        // Reset picker selector to center
+        // Reset picker selector to center and default values
         function resetPicker() {
             handle.style.left = '50%';
             handle.style.top = '50%';
@@ -493,11 +483,11 @@
             hexLabel.textContent = '#FFFFFF';
         }
 
-        // Click "Submit Color" -> Save Entry & Return
+        // Click "Submit Color" -> Save Entry, Fade Out Picker, Return to Default View with Timed Banner
         submitColorBtn.addEventListener('click', () => {
             const userName = nameBox.value.trim() || 'Anonymous';
 
-            // Prepend new entry with right-aligned rounded square swatch
+            // Add new entry to the top of the claimed colors list
             const li = document.createElement('li');
             li.className = 'color-item';
             li.innerHTML = `
@@ -509,21 +499,22 @@
             `;
             colorList.prepend(li);
 
-            // Hide picker UI
-            wheelWrapper.classList.remove('slide-in');
-            squareWrapper.classList.remove('slide-in');
-            submitWrapper.classList.remove('slide-in');
+            // Fade out picker UI
+            pickerContainer.classList.remove('fade-in');
 
-            // Reset and restore default screen
+            // Reset state and fade back in default view
             setTimeout(() => {
                 resetPicker();
-                nameCard.classList.add('hidden');
-                nameCard.classList.remove('slide-down');
                 nameBox.disabled = false;
                 nameBox.value = '';
-                defaultView.classList.remove('hidden');
-                successBanner.classList.add('show');
-            }, 600);
+                defaultView.classList.remove('fade-out');
+
+                // Trigger timed submission banner (fades out after 3s)
+                successBanner.classList.add('fade-in');
+                bannerTimeout = setTimeout(() => {
+                    successBanner.classList.remove('fade-in');
+                }, 3000);
+            }, 400);
         });
 
         // Draw Professional Color Wheel

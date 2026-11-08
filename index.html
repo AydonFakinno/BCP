@@ -252,9 +252,7 @@
         // Trigger screen transition on Enter key press
         nameBox.addEventListener('keydown', function(event) {
             if (event.key === 'Enter' && nameBox.value.trim() !== '') {
-                // Drop focus immediately to avoid keyboard layout shifts or ghost input
                 nameBox.blur();
-
                 nameCard.classList.add('slide-down');
 
                 setTimeout(() => {
@@ -264,7 +262,7 @@
             }
         });
 
-        // Draw True Color Picker Wheel (White Center -> Saturated Outer Edge)
+        // Draw Color Wheel: White Center -> Saturated Mid-Ring -> Black Outer Edge
         const radius = canvas.width / 2;
         const image = ctx.createImageData(canvas.width, canvas.height);
         const data = image.data;
@@ -277,8 +275,20 @@
                     if (angle < 0) angle += 360;
 
                     const hue = angle;
-                    const saturation = distFromCenter / radius; 
-                    const lightness = 1.0 - (saturation * 0.5);
+                    const t = distFromCenter / radius; // 0 at center, 1 at outer edge
+
+                    let saturation, lightness;
+                    if (t <= 0.5) {
+                        // Inner half: Center (White, L=1.0, S=0) to Mid-Ring (Full Color, L=0.5, S=1.0)
+                        const innerT = t * 2; // 0 to 1
+                        saturation = innerT;
+                        lightness = 1.0 - (innerT * 0.5);
+                    } else {
+                        // Outer half: Mid-Ring (Full Color, L=0.5, S=1.0) to Outer Edge (Black, L=0, S=1.0)
+                        saturation = 1.0;
+                        const outerT = (t - 0.5) * 2; // 0 to 1
+                        lightness = 0.5 * (1.0 - outerT);
+                    }
 
                     const [red, green, blue] = hslToRgb(hue / 360, saturation, lightness);
 

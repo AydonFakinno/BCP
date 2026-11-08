@@ -123,7 +123,7 @@
             justify-content: center;
         }
 
-        .claim-btn, .master-btn, .submit-btn, .reset-btn {
+        .claim-btn, .master-btn, .submit-btn, .reset-btn, .confirm-name-btn {
             font-size: 0.95rem;
             font-weight: 600;
             padding: 0.85rem 1.75rem;
@@ -133,13 +133,13 @@
             transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .claim-btn, .submit-btn {
+        .claim-btn, .submit-btn, .confirm-name-btn {
             background-color: #6366f1;
             color: #ffffff;
             box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
         }
 
-        .claim-btn:hover, .submit-btn:hover {
+        .claim-btn:hover, .submit-btn:hover, .confirm-name-btn:hover {
             background-color: #4f46e5;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
@@ -224,17 +224,9 @@
             margin-right: 0.5rem;
         }
 
-        .rank-num.first-place {
-            color: #eab308; /* Gold */
-        }
-
-        .rank-num.second-place {
-            color: #c0c0c0; /* Silver */
-        }
-
-        .rank-num.third-place {
-            color: #cd7f32; /* Bronze */
-        }
+        .rank-num.first-place { color: #eab308; }
+        .rank-num.second-place { color: #c0c0c0; }
+        .rank-num.third-place { color: #cd7f32; }
 
         .user-name {
             font-weight: 500;
@@ -261,7 +253,7 @@
             color: #a1a1aa;
         }
 
-        /* Name Card Modal */
+        /* Predefined Roster Dropdown Card */
         .card {
             background-color: #1c1c21;
             padding: 2.5rem 2rem;
@@ -272,16 +264,18 @@
             width: 100%;
             max-width: 360px;
             z-index: 3;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
         }
 
         h2 {
             font-size: 1.1rem;
             font-weight: 500;
-            margin-bottom: 1.25rem;
             color: #a1a1aa;
         }
 
-        input[type="text"] {
+        select.name-select {
             width: 100%;
             padding: 0.85rem 1.25rem;
             font-size: 1rem;
@@ -290,11 +284,21 @@
             border: 1px solid #3f3f46;
             border-radius: 9999px;
             outline: none;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23A1A1AA%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1.25rem center;
+            background-size: 0.65rem auto;
         }
 
-        input[type="text"]:focus {
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+        select.name-select option {
+            background-color: #1c1c21;
+            color: #ffffff;
+        }
+
+        select.name-select option:disabled {
+            color: #52525b;
         }
 
         /* Color Selection Screen Container */
@@ -454,34 +458,7 @@
             <div class="list-container">
                 <div class="list-title">Claimed Colors</div>
                 <ul class="color-list" id="colorList">
-                    <li class="color-item" data-hex="#9CD100">
-                        <span class="user-name">Arnold</span>
-                        <div class="color-info">
-                            <div class="swatch" style="background-color: #9CD100;"></div>
-                            <span class="hex-code">#9CD100</span>
-                        </div>
-                    </li>
-                    <li class="color-item" data-hex="#FF4500">
-                        <span class="user-name">Alex</span>
-                        <div class="color-info">
-                            <div class="swatch" style="background-color: #FF4500;"></div>
-                            <span class="hex-code">#FF4500</span>
-                        </div>
-                    </li>
-                    <li class="color-item" data-hex="#00E5FF">
-                        <span class="user-name">Sarah</span>
-                        <div class="color-info">
-                            <div class="swatch" style="background-color: #00E5FF;"></div>
-                            <span class="hex-code">#00E5FF</span>
-                        </div>
-                    </li>
-                    <li class="color-item" data-hex="#A855F7">
-                        <span class="user-name">Mark</span>
-                        <div class="color-info">
-                            <div class="swatch" style="background-color: #A855F7;"></div>
-                            <span class="hex-code">#A855F7</span>
-                        </div>
-                    </li>
+                    <!-- Dynamic entries render here -->
                 </ul>
             </div>
 
@@ -491,10 +468,19 @@
             </div>
         </div>
 
-        <!-- Name Card Modal -->
+        <!-- Predefined Name Selection Card -->
         <div class="card" id="nameCard">
-            <h2>Enter Your Name</h2>
-            <input type="text" id="nameBox" placeholder="Type your name here..." autocomplete="off">
+            <h2>Select Your Name</h2>
+            <select class="name-select" id="nameSelect">
+                <option value="" disabled selected>Choose your name...</option>
+                <option value="Arnold">Arnold</option>
+                <option value="Alex">Alex</option>
+                <option value="Sarah">Sarah</option>
+                <option value="Mark">Mark</option>
+                <option value="David">David</option>
+                <option value="Emma">Emma</option>
+            </select>
+            <button class="confirm-name-btn" id="confirmNameBtn">Continue to Pick</button>
         </div>
 
         <!-- Interactive Color Picker UI -->
@@ -545,8 +531,9 @@
         const defaultView = document.getElementById('defaultView');
         const startClaimBtn = document.getElementById('startClaimBtn');
         const enterMasterBtn = document.getElementById('enterMasterBtn');
-        const nameBox = document.getElementById('nameBox');
+        const nameSelect = document.getElementById('nameSelect');
         const nameCard = document.getElementById('nameCard');
+        const confirmNameBtn = document.getElementById('confirmNameBtn');
         const pickerContainer = document.getElementById('pickerContainer');
         const modeIndicator = document.getElementById('modeIndicator');
         const submitColorBtn = document.getElementById('submitColorBtn');
@@ -571,6 +558,25 @@
         let currentPickedHex = "#FFFFFF";
         let isMasterMode = false;
         let masterColorHex = "#FFFFFF";
+        let selectedPlayerName = "";
+
+        // Track submitted players dynamically in memory / localStorage
+        let submittedPlayers = JSON.parse(localStorage.getItem('submittedPlayers') || '[]');
+
+        // Update Dropdown Options based on submitted state
+        function updateDropdownState() {
+            Array.from(nameSelect.options).forEach(option => {
+                if (!option.value) return; // Skip placeholder
+                if (submittedPlayers.includes(option.value)) {
+                    option.disabled = true;
+                    option.textContent = `${option.value} (Already Submitted)`;
+                } else {
+                    option.disabled = false;
+                    option.textContent = option.value;
+                }
+            });
+            nameSelect.value = "";
+        }
 
         // Device & Orientation Detection
         function updateDeviceStatus() {
@@ -580,18 +586,43 @@
 
             deviceBadge.textContent = `${deviceType} • ${orientation}`;
         }
-        window.addEventListener('DOMContentLoaded', updateDeviceStatus);
+        
+        window.addEventListener('DOMContentLoaded', () => {
+            updateDeviceStatus();
+            updateDropdownState();
+        });
         window.addEventListener('resize', updateDeviceStatus);
 
-        // Click "Claim Your Color" -> Open Player Flow
+        // Click "Claim Your Color" -> Open Dropdown Card
         startClaimBtn.addEventListener('click', () => {
             isMasterMode = false;
             successBanner.classList.remove('show');
+            updateDropdownState();
             defaultView.classList.remove('fade-in');
             
             setTimeout(() => {
                 nameCard.classList.add('fade-in');
-                nameBox.focus();
+            }, 300);
+        });
+
+        // Confirm Selected Name -> Move to Picker
+        confirmNameBtn.addEventListener('click', () => {
+            selectedPlayerName = nameSelect.value;
+            if (!selectedPlayerName) {
+                alert("Please select your name from the list!");
+                return;
+            }
+
+            nameCard.classList.remove('fade-in');
+
+            modeIndicator.textContent = `${selectedPlayerName}'s Pick`;
+            modeIndicator.className = "mode-indicator player";
+            submitColorBtn.style.display = "block";
+            checkResultsBtn.style.display = "none";
+
+            setTimeout(() => {
+                resetPicker();
+                pickerContainer.classList.add('fade-in');
             }, 300);
         });
 
@@ -611,26 +642,6 @@
             }, 300);
         });
 
-        // Submit Player Name -> Open Player Picker
-        nameBox.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter' && nameBox.value.trim() !== '') {
-                nameBox.blur();
-                nameBox.disabled = true;
-
-                nameCard.classList.remove('fade-in');
-
-                modeIndicator.textContent = "Player Pick";
-                modeIndicator.className = "mode-indicator player";
-                submitColorBtn.style.display = "block";
-                checkResultsBtn.style.display = "none";
-
-                setTimeout(() => {
-                    resetPicker();
-                    pickerContainer.classList.add('fade-in');
-                }, 300);
-            }
-        });
-
         // Reset picker handle & preview values
         function resetPicker() {
             handle.style.left = '50%';
@@ -640,15 +651,19 @@
             hexLabel.textContent = '#FFFFFF';
         }
 
-        // Submit Player Color -> Add to list
+        // Submit Player Color -> Lock name & Add to list
         submitColorBtn.addEventListener('click', () => {
-            const userName = nameBox.value.trim() || 'Anonymous';
+            // Disable name in roster
+            if (!submittedPlayers.includes(selectedPlayerName)) {
+                submittedPlayers.push(selectedPlayerName);
+                localStorage.setItem('submittedPlayers', JSON.stringify(submittedPlayers));
+            }
 
             const li = document.createElement('li');
             li.className = 'color-item';
             li.setAttribute('data-hex', currentPickedHex);
             li.innerHTML = `
-                <span class="user-name">${userName}</span>
+                <span class="user-name">${selectedPlayerName}</span>
                 <div class="color-info">
                     <div class="swatch" style="background-color: ${currentPickedHex};"></div>
                     <span class="hex-code">${currentPickedHex}</span>
@@ -660,8 +675,7 @@
 
             setTimeout(() => {
                 resetPicker();
-                nameBox.disabled = false;
-                nameBox.value = '';
+                updateDropdownState();
                 defaultView.classList.add('fade-in');
 
                 successBanner.classList.add('show');
@@ -692,7 +706,7 @@
                 Math.pow(rgb1.b - rgb2.b, 2)
             );
 
-            const maxDistance = Math.sqrt(Math.pow(255, 2) * 3); // ~441.67
+            const maxDistance = Math.sqrt(Math.pow(255, 2) * 3);
             const accuracy = Math.max(0, 100 - (distance / maxDistance * 100));
             return accuracy.toFixed(1);
         }
@@ -703,7 +717,6 @@
             masterSwatch.style.backgroundColor = masterColorHex;
             masterHexCode.textContent = masterColorHex;
 
-            // Gather all entries from the main list
             const entries = [];
             document.querySelectorAll('#colorList .color-item').forEach(item => {
                 const name = item.querySelector('.user-name').textContent;
@@ -712,10 +725,8 @@
                 entries.push({ name, hex, matchScore });
             });
 
-            // Sort entries highest accuracy first
             entries.sort((a, b) => b.matchScore - a.matchScore);
 
-            // Populate Leaderboard DOM with Gold, Silver, and Bronze highlights
             leaderboardList.innerHTML = '';
             entries.forEach((entry, index) => {
                 const rankNum = index + 1;
@@ -756,8 +767,13 @@
             }, 400);
         });
 
-        // Reset to initial screen
+        // Reset to initial screen & wipe saved submissions
         resetGameBtn.addEventListener('click', () => {
+            submittedPlayers = [];
+            localStorage.removeItem('submittedPlayers');
+            colorList.innerHTML = '';
+            updateDropdownState();
+            
             resultsView.classList.remove('fade-in');
             setTimeout(() => {
                 defaultView.classList.add('fade-in');

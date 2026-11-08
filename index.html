@@ -69,7 +69,21 @@
             margin-top: 5vh;
         }
 
-        /* Default Content: List first, Claim Button under list */
+        /* View Containers (Fade Transitions) */
+        .default-view, .card, .picker-container, .results-view {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            position: absolute;
+        }
+
+        .default-view.fade-in, .card.fade-in, .picker-container.fade-in, .results-view.fade-in {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
         .default-view {
             display: flex;
             flex-direction: column;
@@ -78,16 +92,7 @@
             width: 100%;
             max-width: 420px;
             z-index: 2;
-            opacity: 1;
-            visibility: visible;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-
-        .default-view.fade-out {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            position: absolute;
+            position: relative;
         }
 
         /* Timed Submission Feedback Banner */
@@ -105,28 +110,62 @@
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
-        .success-banner.fade-in {
+        .success-banner.show {
             opacity: 1;
             visibility: visible;
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .claim-btn, .master-btn, .submit-btn, .reset-btn {
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 0.85rem 1.75rem;
+            border: none;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .claim-btn, .submit-btn {
             background-color: #6366f1;
             color: #ffffff;
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 0.85rem 2rem;
-            border: none;
-            border-radius: 9999px;
-            cursor: pointer;
             box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
-            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .claim-btn:hover, .submit-btn:hover {
             background-color: #4f46e5;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        }
+
+        .master-btn {
+            background-color: #a855f7;
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(168, 85, 247, 0.4);
+        }
+
+        .master-btn:hover {
+            background-color: #9333ea;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
+        }
+
+        .reset-btn {
+            background-color: #27272a;
+            color: #a1a1aa;
+            border: 1px solid #3f3f46;
+        }
+
+        .reset-btn:hover {
+            background-color: #3f3f46;
+            color: #ffffff;
         }
 
         /* Scrollable Picked Colors List */
@@ -202,7 +241,7 @@
             color: #a1a1aa;
         }
 
-        /* Name Card Modal (Fade Transition) */
+        /* Name Card Modal */
         .card {
             background-color: #1c1c21;
             padding: 2.5rem 2rem;
@@ -212,16 +251,7 @@
             text-align: center;
             width: 100%;
             max-width: 360px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
             z-index: 3;
-            position: absolute;
-        }
-
-        .card.fade-in {
-            opacity: 1;
-            visibility: visible;
         }
 
         h2 {
@@ -247,25 +277,35 @@
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
         }
 
-        /* Color Selection Screen Container (Fade Transition) */
+        /* Color Selection Screen Container */
         .picker-container {
-            position: absolute;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2.5rem;
+            gap: 2rem;
             width: 100%;
             max-width: 800px;
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
         }
 
-        .picker-container.fade-in {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
+        .mode-indicator {
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.4rem 1rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mode-indicator.player {
+            background-color: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            border: 1px solid #6366f1;
+        }
+
+        .mode-indicator.master {
+            background-color: rgba(168, 85, 247, 0.15);
+            color: #c084fc;
+            border: 1px solid #a855f7;
         }
 
         .picker-elements {
@@ -334,6 +374,46 @@
             color: #a1a1aa;
             font-weight: 500;
         }
+
+        /* Results Leaderboard View */
+        .results-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
+            width: 100%;
+            max-width: 480px;
+            z-index: 5;
+        }
+
+        .master-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            background-color: #1c1c21;
+            padding: 1rem 1.25rem;
+            border-radius: 16px;
+            border: 1px solid #a855f7;
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+        }
+
+        .winner-tag {
+            background-color: #eab308;
+            color: #000000;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            margin-left: 0.5rem;
+        }
+
+        .score-match {
+            font-weight: 700;
+            color: #4ade80;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
@@ -347,35 +427,35 @@
     <!-- Interactive Workspace -->
     <main class="interactive-section">
 
-        <!-- Default Screen: List on top, Claim Button underneath -->
-        <div class="default-view" id="defaultView">
+        <!-- Default Main View -->
+        <div class="default-view fade-in" id="defaultView">
             <div class="success-banner" id="successBanner">Your color has been submitted!</div>
             
             <div class="list-container">
                 <div class="list-title">Claimed Colors</div>
                 <ul class="color-list" id="colorList">
-                    <li class="color-item">
+                    <li class="color-item" data-hex="#9CD100">
                         <span class="user-name">Arnold</span>
                         <div class="color-info">
                             <div class="swatch" style="background-color: #9CD100;"></div>
                             <span class="hex-code">#9CD100</span>
                         </div>
                     </li>
-                    <li class="color-item">
+                    <li class="color-item" data-hex="#FF4500">
                         <span class="user-name">Alex</span>
                         <div class="color-info">
                             <div class="swatch" style="background-color: #FF4500;"></div>
                             <span class="hex-code">#FF4500</span>
                         </div>
                     </li>
-                    <li class="color-item">
+                    <li class="color-item" data-hex="#00E5FF">
                         <span class="user-name">Sarah</span>
                         <div class="color-info">
                             <div class="swatch" style="background-color: #00E5FF;"></div>
                             <span class="hex-code">#00E5FF</span>
                         </div>
                     </li>
-                    <li class="color-item">
+                    <li class="color-item" data-hex="#A855F7">
                         <span class="user-name">Mark</span>
                         <div class="color-info">
                             <div class="swatch" style="background-color: #A855F7;"></div>
@@ -385,17 +465,21 @@
                 </ul>
             </div>
 
-            <button class="claim-btn" id="startClaimBtn">Claim Your Color</button>
+            <div class="btn-group">
+                <button class="claim-btn" id="startClaimBtn">Claim Color</button>
+                <button class="master-btn" id="enterMasterBtn">Enter Master Color</button>
+            </div>
         </div>
 
-        <!-- Name Card Modal (Fades in) -->
+        <!-- Name Card Modal -->
         <div class="card" id="nameCard">
             <h2>Enter Your Name</h2>
             <input type="text" id="nameBox" placeholder="Type your name here..." autocomplete="off">
         </div>
 
-        <!-- Interactive Color Picker UI (Fades in) -->
+        <!-- Interactive Color Picker UI -->
         <div class="picker-container" id="pickerContainer">
+            <div class="mode-indicator player" id="modeIndicator">Player Pick</div>
             <div class="picker-elements">
                 <div class="wheel-wrapper">
                     <div class="canvas-container" id="canvasContainer">
@@ -412,19 +496,49 @@
             
             <div class="submit-wrapper">
                 <button class="submit-btn" id="submitColorBtn">Submit Color</button>
+                <button class="master-btn" id="checkResultsBtn" style="display: none;">Check Results</button>
             </div>
+        </div>
+
+        <!-- Results Leaderboard View -->
+        <div class="results-view" id="resultsView">
+            <div class="master-card" id="masterCardSummary">
+                <span class="user-name" style="color: #c084fc;">Target Master Color</span>
+                <div class="color-info">
+                    <div class="swatch" id="masterSwatch" style="background-color: #FFFFFF;"></div>
+                    <span class="hex-code" id="masterHexCode">#FFFFFF</span>
+                </div>
+            </div>
+
+            <div class="list-container">
+                <div class="list-title">Leaderboard Results</div>
+                <ul class="color-list" id="leaderboardList">
+                    <!-- Dynamic results will be generated here -->
+                </ul>
+            </div>
+
+            <button class="reset-btn" id="resetGameBtn">Play Again</button>
         </div>
     </main>
 
     <script>
         const defaultView = document.getElementById('defaultView');
         const startClaimBtn = document.getElementById('startClaimBtn');
+        const enterMasterBtn = document.getElementById('enterMasterBtn');
         const nameBox = document.getElementById('nameBox');
         const nameCard = document.getElementById('nameCard');
         const pickerContainer = document.getElementById('pickerContainer');
+        const modeIndicator = document.getElementById('modeIndicator');
         const submitColorBtn = document.getElementById('submitColorBtn');
+        const checkResultsBtn = document.getElementById('checkResultsBtn');
         const colorList = document.getElementById('colorList');
         const successBanner = document.getElementById('successBanner');
+        
+        const resultsView = document.getElementById('resultsView');
+        const masterSwatch = document.getElementById('masterSwatch');
+        const masterHexCode = document.getElementById('masterHexCode');
+        const leaderboardList = document.getElementById('leaderboardList');
+        const resetGameBtn = document.getElementById('resetGameBtn');
 
         const canvas = document.getElementById('colorWheel');
         const ctx = canvas.getContext('2d');
@@ -435,7 +549,8 @@
         const deviceBadge = document.getElementById('deviceBadge');
 
         let currentPickedHex = "#FFFFFF";
-        let bannerTimeout = null;
+        let isMasterMode = false;
+        let masterColorHex = "#FFFFFF";
 
         // Device & Orientation Detection
         function updateDeviceStatus() {
@@ -448,19 +563,35 @@
         window.addEventListener('DOMContentLoaded', updateDeviceStatus);
         window.addEventListener('resize', updateDeviceStatus);
 
-        // Click "Claim Your Color" -> Fade Out Default View, Fade In Name Card
+        // Click "Claim Your Color" -> Open Player Flow
         startClaimBtn.addEventListener('click', () => {
-            clearTimeout(bannerTimeout);
-            successBanner.classList.remove('fade-in');
-            defaultView.classList.add('fade-out');
+            isMasterMode = false;
+            successBanner.classList.remove('show');
+            defaultView.classList.remove('fade-in');
             
             setTimeout(() => {
                 nameCard.classList.add('fade-in');
                 nameBox.focus();
-            }, 200);
+            }, 300);
         });
 
-        // Submit Name -> Fade Out Card, Fade In Picker Container
+        // Click "Enter Master Color" -> Open Master Flow directly
+        enterMasterBtn.addEventListener('click', () => {
+            isMasterMode = true;
+            defaultView.classList.remove('fade-in');
+            
+            modeIndicator.textContent = "Master Target Color";
+            modeIndicator.className = "mode-indicator master";
+            submitColorBtn.style.display = "none";
+            checkResultsBtn.style.display = "block";
+
+            setTimeout(() => {
+                resetPicker();
+                pickerContainer.classList.add('fade-in');
+            }, 300);
+        });
+
+        // Submit Player Name -> Open Player Picker
         nameBox.addEventListener('keydown', function(event) {
             if (event.key === 'Enter' && nameBox.value.trim() !== '') {
                 nameBox.blur();
@@ -468,13 +599,19 @@
 
                 nameCard.classList.remove('fade-in');
 
+                modeIndicator.textContent = "Player Pick";
+                modeIndicator.className = "mode-indicator player";
+                submitColorBtn.style.display = "block";
+                checkResultsBtn.style.display = "none";
+
                 setTimeout(() => {
+                    resetPicker();
                     pickerContainer.classList.add('fade-in');
                 }, 300);
             }
         });
 
-        // Reset picker selector to center and default values
+        // Reset picker handle & preview values
         function resetPicker() {
             handle.style.left = '50%';
             handle.style.top = '50%';
@@ -483,13 +620,13 @@
             hexLabel.textContent = '#FFFFFF';
         }
 
-        // Click "Submit Color" -> Save Entry, Fade Out Picker, Return to Default View with Timed Banner
+        // Submit Player Color -> Add to list
         submitColorBtn.addEventListener('click', () => {
             const userName = nameBox.value.trim() || 'Anonymous';
 
-            // Add new entry to the top of the claimed colors list
             const li = document.createElement('li');
             li.className = 'color-item';
+            li.setAttribute('data-hex', currentPickedHex);
             li.innerHTML = `
                 <span class="user-name">${userName}</span>
                 <div class="color-info">
@@ -499,25 +636,101 @@
             `;
             colorList.prepend(li);
 
-            // Fade out picker UI
             pickerContainer.classList.remove('fade-in');
 
-            // Reset state and fade back in default view
             setTimeout(() => {
                 resetPicker();
                 nameBox.disabled = false;
                 nameBox.value = '';
-                defaultView.classList.remove('fade-out');
+                defaultView.classList.add('fade-in');
 
-                // Trigger timed submission banner (fades out after 3s)
-                successBanner.classList.add('fade-in');
-                bannerTimeout = setTimeout(() => {
-                    successBanner.classList.remove('fade-in');
+                successBanner.classList.add('show');
+                setTimeout(() => {
+                    successBanner.classList.remove('show');
                 }, 3000);
             }, 400);
         });
 
-        // Draw Professional Color Wheel
+        // Helper: Convert HEX to RGB Object
+        function hexToRgb(hex) {
+            const cleanHex = hex.replace('#', '');
+            return {
+                r: parseInt(cleanHex.substring(0, 2), 16),
+                g: parseInt(cleanHex.substring(2, 4), 16),
+                b: parseInt(cleanHex.substring(4, 6), 16)
+            };
+        }
+
+        // Calculate RGB Color Distance (0% = worst, 100% = exact match)
+        function calculateColorMatch(hex1, hex2) {
+            const rgb1 = hexToRgb(hex1);
+            const rgb2 = hexToRgb(hex2);
+
+            const distance = Math.sqrt(
+                Math.pow(rgb1.r - rgb2.r, 2) +
+                Math.pow(rgb1.g - rgb2.g, 2) +
+                Math.pow(rgb1.b - rgb2.b, 2)
+            );
+
+            const maxDistance = Math.sqrt(Math.pow(255, 2) * 3); // ~441.67
+            const accuracy = Math.max(0, 100 - (distance / maxDistance * 100));
+            return accuracy.toFixed(1);
+        }
+
+        // Submit Master Color & Calculate Leaderboard
+        checkResultsBtn.addEventListener('click', () => {
+            masterColorHex = currentPickedHex;
+            masterSwatch.style.backgroundColor = masterColorHex;
+            masterHexCode.textContent = masterColorHex;
+
+            // Gather all entries from the main list
+            const entries = [];
+            document.querySelectorAll('#colorList .color-item').forEach(item => {
+                const name = item.querySelector('.user-name').textContent;
+                const hex = item.getAttribute('data-hex');
+                const matchScore = parseFloat(calculateColorMatch(hex, masterColorHex));
+                entries.push({ name, hex, matchScore });
+            });
+
+            // Sort entries highest accuracy first
+            entries.sort((a, b) => b.matchScore - a.matchScore);
+
+            // Populate Leaderboard DOM
+            leaderboardList.innerHTML = '';
+            entries.forEach((entry, index) => {
+                const li = document.createElement('li');
+                li.className = 'color-item';
+                const winnerBadge = index === 0 ? `<span class="winner-tag">WINNER</span>` : '';
+                li.innerHTML = `
+                    <div>
+                        <span class="user-name">${entry.name}</span>
+                        ${winnerBadge}
+                    </div>
+                    <div class="color-info">
+                        <span class="score-match">${entry.matchScore}%</span>
+                        <div class="swatch" style="background-color: ${entry.hex};"></div>
+                        <span class="hex-code">${entry.hex}</span>
+                    </div>
+                `;
+                leaderboardList.appendChild(li);
+            });
+
+            pickerContainer.classList.remove('fade-in');
+
+            setTimeout(() => {
+                resultsView.classList.add('fade-in');
+            }, 400);
+        });
+
+        // Reset to initial screen
+        resetGameBtn.addEventListener('click', () => {
+            resultsView.classList.remove('fade-in');
+            setTimeout(() => {
+                defaultView.classList.add('fade-in');
+            }, 400);
+        });
+
+        // Render Professional Color Wheel
         const radius = canvas.width / 2;
         const image = ctx.createImageData(canvas.width, canvas.height);
         const data = image.data;
@@ -578,7 +791,7 @@
             return p;
         }
 
-        // Color Picking Logic
+        // Color Dragging Logic
         let isDragging = false;
 
         function pickColor(e) {

@@ -29,6 +29,7 @@
             width: 100%;
             height: 25vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 0 1rem;
@@ -42,6 +43,18 @@
             color: #ffffff;
             letter-spacing: -1px;
             line-height: 1;
+        }
+
+        /* Live Device / Orientation Badge */
+        .device-badge {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #71717a;
+            background-color: #1c1c21;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            border: 1px solid #2e2e36;
+            letter-spacing: 0.2px;
         }
 
         /* Full screen interactive section */
@@ -203,9 +216,10 @@
 </head>
 <body>
 
-    <!-- Absolute top header -->
+    <!-- Absolute top header with device info badge -->
     <header class="top-section">
         <h1 class="page-title">Color Picker</h1>
+        <div class="device-badge" id="deviceBadge">Detecting device...</div>
     </header>
 
     <!-- Interactive Workspace -->
@@ -243,11 +257,27 @@
         const handle = document.getElementById('colorHandle');
         const colorPreview = document.getElementById('colorPreview');
         const hexLabel = document.getElementById('hexLabel');
+        const deviceBadge = document.getElementById('deviceBadge');
 
         // Auto-focus text box on page load
         window.addEventListener('DOMContentLoaded', () => {
             nameBox.focus();
+            updateDeviceStatus();
         });
+
+        // Update device and orientation details live
+        function updateDeviceStatus() {
+            // Check if touch device / mobile vs desktop PC
+            const isTouch = window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
+            const deviceType = isTouch ? 'Mobile / Touch Device' : 'Desktop / PC';
+            
+            // Check orientation
+            const orientation = window.innerWidth > window.innerHeight ? 'Landscape' : 'Portrait';
+
+            deviceBadge.textContent = `${deviceType} • ${orientation}`;
+        }
+
+        window.addEventListener('resize', updateDeviceStatus);
 
         // Trigger screen transition on Enter key press
         nameBox.addEventListener('keydown', function(event) {
@@ -262,7 +292,7 @@
             }
         });
 
-        // Draw Color Wheel: White Center -> Saturated Mid-Ring -> Black Outer Edge
+        // Draw Professional Color Wheel: White Center -> Saturated Mid-Ring -> Black Outer Edge
         const radius = canvas.width / 2;
         const image = ctx.createImageData(canvas.width, canvas.height);
         const data = image.data;
@@ -275,18 +305,16 @@
                     if (angle < 0) angle += 360;
 
                     const hue = angle;
-                    const t = distFromCenter / radius; // 0 at center, 1 at outer edge
+                    const t = distFromCenter / radius; 
 
                     let saturation, lightness;
                     if (t <= 0.5) {
-                        // Inner half: Center (White, L=1.0, S=0) to Mid-Ring (Full Color, L=0.5, S=1.0)
-                        const innerT = t * 2; // 0 to 1
+                        const innerT = t * 2;
                         saturation = innerT;
                         lightness = 1.0 - (innerT * 0.5);
                     } else {
-                        // Outer half: Mid-Ring (Full Color, L=0.5, S=1.0) to Outer Edge (Black, L=0, S=1.0)
                         saturation = 1.0;
-                        const outerT = (t - 0.5) * 2; // 0 to 1
+                        const outerT = (t - 0.5) * 2;
                         lightness = 0.5 * (1.0 - outerT);
                     }
 
@@ -302,7 +330,6 @@
         }
         ctx.putImageData(image, 0, 0);
 
-        // HSL to RGB Color Conversion Helper
         function hslToRgb(h, s, l) {
             let r, g, b;
             if (s === 0) {
@@ -338,28 +365,23 @@
             const dy = y - radius;
             const dist = Math.sqrt(dx * dx + dy * dy);
 
-            // Clamp selection within wheel radius
             if (dist > radius) {
                 x = radius + (dx / dist) * radius;
                 y = radius + (dy / dist) * radius;
             }
 
-            // Move selector ring
             handle.style.left = `${x}px`;
             handle.style.top = `${y}px`;
 
-            // Sample pixel color from canvas
             const sampledX = Math.min(Math.max(0, Math.floor(x)), canvas.width - 1);
             const sampledY = Math.min(Math.max(0, Math.floor(y)), canvas.height - 1);
             const pixel = ctx.getImageData(sampledX, sampledY, 1, 1).data;
             const hex = "#" + ((1 << 24) + (pixel[0] << 16) + (pixel[1] << 8) + pixel[2]).toString(16).slice(1).toUpperCase();
 
-            // Update UI elements
             colorPreview.style.backgroundColor = hex;
             hexLabel.textContent = hex;
         }
 
-        // Drag & Touch Event Listeners
         canvasContainer.addEventListener('mousedown', (e) => { isDragging = true; pickColor(e); });
         window.addEventListener('mousemove', (e) => { if (isDragging) pickColor(e); });
         window.addEventListener('mouseup', () => { isDragging = false; });

@@ -582,10 +582,10 @@
             });
         }
 
-        // Update Claim Button label based on whether this device has a saved name
+        // Update Claim Button label without embedding the name in the button text
         function updateClaimButton() {
             if (myStoredName) {
-                startClaimBtn.textContent = `Edit Your Pick (${myStoredName})`;
+                startClaimBtn.textContent = "Edit Your Pick";
             } else {
                 startClaimBtn.textContent = "Claim Color";
             }
@@ -614,19 +614,21 @@
             defaultView.classList.remove('fade-in');
 
             if (myStoredName) {
-                // If device already knows the user's name, skip dropdown and open picker directly to edit
                 selectedPlayerName = myStoredName;
                 modeIndicator.textContent = `${selectedPlayerName}'s Pick`;
                 modeIndicator.className = "mode-indicator player";
                 submitColorBtn.style.display = "block";
                 checkResultsBtn.style.display = "none";
 
+                // Find existing pick for this user to preset picker position
+                const existing = savedEntries.find(e => e.name === selectedPlayerName);
+                const targetHex = existing ? existing.hex : '#FFFFFF';
+
                 setTimeout(() => {
-                    resetPicker();
+                    setPickerToColor(targetHex);
                     pickerContainer.classList.add('fade-in');
                 }, 300);
             } else {
-                // Otherwise show name selection card
                 setTimeout(() => {
                     nameCard.classList.add('fade-in');
                 }, 300);
@@ -641,7 +643,6 @@
                 return;
             }
 
-            // Save choice to device storage
             myStoredName = selectedPlayerName;
             localStorage.setItem('myStoredName', myStoredName);
             updateClaimButton();
@@ -653,8 +654,11 @@
             submitColorBtn.style.display = "block";
             checkResultsBtn.style.display = "none";
 
+            const existing = savedEntries.find(e => e.name === selectedPlayerName);
+            const targetHex = existing ? existing.hex : '#FFFFFF';
+
             setTimeout(() => {
-                resetPicker();
+                setPickerToColor(targetHex);
                 pickerContainer.classList.add('fade-in');
             }, 300);
         });
@@ -675,25 +679,50 @@
             }, 300);
         });
 
-        // Reset picker handle & preview values
+        // Reset picker handle & preview values to default center (#FFFFFF)
         function resetPicker() {
-            handle.style.left = '50%';
-            handle.style.top = '50%';
-            currentPickedHex = '#FFFFFF';
-            colorPreview.style.backgroundColor = '#FFFFFF';
-            hexLabel.textContent = '#FFFFFF';
+            setPickerToColor('#FFFFFF');
+        }
+
+        // Helper: Find canvas coordinates matching a specific HEX and position the handle there
+        function setPickerToColor(targetHex) {
+            currentPickedHex = targetHex;
+            colorPreview.style.backgroundColor = targetHex;
+            hexLabel.textContent = targetHex;
+
+            const targetRgb = hexToRgb(targetHex);
+            let closestX = radius;
+            let closestY = radius;
+            let minDiff = Infinity;
+
+            // Scan canvas pixels to find the closest matching color coordinate
+            for (let x = 0; x < canvas.width; x += 2) {
+                for (let y = 0; y < canvas.height; y += 2) {
+                    const dx = x - radius;
+                    const dy = y - radius;
+                    if (Math.sqrt(dx * dx + dy * dy) <= radius) {
+                        const pixel = ctx.getImageData(x, y, 1, 1).data;
+                        const diff = Math.abs(pixel[0] - targetRgb.r) + Math.abs(pixel[1] - targetRgb.g) + Math.abs(pixel[2] - targetRgb.b);
+                        if (diff < minDiff) {
+                            minDiff = diff;
+                            closestX = x;
+                            closestY = y;
+                        }
+                    }
+                }
+            }
+
+            handle.style.left = `${closestX}px`;
+            handle.style.top = `${closestY}px`;
         }
 
         // Submit / Update Player Color (Edits only their entry)
         submitColorBtn.addEventListener('click', () => {
-            // Check if this player already has an entry in savedEntries
             const existingIndex = savedEntries.findIndex(e => e.name === selectedPlayerName);
             
             if (existingIndex >= 0) {
-                // Update existing entry
                 savedEntries[existingIndex].hex = currentPickedHex;
             } else {
-                // Add new entry
                 savedEntries.push({ name: selectedPlayerName, hex: currentPickedHex });
             }
 

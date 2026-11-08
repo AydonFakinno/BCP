@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Name Input</title>
+    <!-- CHANGE THIS TO CONTROL THE BROWSER TAB TEXT -->
+    <title>Color Picker</title>
     <style>
         * {
             box-sizing: border-box;
@@ -14,11 +15,23 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             background-color: #121214;
             color: #f4f4f5;
+            padding: 1.5rem;
+        }
+
+        /* Large page title above the card */
+        .page-title {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            text-align: center;
         }
 
         .card {
@@ -33,11 +46,11 @@
         }
 
         h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: #e4e4e7;
-            letter-spacing: 0.3px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1.25rem;
+            color: #a1a1aa;
+            letter-spacing: 0.2px;
         }
 
         input {
@@ -64,6 +77,9 @@
     </style>
 </head>
 <body>
+    <!-- Big title at the top of the page -->
+    <h1 class="page-title">Color Picker</h1>
+
     <div class="card">
         <h2>Enter Your Name</h2>
         <input type="text" id="nameBox" placeholder="Type your name here..." autocomplete="off">

@@ -21,7 +21,7 @@
             overflow: hidden;
         }
 
-        /* Top 1/4th absolute static header */
+        /* Absolute top header */
         .top-section {
             position: absolute;
             top: 0;
@@ -44,8 +44,9 @@
             line-height: 1;
         }
 
-        /* Full screen interactive section to center the card */
+        /* Full screen interactive section */
         .interactive-section {
+            position: relative;
             height: 100vh;
             width: 100%;
             display: flex;
@@ -54,6 +55,7 @@
             padding: 1.5rem;
         }
 
+        /* Name Card Setup & Animation */
         .card {
             background-color: #1c1c21;
             padding: 2.5rem 2rem;
@@ -63,6 +65,14 @@
             text-align: center;
             width: 100%;
             max-width: 360px;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+            z-index: 2;
+        }
+
+        .card.slide-down {
+            transform: translateY(120vh);
+            opacity: 0;
+            pointer-events: none;
         }
 
         h2 {
@@ -73,43 +83,172 @@
             letter-spacing: 0.2px;
         }
 
-        input {
+        input[type="text"] {
             width: 100%;
             padding: 0.85rem 1.25rem;
             font-size: 1rem;
             color: #ffffff;
             background-color: #2a2a32;
             border: 1px solid #3f3f46;
-            border-radius: 9999px; /* Capsule shape */
+            border-radius: 9999px;
             outline: none;
             transition: all 0.2s ease-in-out;
         }
 
-        input::placeholder {
+        input[type="text"]::placeholder {
             color: #81818c;
         }
 
-        input:focus {
+        input[type="text"]:focus {
             border-color: #6366f1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
             background-color: #32323c;
+        }
+
+        /* Color Selection Screen Container */
+        .picker-container {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4rem;
+            width: 100%;
+            max-width: 800px;
+            pointer-events: none;
+        }
+
+        /* Left Element: Color Wheel Input */
+        .wheel-wrapper {
+            transform: translateX(-120vw);
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .wheel-wrapper.slide-in {
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 160px;
+            height: 160px;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        input[type="color"]::-webkit-color-swatch {
+            border: 4px solid #2e2e36;
+            border-radius: 50%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        input[type="color"]::-moz-color-swatch {
+            border: 4px solid #2e2e36;
+            border-radius: 50%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        /* Right Element: Selected Color Square */
+        .square-wrapper {
+            transform: translateX(120vw);
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .square-wrapper.slide-in {
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+
+        .color-preview {
+            width: 160px;
+            height: 160px;
+            background-color: #6366f1;
+            border-radius: 24px;
+            border: 1px solid #2e2e36;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            transition: background-color 0.1s ease;
+        }
+
+        .label {
+            font-size: 0.95rem;
+            color: #a1a1aa;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
 
-    <!-- Absolute positioned top header -->
+    <!-- Absolute top header -->
     <header class="top-section">
         <h1 class="page-title">Color Picker</h1>
     </header>
 
-    <!-- Full height workspace centering the card -->
+    <!-- Interactive Workspace -->
     <main class="interactive-section">
-        <div class="card">
-            <h2>Enter Your Name</h2>
+        <!-- Initial Name Card -->
+        <div class="card" id="nameCard">
+            <h2 id="greetingHeader">Enter Your Name</h2>
             <input type="text" id="nameBox" placeholder="Type your name here..." autocomplete="off">
+        </div>
+
+        <!-- Color Picker UI (Hidden offscreen initially) -->
+        <div class="picker-container">
+            <div class="wheel-wrapper" id="wheelWrapper">
+                <input type="color" id="colorInput" value="#6366f1">
+                <span class="label">Choose Color</span>
+            </div>
+            <div class="square-wrapper" id="squareWrapper">
+                <div class="color-preview" id="colorPreview"></div>
+                <span class="label" id="hexLabel">#6366f1</span>
+            </div>
         </div>
     </main>
 
+    <script>
+        const nameBox = document.getElementById('nameBox');
+        const nameCard = document.getElementById('nameCard');
+        const wheelWrapper = document.getElementById('wheelWrapper');
+        const squareWrapper = document.getElementById('squareWrapper');
+        const colorInput = document.getElementById('colorInput');
+        const colorPreview = document.getElementById('colorPreview');
+        const hexLabel = document.getElementById('hexLabel');
+
+        // Trigger transition on Enter key
+        nameBox.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && nameBox.value.trim() !== '') {
+                // Slide name card off bottom
+                nameCard.classList.add('slide-down');
+
+                // Bring in color picker elements from left & right
+                setTimeout(() => {
+                    wheelWrapper.classList.add('slide-in');
+                    squareWrapper.classList.add('slide-in');
+                }, 200);
+            }
+        });
+
+        // Real-time update of color preview square
+        colorInput.addEventListener('input', function(event) {
+            const chosenColor = event.target.value;
+            colorPreview.style.backgroundColor = chosenColor;
+            hexLabel.textContent = chosenColor.toUpperCase();
+        });
+    </script>
 </body>
 </html>

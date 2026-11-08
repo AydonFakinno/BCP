@@ -139,7 +139,6 @@
             height: 200px;
             cursor: crosshair;
             border-radius: 50%;
-            /* White outline for the wheel */
             border: 3px solid #ffffff;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
         }
@@ -181,10 +180,8 @@
         .color-preview {
             width: 200px;
             height: 200px;
-            /* Initialized to neutral gray matching wheel center */
             background-color: #808080;
             border-radius: 24px;
-            /* White outline for the square preview */
             border: 3px solid #ffffff;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
             transition: background-color 0.05s ease;
@@ -333,3 +330,21 @@
             const sampledX = Math.min(Math.max(0, Math.floor(x)), canvas.width - 1);
             const sampledY = Math.min(Math.max(0, Math.floor(y)), canvas.height - 1);
             const pixel = ctx.getImageData(sampledX, sampledY, 1, 1).data;
+            const hex = "#" + ((1 << 24) + (pixel[0] << 16) + (pixel[1] << 8) + pixel[2]).toString(16).slice(1).toUpperCase();
+
+            // Update UI elements
+            colorPreview.style.backgroundColor = hex;
+            hexLabel.textContent = hex;
+        }
+
+        // Drag & Touch Event Listeners
+        canvasContainer.addEventListener('mousedown', (e) => { isDragging = true; pickColor(e); });
+        window.addEventListener('mousemove', (e) => { if (isDragging) pickColor(e); });
+        window.addEventListener('mouseup', () => { isDragging = false; });
+
+        canvasContainer.addEventListener('touchstart', (e) => { isDragging = true; pickColor(e); }, {passive: true});
+        window.addEventListener('touchmove', (e) => { if (isDragging) pickColor(e); }, {passive: true});
+        window.addEventListener('touchend', () => { isDragging = false; });
+    </script>
+</body>
+</html>

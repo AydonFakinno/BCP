@@ -253,7 +253,7 @@
             color: #a1a1aa;
         }
 
-        /* Predefined Roster Dropdown Card */
+        /* Predefined Name Selection Card */
         .card {
             background-color: #1c1c21;
             padding: 2.5rem 2rem;
@@ -560,22 +560,35 @@
         let masterColorHex = "#FFFFFF";
         let selectedPlayerName = "";
 
-        // Track submitted players dynamically in memory / localStorage
-        let submittedPlayers = JSON.parse(localStorage.getItem('submittedPlayers') || '[]');
+        // Persistent storage states
+        let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || '[]');
+        let myStoredName = localStorage.getItem('myStoredName') || '';
 
-        // Update Dropdown Options based on submitted state
-        function updateDropdownState() {
-            Array.from(nameSelect.options).forEach(option => {
-                if (!option.value) return; // Skip placeholder
-                if (submittedPlayers.includes(option.value)) {
-                    option.disabled = true;
-                    option.textContent = `${option.value} (Already Submitted)`;
-                } else {
-                    option.disabled = false;
-                    option.textContent = option.value;
-                }
+        // Render saved entries into the UI list
+        function renderEntries() {
+            colorList.innerHTML = '';
+            savedEntries.forEach(entry => {
+                const li = document.createElement('li');
+                li.className = 'color-item';
+                li.setAttribute('data-hex', entry.hex);
+                li.innerHTML = `
+                    <span class="user-name">${entry.name}</span>
+                    <div class="color-info">
+                        <div class="swatch" style="background-color: ${entry.hex};"></div>
+                        <span class="hex-code">${entry.hex}</span>
+                    </div>
+                `;
+                colorList.appendChild(li);
             });
-            nameSelect.value = "";
+        }
+
+        // Update Claim Button label based on whether this device has a saved name
+        function updateClaimButton() {
+            if (myStoredName) {
+                startClaimBtn.textContent = `Edit Your Pick (${myStoredName})`;
+            } else {
+                startClaimBtn.textContent = "Claim Color";
+            }
         }
 
         // Device & Orientation Detection
@@ -589,29 +602,49 @@
         
         window.addEventListener('DOMContentLoaded', () => {
             updateDeviceStatus();
-            updateDropdownState();
+            renderEntries();
+            updateClaimButton();
         });
         window.addEventListener('resize', updateDeviceStatus);
 
-        // Click "Claim Your Color" -> Open Dropdown Card
+        // Click "Claim Color" / "Edit Your Pick"
         startClaimBtn.addEventListener('click', () => {
             isMasterMode = false;
             successBanner.classList.remove('show');
-            updateDropdownState();
             defaultView.classList.remove('fade-in');
-            
-            setTimeout(() => {
-                nameCard.classList.add('fade-in');
-            }, 300);
+
+            if (myStoredName) {
+                // If device already knows the user's name, skip dropdown and open picker directly to edit
+                selectedPlayerName = myStoredName;
+                modeIndicator.textContent = `${selectedPlayerName}'s Pick`;
+                modeIndicator.className = "mode-indicator player";
+                submitColorBtn.style.display = "block";
+                checkResultsBtn.style.display = "none";
+
+                setTimeout(() => {
+                    resetPicker();
+                    pickerContainer.classList.add('fade-in');
+                }, 300);
+            } else {
+                // Otherwise show name selection card
+                setTimeout(() => {
+                    nameCard.classList.add('fade-in');
+                }, 300);
+            }
         });
 
-        // Confirm Selected Name -> Move to Picker
+        // Confirm Selected Name from Dropdown
         confirmNameBtn.addEventListener('click', () => {
             selectedPlayerName = nameSelect.value;
             if (!selectedPlayerName) {
                 alert("Please select your name from the list!");
                 return;
             }
+
+            // Save choice to device storage
+            myStoredName = selectedPlayerName;
+            localStorage.setItem('myStoredName', myStoredName);
+            updateClaimButton();
 
             nameCard.classList.remove('fade-in');
 
@@ -626,7 +659,7 @@
             }, 300);
         });
 
-        // Click "Enter Master Color" -> Open Master Flow directly
+        // Click "Enter Master Color"
         enterMasterBtn.addEventListener('click', () => {
             isMasterMode = true;
             defaultView.classList.remove('fade-in');
@@ -651,31 +684,26 @@
             hexLabel.textContent = '#FFFFFF';
         }
 
-        // Submit Player Color -> Lock name & Add to list
+        // Submit / Update Player Color (Edits only their entry)
         submitColorBtn.addEventListener('click', () => {
-            // Disable name in roster
-            if (!submittedPlayers.includes(selectedPlayerName)) {
-                submittedPlayers.push(selectedPlayerName);
-                localStorage.setItem('submittedPlayers', JSON.stringify(submittedPlayers));
+            // Check if this player already has an entry in savedEntries
+            const existingIndex = savedEntries.findIndex(e => e.name === selectedPlayerName);
+            
+            if (existingIndex >= 0) {
+                // Update existing entry
+                savedEntries[existingIndex].hex = currentPickedHex;
+            } else {
+                // Add new entry
+                savedEntries.push({ name: selectedPlayerName, hex: currentPickedHex });
             }
 
-            const li = document.createElement('li');
-            li.className = 'color-item';
-            li.setAttribute('data-hex', currentPickedHex);
-            li.innerHTML = `
-                <span class="user-name">${selectedPlayerName}</span>
-                <div class="color-info">
-                    <div class="swatch" style="background-color: ${currentPickedHex};"></div>
-                    <span class="hex-code">${currentPickedHex}</span>
-                </div>
-            `;
-            colorList.prepend(li);
+            localStorage.setItem('savedEntries', JSON.stringify(savedEntries));
+            renderEntries();
 
             pickerContainer.classList.remove('fade-in');
 
             setTimeout(() => {
                 resetPicker();
-                updateDropdownState();
                 defaultView.classList.add('fade-in');
 
                 successBanner.classList.add('show');
@@ -695,7 +723,7 @@
             };
         }
 
-        // Calculate RGB Color Distance (0% = worst, 100% = exact match)
+        // Calculate RGB Color Distance
         function calculateColorMatch(hex1, hex2) {
             const rgb1 = hexToRgb(hex1);
             const rgb2 = hexToRgb(hex2);
@@ -717,13 +745,11 @@
             masterSwatch.style.backgroundColor = masterColorHex;
             masterHexCode.textContent = masterColorHex;
 
-            const entries = [];
-            document.querySelectorAll('#colorList .color-item').forEach(item => {
-                const name = item.querySelector('.user-name').textContent;
-                const hex = item.getAttribute('data-hex');
-                const matchScore = parseFloat(calculateColorMatch(hex, masterColorHex));
-                entries.push({ name, hex, matchScore });
-            });
+            const entries = savedEntries.map(e => ({
+                name: e.name,
+                hex: e.hex,
+                matchScore: parseFloat(calculateColorMatch(e.hex, masterColorHex))
+            }));
 
             entries.sort((a, b) => b.matchScore - a.matchScore);
 
@@ -767,12 +793,14 @@
             }, 400);
         });
 
-        // Reset to initial screen & wipe saved submissions
+        // Reset game & clear local storage
         resetGameBtn.addEventListener('click', () => {
-            submittedPlayers = [];
-            localStorage.removeItem('submittedPlayers');
-            colorList.innerHTML = '';
-            updateDropdownState();
+            localStorage.removeItem('savedEntries');
+            localStorage.removeItem('myStoredName');
+            savedEntries = [];
+            myStoredName = '';
+            renderEntries();
+            updateClaimButton();
             
             resultsView.classList.remove('fade-in');
             setTimeout(() => {

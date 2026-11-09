@@ -249,14 +249,6 @@
             height: 100%;
         }
 
-        .swatch {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-            border: 1px solid #3f3f46;
-        }
-
         .hex-code {
             font-family: monospace;
             font-size: 1.25rem;
@@ -534,8 +526,8 @@
         <div class="results-view" id="resultsView">
             <div class="master-card" id="masterCardSummary">
                 <span class="user-name" style="color: #c084fc;">Target Master Color</span>
-                <div class="color-info">
-                    <div class="swatch" id="masterSwatch"></div>
+                <div class="color-info" id="masterColorInfo">
+                    <!-- Master SVG icon renders here -->
                     <span class="hex-code" id="masterHexCode">#FFFFFF</span>
                 </div>
             </div>
@@ -566,7 +558,7 @@
         const successBanner = document.getElementById('successBanner');
         
         const resultsView = document.getElementById('resultsView');
-        const masterSwatch = document.getElementById('masterSwatch');
+        const masterColorInfo = document.getElementById('masterColorInfo');
         const masterHexCode = document.getElementById('masterHexCode');
         const leaderboardList = document.getElementById('leaderboardList');
         const resetGameBtn = document.getElementById('resetGameBtn');
@@ -614,7 +606,7 @@
             .catch(err => console.error("Error loading char.svg:", err));
 
         function getMiniSvgHtml(hex) {
-            if (!svgRawText) return `<div class="swatch" style="background-color: ${hex};"></div>`;
+            if (!svgRawText) return `<div class="swatch-svg" style="background-color: ${hex};"></div>`;
             const parser = new DOMParser();
             const doc = parser.parseFromString(svgRawText, 'image/svg+xml');
             const pathElem = doc.querySelector('#fill') || doc.querySelector('path');
@@ -625,7 +617,7 @@
             if (svgElem) {
                 return `<div class="swatch-svg">${svgElem.outerHTML}</div>`;
             }
-            return `<div class="swatch" style="background-color: ${hex};"></div>`;
+            return `<div class="swatch-svg" style="background-color: ${hex};"></div>`;
         }
 
         function renderEntries() {
@@ -826,8 +818,10 @@
 
         checkResultsBtn.addEventListener('click', () => {
             masterColorHex = currentPickedHex;
-            masterSwatch.style.backgroundColor = masterColorHex;
-            masterHexCode.textContent = masterColorHex;
+            masterColorInfo.innerHTML = `
+                ${getMiniSvgHtml(masterColorHex)}
+                <span class="hex-code" id="masterHexCode">${masterColorHex}</span>
+            `;
 
             const entries = savedEntries.map(e => ({
                 name: e.name,

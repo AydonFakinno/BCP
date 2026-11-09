@@ -13,479 +13,319 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            height: 100vh;
-            width: 100vw;
             background-color: #121214;
             color: #f4f4f5;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .top-section {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 25vh;
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 0 1rem;
-            text-align: center;
-            z-index: 10;
-        }
-
-        .page-title {
-            font-size: 7.25rem;
-            font-weight: 700;
-            color: #ffffff;
-            letter-spacing: -1px;
-            line-height: 1;
-        }
-
-        .device-badge {
-            margin-top: 0.5rem;
-            font-size: 0.85rem;
-            color: #71717a;
-            background-color: #1c1c21;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            border: 1px solid #2e2e36;
-        }
-
-        .interactive-section {
-            position: relative;
-            height: 100vh;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
             justify-content: center;
-            align-items: center;
             padding: 1.5rem;
-            margin-top: 5vh;
         }
 
-        .default-view, .card, .picker-container {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-            position: absolute;
+        .container {
+            width: 100%;
+            max-width: 500px;
         }
 
-        .default-view.fade-in, .card.fade-in, .picker-container.fade-in {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
+        .view {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
-        .default-view {
+        .view.active {
+            display: flex;
+        }
+
+        .card {
+            background-color: #1c1c21;
+            border: 1px solid #2e2e36;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 1.25rem;
-            width: 100%;
-            max-width: 960px;
-            z-index: 2;
+            gap: 1.5rem;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 0.75rem;
-            width: 100%;
-            justify-content: center;
+        h1, h2 {
+            text-align: center;
+            color: #ffffff;
         }
 
-        .claim-btn, .submit-btn, .confirm-name-btn {
-            font-size: 0.95rem;
+        .btn {
+            background-color: #6366f1;
+            color: #ffffff;
+            font-size: 1rem;
             font-weight: 600;
-            padding: 0.85rem 1.75rem;
+            padding: 0.85rem 1.5rem;
             border: none;
             border-radius: 9999px;
             cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-            background-color: #6366f1;
-            color: #ffffff;
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+            width: 100%;
+            transition: background-color 0.2s, transform 0.1s;
         }
 
-        .claim-btn:hover, .submit-btn:hover, .confirm-name-btn:hover {
+        .btn:hover {
             background-color: #4f46e5;
-            transform: translateY(-2px);
         }
 
-        .list-container {
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        select {
             width: 100%;
-            background-color: #1c1c21;
-            border-radius: 20px;
-            border: 1px solid #2e2e36;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        }
-
-        .list-title {
-            font-size: 0.95rem;
-            color: #a1a1aa;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-        }
-
-        .color-list {
-            list-style: none;
-            max-height: 320px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .color-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            padding: 0.85rem;
             background-color: #2a2a32;
-            padding: 1.25rem 1.5rem;
-            border-radius: 16px;
+            color: #ffffff;
             border: 1px solid #3f3f46;
-            width: 100%;
+            border-radius: 9999px;
+            outline: none;
+            font-size: 1rem;
+            cursor: pointer;
         }
 
-        .user-name {
-            font-weight: 600;
-            color: #f4f4f5;
-            font-size: 1.35rem;
+        /* List Items */
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2a2a32;
+            padding: 1rem 1.25rem;
+            border-radius: 14px;
+            border: 1px solid #3f3f46;
         }
 
         .color-info {
             display: flex;
             align-items: center;
-            gap: 1.25rem;
+            gap: 1rem;
         }
 
-        .swatch {
-            width: 35px;
-            height: 50px;
+        /* Simple Color Square Preview */
+        .square-preview {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            background-color: #6366f1;
+        }
+
+        .large-square {
+            width: 140px;
+            height: 140px;
+            border-radius: 16px;
+            border: 3px solid #ffffff;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            background-color: #6366f1;
+        }
+
+        /* Picker Layout */
+        .picker-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .picker-controls {
             display: flex;
             align-items: center;
             justify-content: center;
-            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
-        }
-
-        .swatch svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .hex-code {
-            font-family: monospace;
-            font-size: 1.25rem;
-            color: #a1a1aa;
-        }
-
-        .card {
-            background-color: #1c1c21;
-            padding: 2.5rem 2rem;
-            border-radius: 24px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-            border: 1px solid #2e2e36;
-            text-align: center;
-            width: 100%;
-            max-width: 360px;
-            z-index: 3;
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-        }
-
-        h2 {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #a1a1aa;
-        }
-
-        select.name-select {
-            width: 100%;
-            padding: 0.85rem 1.25rem;
-            font-size: 1rem;
-            color: #ffffff;
-            background-color: #2a2a32;
-            border: 1px solid #3f3f46;
-            border-radius: 9999px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        select.name-select option {
-            background-color: #1c1c21;
-            color: #ffffff;
-        }
-
-        .picker-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             gap: 2rem;
             width: 100%;
-            max-width: 800px;
+            flex-wrap: wrap;
         }
 
-        .mode-indicator {
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.4rem 1rem;
-            border-radius: 9999px;
-            text-transform: uppercase;
-            background-color: rgba(99, 102, 241, 0.15);
-            color: #818cf8;
-            border: 1px solid #6366f1;
-        }
-
-        .picker-elements {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4rem;
-            width: 100%;
-        }
-
-        .wheel-wrapper, .square-wrapper, .submit-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
+        .canvas-box {
             position: relative;
-        }
-
-        .canvas-container {
-            position: relative;
-            width: 206px;
-            height: 206px;
-            cursor: crosshair;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            border: 3px solid #ffffff;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border: 3px solid #ffffff;
+            cursor: crosshair;
+            touch-action: none;
         }
 
         canvas {
             display: block;
-            border-radius: 50%;
-            width: 200px;
-            height: 200px;
-        }
-
-        .color-handle {
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            border: 2px solid #ffffff;
-            border-radius: 50%;
-            box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            top: 50%;
-            left: 50%;
-            z-index: 5;
-        }
-
-        .color-preview {
-            width: 135px;
-            height: 196px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.4));
-        }
-
-        .color-preview svg {
             width: 100%;
             height: 100%;
         }
 
-        .label {
-            font-size: 0.95rem;
+        .handle {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            top: 50%;
+            left: 50%;
+            box-shadow: 0 0 4px rgba(0,0,0,0.8);
+        }
+
+        .hex-display {
+            font-family: monospace;
+            font-size: 1.1rem;
             color: #a1a1aa;
-            font-weight: 500;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <header class="top-section">
-        <h1 class="page-title">Color Picker</h1>
-        <div class="device-badge" id="deviceBadge">Interactive Client</div>
-    </header>
+    <div class="container">
 
-    <main class="interactive-section">
+        <!-- VIEW 1: Main List View -->
+        <div class="view active" id="listView">
+            <h1>Color Claims</h1>
+            <div class="card">
+                <h2>Claimed Colors</h2>
+                <div class="list-item">
+                    <span id="listName" style="font-weight: 600; font-size: 1.15rem;">Arnold</span>
+                    <div class="color-info">
+                        <div class="square-preview" id="listSquare"></div>
+                        <span id="listHex" class="hex-display">#6366F1</span>
+                    </div>
+                </div>
+                <button class="btn" id="toNameBtn">Claim Color</button>
+            </div>
+        </div>
 
-        <!-- Default Main View -->
-        <div class="default-view fade-in" id="defaultView">
-            <div class="list-container">
-                <div class="list-title">Claimed Colors</div>
-                <ul class="color-list" id="colorList">
-                    <li class="color-item">
-                        <span class="user-name" id="displayUserName">Arnold</span>
-                        <div class="color-info">
-                            <div class="swatch">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 71.1 102.29">
-                                    <defs><style>.cls-1{fill:#fff;}.cls-2{fill:#dadada;}.cls-3{fill:#1d1d1b;}</style></defs>
-                                    <path id="listFillPath" fill="#6366f1" d="M11.35,77.8c-.1-.35-.27-.47-.69-.49A15.8,15.8,0,0,1,8,76.94c-.29-.06-.52-.42-.73-.61A18.28,18.28,0,0,1,5,76.61a1.34,1.34,0,0,1-1.37-1.74,3,3,0,0,1,1.22-1.54c-.55-.18-1.08-.34-1.6-.53a1.59,1.59,0,0,1-1.08-2,1.63,1.63,0,0,1,1.6-1.14H5a19.39,19.39,0,0,1-1.27-1.83,1.45,1.45,0,0,1,1.25-2.12,4.34,4.34,0,0,1,2.44.85,4.94,4.94,0,0,1,.49.3,16.22,16.22,0,0,1,.19-2.13,1.63,1.63,0,0,1,2.75-.7,14.06,14.06,0,0,1,1,1.28c.4.53.83.65,1.3.25q2.52-2.11,5-4.28c.57-.5.5-.59-.1-1a39.19,39.19,0,0,1-3.44-2.83,20.46,20.46,0,0,1-4.44-6.76c-.08-.2-.2-.38-.32-.61A5.57,5.57,0,0,1,6.64,50a6.2,6.2,0,0,1-4.27-4.87,5.11,5.11,0,0,1,1-4.45,4.21,4.21,0,0,1,4.8-1l.34.14c-.07-.69-.17-1.37-.21-2-.06-1.09-.1-2.17-.12-3.26a23.7,23.7,0,0,1,2.94-11.62,25.61,25.61,0,0,1,3.07-4.41,26.78,26.78,0,0,1,9.2-6.87,24.24,24.24,0,0,1,6.39-2,50.62,50.62,0,0,1,8.7-.33,22.15,22.15,0,0,1,7.91,1.86,26.53,26.53,0,0,1,6.48,3.66,25.19,25.19,0,0,1,5.28,5.53,26.35,26.35,0,0,1,3.48,7,19.76,19.76,0,0,1,.94,5.22c0,1.22.14,2.45.1,3.67,0,1.05-.22,2.1-.33,3.15a1.42,1.42,0,0,0,0,.23c.69-.09,1.36-.16,2-.26,2-.28,3.46,1.44,3.93,2.84a5.83,5.83,0,0,1-.21,4,6.09,6.09,0,0,1-5.07,4,2.49,2.49,0,0,1-1.12,0c-.61-.2-.91,0-1.2.55-.85,1.49-1.71,3-2.63,4.41A17.28,17.28,0,0,1,54.44,59c-.48.41-1,.79-1.44,1.21a1,1,0,0,0,.14,1.59c1.32,1,2.59,2.15,3.94,3.15,1.16.85,1.5.83,2.31-.41a2,2,0,0,1,2-.95,1.35,1.35,0,0,1,1.41,1,11.39,11.39,0,0,1,0,1.85,1.42,1.42,0,0,1,0,.25c.75-.27,1.47-.56,2.22-.77a3.5,3.5,0,0,1,1.29-.08c.75.08,1.17,1.13.78,2a5,5,0,0,1-.61.91c-.24.3-.51.56-.86.94.49,0,.9,0,1.29,0a1.83,1.83,0,0,1,1.65.93,1.39,1.39,0,0,1-.81,2l-2,.64a2.08,2.08,0,0,1,1.44,2.06,1.27,1.27,0,0,1-1.37,1.34c-.8-.07-1.59-.27-2.44-.43-.3,1-1.35.9-2.2,1.17a1.44,1.44,0,0,0-.54.3c-.21.21-.21.42.11.59a6.57,6.57,0,0,1,3.3,4.74A9.9,9.9,0,0,1,63.26,89a13.4,13.4,0,0,1-5.88,6.12c-.49.28-1,.6-1.46.85a3.31,3.31,0,0,1-1.09.35A9.35,9.35,0,0,0,50.07,98,10,10,0,0,1,44.75,100a5.42,5.42,0,0,1-3.28-.52A11.38,11.38,0,0,1,40,98.25a1.24,1.24,0,0,0-.65-.37c-2.67,0-5.33,0-8,0-.45,0-.57.31-.75.54A4.07,4.07,0,0,1,27.52,100a7.63,7.63,0,0,1-3.87-.49,23.79,23.79,0,0,1-2.95-1.67,8.56,8.56,0,0,0-3.26-1.16,13,13,0,0,1-5.93-2.85,24.25,24.25,0,0,1-2.87-3,8.25,8.25,0,0,1-1.86-4A9.93,9.93,0,0,1,7,82a6.42,6.42,0,0,1,3.86-3.93c.12-.06.25-.09.38-.15A.71.71,0,0,0,11.35,77.8Z"/>
-                                    <!-- Shading overlays -->
-                                    <path class="cls-2" d="M38.26,96.93H32.5c.07-.49.13-.86.17-1.24a8.42,8.42,0,0,0-1.22-5,50.65,50.65,0,0,0-3.38-5.57,4.34,4.34,0,0,1-.83-3.35A3,3,0,0,0,25.92,79a3.11,3.11,0,0,0-4.68.93,9.06,9.06,0,0,0-1.13-.43,9.38,9.38,0,0,0-1.25-.08c0-.61,0-1.31,0-2a.72.72,0,0,1,.43-.51q3.48-.6,7-1.13a71.36,71.36,0,0,1,13.31-.43c2.92.1,5.83.67,8.74,1.05,1,.13,2,.35,3,.47.47.06.56.28.55.68,0,.63,0,1.27,0,1.78l-2.43.51c-2-2.67-4.72-1.47-5.63.53a4.57,4.57,0,0,0-.26,2.35,1.92,1.92,0,0,1-.37,1.67,36.8,36.8,0,0,0-3.89,6.34,9.51,9.51,0,0,0-1.22,4.76A13.72,13.72,0,0,0,38.26,96.93Z"/>
-                                    <path class="cls-3" d="M62.11,78.21a7.41,7.41,0,0,1,2.78,4.2,10.78,10.78,0,0,1-1.84,8.78,16.75,16.75,0,0,1-7.92,6c-1.38.55-2.88.82-4.28,1.32a10.47,10.47,0,0,0-1.93,1.13,9.24,9.24,0,0,1-4.68,1.49,5.7,5.7,0,0,1-4.4-1.62,2.13,2.13,0,0,0-1.71-.73c-1.86.06-3.72,0-5.58,0a2,2,0,0,0-1.58.65,5.69,5.69,0,0,1-3.46,1.6,9.27,9.27,0,0,1-6.15-1.66,11.54,11.54,0,0,0-3.2-1.26,20.46,20.46,0,0,1-7.67-3.94A12.73,12.73,0,0,1,6,87.58,8.93,8.93,0,0,1,7.61,79a10.38,10.38,0,0,1,1-.91c-1,0-1.52-.88-2.63-.51a2.58,2.58,0,0,1-3.45-2.22s0,0,0-.07c.59-1.11-.11-1.72-.8-2.48-1.3-1.41-.6-3.19,1.24-4.13-.44-1.12-.66-2.28.29-3.22a2.78,2.78,0,0,1,3.49-.38c.82-3.44,4.46-3.2,5.81-.53L17.13,61c-.39-.35-.79-.74-1.22-1.1A23.7,23.7,0,0,1,10,52.74c-.21-.38-.36-.8-.59-1.17A.66.66,0,0,0,9,51.31a6.42,6.42,0,0,1-3.87-.92,7.19,7.19,0,0,1-3.7-5.7,5.5,5.5,0,0,1,1.65-4.93,4,4,0,0,1,3.07-1.29c.35,0,.69,0,1.17,0-.94-9,1.72-16.62,8.37-22.73S30.14,7.66,39,8.44A5.07,5.07,0,0,0,37.68,4.7a4,4,0,0,0-3.63-1.63,2.13,2.13,0,0,0-1.81,1.49A1.79,1.79,0,0,0,33.4,6.28c.42.18.86.31,1.31.46a2.61,2.61,0,0,1-4.26-1.36c-.59-2.2,1.43-4,3.43-4.22,3.7-.4,6.17,2.68,6.88,5.48.06.23.12.45.16.68.06.46-.05,1,.2,1.34s.85.31,1.3.41a21.39,21.39,0,0,1,6.33,2.27,65.71,65.71,0,0,1,5.74,3.82,20.24,20.24,0,0,1,4.66,5.15,25.09,25.09,0,0,1,3.52,7.47,28.79,28.79,0,0,1,.95,9c0,.54-.13,1.07-.19,1.65a5,5,0,0,1,5.3,2.7,5.7,5.7,0,0,1,.57,4.36A7.41,7.41,0,0,1,64.15,51,6.78,6.78,0,0,1,62,51.3a.7.7,0,0,0-.82.48,24.37,24.37,0,0,1-5.8,7.71c-.56.52-1.17,1-1.73,1.49l4.58,3.61a3.28,3.28,0,0,1,3.7-2,2.78,2.78,0,0,1,2,2.4c1.19-.4,2.45-.65,3.48.32a2.66,2.66,0,0,1,.43,3.36,2.72,2.72,0,0,1,1.87,2.36,3,3,0,0,1-1.4,2.48c-.16.13-.33.44-.28.59.89,2.44-1.12,3.95-3.28,3.48C63.68,77.41,63.07,78,62.11,78.21Z"/>
-                                </svg>
-                            </div>
-                            <span class="hex-code" id="listHexLabel">#6366F1</span>
+        <!-- VIEW 2: Select Name View -->
+        <div class="view" id="nameView">
+            <div class="card">
+                <h2>Select Your Name</h2>
+                <select id="nameSelect">
+                    <option value="" disabled selected>Choose your name...</option>
+                    <option value="Arnold">Arnold</option>
+                    <option value="Alex">Alex</option>
+                </select>
+                <button class="btn" id="toPickerBtn">Continue</button>
+            </div>
+        </div>
+
+        <!-- VIEW 3: Interactive Color Picker -->
+        <div class="view" id="pickerView">
+            <div class="card">
+                <h2>Pick a Color</h2>
+                
+                <div class="picker-layout">
+                    <div class="picker-controls">
+                        <!-- Wheel Container -->
+                        <div class="canvas-box" id="canvasBox">
+                            <canvas id="wheel" width="180" height="180"></canvas>
+                            <div class="handle" id="handle"></div>
                         </div>
-                    </li>
-                </ul>
-            </div>
-            <div class="btn-group">
-                <button class="claim-btn" id="startClaimBtn">Claim Color</button>
-            </div>
-        </div>
 
-        <!-- Predefined Name Selection Card -->
-        <div class="card" id="nameCard">
-            <h2>Select Your Name</h2>
-            <select class="name-select" id="nameSelect">
-                <option value="" disabled selected>Choose your name...</option>
-                <option value="Arnold">Arnold</option>
-                <option value="Alex">Alex</option>
-            </select>
-            <button class="confirm-name-btn" id="confirmNameBtn">Continue to Pick</button>
-        </div>
-
-        <!-- Interactive Color Picker UI -->
-        <div class="picker-container" id="pickerContainer">
-            <div class="mode-indicator" id="modeIndicator">Player Pick</div>
-            <div class="picker-elements">
-                <div class="wheel-wrapper">
-                    <div class="canvas-container" id="canvasContainer">
-                        <canvas id="colorWheel" width="200" height="200"></canvas>
-                        <div class="color-handle" id="colorHandle"></div>
+                        <!-- Live Color Square -->
+                        <div class="large-square" id="pickerSquare"></div>
                     </div>
-                    <span class="label">Pick a Color</span>
+
+                    <div class="hex-display" id="pickerHex">#6366F1</div>
                 </div>
-                <div class="square-wrapper">
-                    <div class="color-preview" id="colorPreviewContainer">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 71.1 102.29">
-                            <defs>
-                                <style>
-                                    .cls-1{fill:#fff;}
-                                    .cls-2{fill:#dadada;}
-                                    .cls-3{fill:#1d1d1b;}
-                                </style>
-                            </defs>
-                            <path id="fill" fill="#FFFFFF" d="M11.35,77.8c-.1-.35-.27-.47-.69-.49A15.8,15.8,0,0,1,8,76.94c-.29-.06-.52-.42-.73-.61A18.28,18.28,0,0,1,5,76.61a1.34,1.34,0,0,1-1.37-1.74,3,3,0,0,1,1.22-1.54c-.55-.18-1.08-.34-1.6-.53a1.59,1.59,0,0,1-1.08-2,1.63,1.63,0,0,1,1.6-1.14H5a19.39,19.39,0,0,1-1.27-1.83,1.45,1.45,0,0,1,1.25-2.12,4.34,4.34,0,0,1,2.44.85,4.94,4.94,0,0,1,.49.3,16.22,16.22,0,0,1,.19-2.13,1.63,1.63,0,0,1,2.75-.7,14.06,14.06,0,0,1,1,1.28c.4.53.83.65,1.3.25q2.52-2.11,5-4.28c.57-.5.5-.59-.1-1a39.19,39.19,0,0,1-3.44-2.83,20.46,20.46,0,0,1-4.44-6.76c-.08-.2-.2-.38-.32-.61A5.57,5.57,0,0,1,6.64,50a6.2,6.2,0,0,1-4.27-4.87,5.11,5.11,0,0,1,1-4.45,4.21,4.21,0,0,1,4.8-1l.34.14c-.07-.69-.17-1.37-.21-2-.06-1.09-.1-2.17-.12-3.26a23.7,23.7,0,0,1,2.94-11.62,25.61,25.61,0,0,1,3.07-4.41,26.78,26.78,0,0,1,9.2-6.87,24.24,24.24,0,0,1,6.39-2,50.62,50.62,0,0,1,8.7-.33,22.15,22.15,0,0,1,7.91,1.86,26.53,26.53,0,0,1,6.48,3.66,25.19,25.19,0,0,1,5.28,5.53,26.35,26.35,0,0,1,3.48,7,19.76,19.76,0,0,1,.94,5.22c0,1.22.14,2.45.1,3.67,0,1.05-.22,2.1-.33,3.15a1.42,1.42,0,0,0,0,.23c.69-.09,1.36-.16,2-.26,2-.28,3.46,1.44,3.93,2.84a5.83,5.83,0,0,1-.21,4,6.09,6.09,0,0,1-5.07,4,2.49,2.49,0,0,1-1.12,0c-.61-.2-.91,0-1.2.55-.85,1.49-1.71,3-2.63,4.41A17.28,17.28,0,0,1,54.44,59c-.48.41-1,.79-1.44,1.21a1,1,0,0,0,.14,1.59c1.32,1,2.59,2.15,3.94,3.15,1.16.85,1.5.83,2.31-.41a2,2,0,0,1,2-.95,1.35,1.35,0,0,1,1.41,1,11.39,11.39,0,0,1,0,1.85,1.42,1.42,0,0,1,0,.25c.75-.27,1.47-.56,2.22-.77a3.5,3.5,0,0,1,1.29-.08c.75.08,1.17,1.13.78,2a5,5,0,0,1-.61.91c-.24.3-.51.56-.86.94.49,0,.9,0,1.29,0a1.83,1.83,0,0,1,1.65.93,1.39,1.39,0,0,1-.81,2l-2,.64a2.08,2.08,0,0,1,1.44,2.06,1.27,1.27,0,0,1-1.37,1.34c-.8-.07-1.59-.27-2.44-.43-.3,1-1.35.9-2.2,1.17a1.44,1.44,0,0,0-.54.3c-.21.21-.21.42.11.59a6.57,6.57,0,0,1,3.3,4.74A9.9,9.9,0,0,1,63.26,89a13.4,13.4,0,0,1-5.88,6.12c-.49.28-1,.6-1.46.85a3.31,3.31,0,0,1-1.09.35A9.35,9.35,0,0,0,50.07,98,10,10,0,0,1,44.75,100a5.42,5.42,0,0,1-3.28-.52A11.38,11.38,0,0,1,40,98.25a1.24,1.24,0,0,0-.65-.37c-2.67,0-5.33,0-8,0-.45,0-.57.31-.75.54A4.07,4.07,0,0,1,27.52,100a7.63,7.63,0,0,1-3.87-.49,23.79,23.79,0,0,1-2.95-1.67,8.56,8.56,0,0,0-3.26-1.16,13,13,0,0,1-5.93-2.85,24.25,24.25,0,0,1-2.87-3,8.25,8.25,0,0,1-1.86-4A9.93,9.93,0,0,1,7,82a6.42,6.42,0,0,1,3.86-3.93c.12-.06.25-.09.38-.15A.71.71,0,0,0,11.35,77.8Z"/>  
-                            <!-- Overlays -->
-                            <g id="overlay">
-                                <path id="cloth" class="cls-2" d="M38.26,96.93H32.5c.07-.49.13-.86.17-1.24a8.42,8.42,0,0,0-1.22-5,50.65,50.65,0,0,0-3.38-5.57,4.34,4.34,0,0,1-.83-3.35A3,3,0,0,0,25.92,79a3.11,3.11,0,0,0-4.68.93,9.06,9.06,0,0,0-1.13-.43,9.38,9.38,0,0,0-1.25-.08c0-.61,0-1.31,0-2a.72.72,0,0,1,.43-.51q3.48-.6,7-1.13a71.36,71.36,0,0,1,13.31-.43c2.92.1,5.83.67,8.74,1.05,1,.13,2,.35,3,.47.47.06.56.28.55.68,0,.63,0,1.27,0,1.78l-2.43.51c-2-2.67-4.72-1.47-5.63.53a4.57,4.57,0,0,0-.26,2.35,1.92,1.92,0,0,1-.37,1.67,36.8,36.8,0,0,0-3.89,6.34,9.51,9.51,0,0,0-1.22,4.76A13.72,13.72,0,0,0,38.26,96.93Z"/>
-                                <path id="mouth" class="cls-3" d="M28.14,54.23l-.09,0c-.49,0-1.19.36-1.33-.29-.08-.35.39-1,.78-1.24a8.62,8.62,0,0,1,1.94-.84A.55.55,0,0,1,30,52c.07.09-.06.34-.13.5s-.23.4-.39.67a14.38,14.38,0,0,0,11.84,0,4.11,4.11,0,0,1-.18-.38c-.08-.27-.16-.54-.23-.82.32,0,.74-.26,1-.13A18.78,18.78,0,0,1,44,53.43a.66.66,0,0,1,0,.64.93.93,0,0,1-.76.24c-.54-.24-.63,0-.83.44a9.84,9.84,0,0,1-3.79,4.64,6.17,6.17,0,0,1-7.06-.31A10.19,10.19,0,0,1,28.14,54.23Z"/>
-                                <path id="nose" class="cls-3" d="M37.46,49.54c-.76-1.28-1.73-1.7-2.93-1.2a2.35,2.35,0,0,0-.91.84c-.33.49-.57.53-.9,0a1.33,1.33,0,0,1,.34-1.81,3.59,3.59,0,0,1,4.54-.09A1.22,1.22,0,0,1,37.46,49.54Z"/>
-                                <path id="righteye" class="cls-3" d="M52.45,41.63c.7-.2,1.37-.36,2-.59s.72,0,.74.51a1.45,1.45,0,0,1-1.47,1.34c-.9.08-1.21.41-1.47,1.34a5.09,5.09,0,0,1-4.11,3.88A4.94,4.94,0,0,1,43,45.9a5.17,5.17,0,0,1,3.31-8.18A4.92,4.92,0,0,1,50.68,39c.68.63,1.13.6,1.74-.15a2.83,2.83,0,0,1,.3-.44,7.66,7.66,0,0,1,.76-.5c.13.36.46.83.34,1.07a4.14,4.14,0,0,1-1.21,1.53C52.08,40.83,52.14,41.12,52.45,41.63Z"/>
-                                <path id="lefteye" class="cls-3" d="M18.25,41.69c.36-.59.5-1-.26-1.39a2.84,2.84,0,0,1-1.07-1.37c-.1-.24.26-.68.4-1a6.67,6.67,0,0,1,.68.45,3.58,3.58,0,0,1,.31.45A1,1,0,0,0,20,39a5.21,5.21,0,0,1,7.25.27,5.31,5.31,0,0,1,.06,7.21,4.94,4.94,0,0,1-6.57.89,4.74,4.74,0,0,1-2.38-3.62c-.06-.46-.21-.56-.65-.67a6.85,6.85,0,0,1-1.91-.91c-.2-.13-.16-.62-.23-1a3.25,3.25,0,0,1,.93,0C17.12,41.29,17.67,41.51,18.25,41.69Z"/>
-                                <path id="rightbrow" class="cls-3" d="M47.65,31.05a4.6,4.6,0,0,1,4,2.33.86.86,0,0,1-.09.79c-.1.12-.52.08-.74,0a24.91,24.91,0,0,0-2.61-1.25,13.05,13.05,0,0,0-2.19-.16c-.3,0-.56-.33-.84-.5.19-.25.33-.61.58-.7A16.22,16.22,0,0,1,47.65,31.05Z"/>
-                                <path id="leftbrow" class="cls-3" d="M23.51,31.12a11.93,11.93,0,0,1,1.58.42.83.83,0,0,1,.38.73c0,.21-.43.44-.68.47a12.26,12.26,0,0,0-2.2.1A20.45,20.45,0,0,0,20,34a5.28,5.28,0,0,1-1,.22,2.76,2.76,0,0,1,.13-1.06C20.06,31.67,21.55,31.24,23.51,31.12Z"/>
-                                <path id="rightear" class="cls-3" d="M62.59,47c-.72-.2-1.07-1.19-.87-2.43a3,3,0,0,1,2.73-2.45,1.71,1.71,0,0,1,1.82,1.51C64.14,43.37,62.89,43.42,62.59,47Z"/>
-                                <path id="leftear" class="cls-3" d="M8.13,47c-.22-3.57-1.62-3.72-3.62-3.38a1.61,1.61,0,0,1,1.66-1.52A2.84,2.84,0,0,1,9,44.39C9.36,45.67,9,46.77,8.13,47Z"/>
-                                <path id="hair" class="cls-3" d="M31.19,21c5.09-.11,8.91-2,10.48-7.44A3.2,3.2,0,0,1,42,16.07a6.91,6.91,0,0,1-5.59,5.4A7.51,7.51,0,0,1,31.19,21Z"/>
-                                <path id="rightdot" class="cls-1" d="M47.43,41.47a1.66,1.66,0,0,1-1.51,1.76,2,2,0,0,1-1.63-1.72,1.66,1.66,0,0,1,1.57-1.71C46.92,39.8,47.44,40.34,47.43,41.47Z"/>
-                                <path id="leftdot" class="cls-1" d="M23.94,41.43a2,2,0,0,1-1.76,1.8,1.91,1.91,0,0,1-1.56-1.7,1.84,1.84,0,0,1,1.77-1.73A1.83,1.83,0,0,1,23.94,41.43Z"/>
-                                <path id="outline2" class="cls-1" d="M56.28,60.94l1.65,1.32c.3-.21.6-.43.92-.63a4.54,4.54,0,0,1,3-.58,3.11,3.11,0,0,1,1.84.69,6.26,6.26,0,0,1,.93,1.06.66.66,0,0,0,.68.36,4,4,0,0,1,2.25.37,3.81,3.81,0,0,1,2.07,3.36c0,.32,0,.65,0,1a2.94,2.94,0,0,1,1.29,1.87,4.21,4.21,0,0,1-.62,3.74c-.07.08-.11.2-.2.26-.52.32-.5.82-.47,1.34a3.69,3.69,0,0,1-3,3.79c-.45.08-.91.08-1.4.12l.2.35a8,8,0,0,1,1.11,3.36A12.53,12.53,0,0,1,65,90.7a16.55,16.55,0,0,1-3.22,4,18.81,18.81,0,0,1-6.06,3.6c-1.39.52-2.84.87-4.25,1.36a6.56,6.56,0,0,0-1.38.79,9.83,9.83,0,0,1-4.26,1.71,9,9,0,0,1-4.61-.34,6.52,6.52,0,0,1-2.35-1.52,1,1,0,0,0-.84-.35c-1.7,0-3.4,0-5.1,0a1,1,0,0,0-.61.25,7.12,7.12,0,0,1-3.83,1.9,9.64,9.64,0,0,1-5.66-.68c-.8-.36-1.55-.81-2.32-1.23a14.86,14.86,0,0,0-3.18-1.13,21.27,21.27,0,0,1-4.07-1.68A18.86,18.86,0,0,1,9.82,95c-.55-.48-1.11-.94-1.61-1.47a14.18,14.18,0,0,1-2.16-3,12.38,12.38,0,0,1-1.4-4.07,13.67,13.67,0,0,1-.12-3.2,10.41,10.41,0,0,1,1-3.59c.09-.2.22-.39.34-.6A12.18,12.18,0,0,1,4.61,79,3.49,3.49,0,0,1,2.1,77.23a3.64,3.64,0,0,1-.54-2.69c0-.11-.11-.29-.21-.39A4.23,4.23,0,0,1,.08,71.93a4,4,0,0,1,.69-3.16A1.28,1.28,0,0,1,1,68.46,1.4,1.4,0,0,0,1.58,67a3.12,3.12,0,0,1,.88-2.55A3.54,3.54,0,0,1,5,63.16a3.08,3.08,0,0,0,1.14,0c.29-.14.42-.59.68-.86A3.93,3.93,0,0,1,9,61.08a4.63,4.63,0,0,1,4.21,1.21l1.8-1.4-1.32-1.24A21.34,21.34,0,0,1,10.4,55.7c-.55-.85-1-1.74-1.52-2.62a.46.46,0,0,0-.45-.28,7.73,7.73,0,0,1-4.75-1.73,7.93,7.93,0,0,1-2.49-3,7.27,7.27,0,0,1-.8-2.82,17.52,17.52,0,0,1-.06-2.29,6.14,6.14,0,0,1,1.4-3.5A6.3,6.3,0,0,1,5,37.23c.34-.09.69-.12,1.08-.2,0-.1,0-.23,0-.37,0-1.47,0-2.94.09-4.41A22.84,22.84,0,0,1,7,27.55a22.39,22.39,0,0,1,2.21-5.41c.73-1.27,1.59-2.48,2.43-3.68a23.31,23.31,0,0,1,3-3.33,28.4,28.4,0,0,1,5.12-3.88,26.65,26.65,0,0,1,6.42-2.83c1.18-.34,2.37-.61,3.59-.91a.2.2,0,0,0,0-.13,4.3,4.3,0,0,1-.64-2.25,4.42,4.42,0,0,1,.78-2.84A5.37,5.37,0,0,1,33.66.08a7.21,7.21,0,0,1,3.68.38,7.53,7.53,0,0,1,3,2.15,9.74,9.74,0,0,1,2.13,4.3,2.86,2.86,0,0,1,.06.58.41.41,0,0,0,.37.42,23.23,23.23,0,0,1,5.2,1.62,35.73,35.73,0,0,1,6.1,3.76,33.62,33.62,0,0,1,2.7,2.05,13.18,13.18,0,0,1,1.83,2c.86,1.12,1.66,2.28,2.44,3.46a23.75,23.75,0,0,1,2.29,4.63,28.29,28.29,0,0,1,1.25,4.52,13.78,13.78,0,0,1,.23,1.92c.07,1.7.11,3.41.16,5.11a.61.61,0,0,0,0,.11,5.65,5.65,0,0,1,3.61,1.65,6.89,6.89,0,0,1,2.08,3.9,8.85,8.85,0,0,1-1.75,6.9,8.36,8.36,0,0,1-5,3.13c-.45.1-.93.09-1.38.16a.53.53,0,0,0-.36.23,20.07,20.07,0,0,1-2.61,4.12C58.63,58.46,57.44,59.66,56.28,60.94Z"/>
-                                <path id="outline1" class="cls-3" d="M62.11,78.21a7.41,7.41,0,0,1,2.78,4.2,10.78,10.78,0,0,1-1.84,8.78,16.75,16.75,0,0,1-7.92,6c-1.38.55-2.88.82-4.28,1.32a10.47,10.47,0,0,0-1.93,1.13,9.24,9.24,0,0,1-4.68,1.49,5.7,5.7,0,0,1-4.4-1.62,2.13,2.13,0,0,0-1.71-.73c-1.86.06-3.72,0-5.58,0a2,2,0,0,0-1.58.65,5.69,5.69,0,0,1-3.46,1.6,9.27,9.27,0,0,1-6.15-1.66,11.54,11.54,0,0,0-3.2-1.26,20.46,20.46,0,0,1-7.67-3.94A12.73,12.73,0,0,1,6,87.58,8.93,8.93,0,0,1,7.61,79a10.38,10.38,0,0,1,1-.91c-1,0-1.52-.88-2.63-.51a2.58,2.58,0,0,1-3.45-2.22s0,0,0-.07c.59-1.11-.11-1.72-.8-2.48-1.3-1.41-.6-3.19,1.24-4.13-.44-1.12-.66-2.28.29-3.22a2.78,2.78,0,0,1,3.49-.38c.82-3.44,4.46-3.2,5.81-.53L17.13,61c-.39-.35-.79-.74-1.22-1.1A23.7,23.7,0,0,1,10,52.74c-.21-.38-.36-.8-.59-1.17A.66.66,0,0,0,9,51.31a6.42,6.42,0,0,1-3.87-.92,7.19,7.19,0,0,1-3.7-5.7,5.5,5.5,0,0,1,1.65-4.93,4,4,0,0,1,3.07-1.29c.35,0,.69,0,1.17,0-.94-9,1.72-16.62,8.37-22.73S30.14,7.66,39,8.44A5.07,5.07,0,0,0,37.68,4.7a4,4,0,0,0-3.63-1.63,2.13,2.13,0,0,0-1.81,1.49A1.79,1.79,0,0,0,33.4,6.28c.42.18.86.31,1.31.46a2.61,2.61,0,0,1-4.26-1.36c-.59-2.2,1.43-4,3.43-4.22,3.7-.4,6.17,2.68,6.88,5.48.06.23.12.45.16.68.06.46-.05,1,.2,1.34s.85.31,1.3.41a21.39,21.39,0,0,1,6.33,2.27,65.71,65.71,0,0,1,5.74,3.82,20.24,20.24,0,0,1,4.66,5.15,25.09,25.09,0,0,1,3.52,7.47,28.79,28.79,0,0,1,.95,9c0,.54-.13,1.07-.19,1.65a5,5,0,0,1,5.3,2.7,5.7,5.7,0,0,1,.57,4.36A7.41,7.41,0,0,1,64.15,51,6.78,6.78,0,0,1,62,51.3a.7.7,0,0,0-.82.48,24.37,24.37,0,0,1-5.8,7.71c-.56.52-1.17,1-1.73,1.49l4.58,3.61a3.28,3.28,0,0,1,3.7-2,2.78,2.78,0,0,1,2,2.4c1.19-.4,2.45-.65,3.48.32a2.66,2.66,0,0,1,.43,3.36,2.72,2.72,0,0,1,1.87,2.36,3,3,0,0,1-1.4,2.48c-.16.13-.33.44-.28.59.89,2.44-1.12,3.95-3.28,3.48C63.68,77.41,63.07,78,62.11,78.21Z"/>
-                            </g>
-                        </svg>
-                    </div>
-                    <span class="label" id="hexLabel">#FFFFFF</span>
-                </div>
-            </div>
-            
-            <div class="submit-wrapper">
-                <button class="submit-btn" id="submitColorBtn">Submit Color</button>
+
+                <button class="btn" id="submitBtn">Submit Color</button>
             </div>
         </div>
 
-    </main>
+    </div>
 
     <script>
-        const canvas = document.getElementById('colorWheel');
+        // --- Navigation ---
+        const listView = document.getElementById('listView');
+        const nameView = document.getElementById('nameView');
+        const pickerView = document.getElementById('pickerView');
+
+        document.getElementById('toNameBtn').addEventListener('click', () => {
+            listView.classList.remove('active');
+            nameView.classList.add('active');
+        });
+
+        document.getElementById('toPickerBtn').addEventListener('click', () => {
+            const name = document.getElementById('nameSelect').value;
+            if (!name) {
+                alert('Please select your name first.');
+                return;
+            }
+            nameView.classList.remove('active');
+            pickerView.classList.add('active');
+        });
+
+        // --- Color Picker Canvas & Math ---
+        const canvas = document.getElementById('wheel');
         const ctx = canvas.getContext('2d');
-        const handle = document.getElementById('colorHandle');
-        const hexLabel = document.getElementById('hexLabel');
-        const listHexLabel = document.getElementById('listHexLabel');
-        const fillPath = document.getElementById('fill');
-        const listFillPath = document.getElementById('listFillPath');
-        const displayUserName = document.getElementById('displayUserName');
+        const handle = document.getElementById('handle');
+        const pickerSquare = document.getElementById('pickerSquare');
+        const pickerHex = document.getElementById('pickerHex');
 
-        let currentColor = "#6366f1";
-        let activeUserName = "Arnold";
+        const listName = document.getElementById('listName');
+        const listSquare = document.getElementById('listSquare');
+        const listHex = document.getElementById('listHex');
 
-        function drawWheel() {
+        let activeColor = "#6366f1";
+
+        function drawColorWheel() {
             const radius = canvas.width / 2;
-            const cx = radius;
-            const cy = radius;
-            
             for (let angle = 0; angle < 360; angle += 0.5) {
                 const rad = (angle * Math.PI) / 180;
-                const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-                grad.addColorStop(0, 'white');
+                const grad = ctx.createRadialGradient(radius, radius, 0, radius, radius, radius);
+                grad.addColorStop(0, '#ffffff');
                 grad.addColorStop(1, `hsl(${angle}, 100%, 50%)`);
                 
                 ctx.beginPath();
-                ctx.moveTo(cx, cy);
-                ctx.arc(cx, cy, radius, rad, rad + (0.5 * Math.PI / 180));
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius, rad, rad + (0.5 * Math.PI / 180));
                 ctx.closePath();
                 ctx.fillStyle = grad;
                 ctx.fill();
             }
         }
+        drawColorWheel();
 
-        drawWheel();
-
-        function updateSelectedColor(hex) {
-            currentColor = hex;
-            hexLabel.textContent = hex.toUpperCase();
-            fillPath.setAttribute('fill', hex);
-        }
-
-        let isDragging = false;
-        const container = document.getElementById('canvasContainer');
-
-        function handleColorPick(e) {
-            const rect = container.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            
-            const radius = rect.width / 2;
+        function handlePickerInput(clientX, clientY) {
+            const box = document.getElementById('canvasBox').getBoundingClientRect();
+            const x = clientX - box.left - box.width / 2;
+            const y = clientY - box.top - box.height / 2;
+            const radius = box.width / 2;
             const dist = Math.sqrt(x * x + y * y);
             
             let angle = Math.atan2(y, x) * (180 / Math.PI);
             if (angle < 0) angle += 360;
             
-            const saturation = Math.min(dist / radius, 1);
-            const lightness = 1 - saturation * 0.5;
+            const sat = Math.min(dist / radius, 1);
+            const light = 1 - sat * 0.5;
             
-            const hex = hslToHex(angle, saturation * 100, lightness * 100);
-            updateSelectedColor(hex);
+            activeColor = hslToHex(angle, sat * 100, light * 100);
+            
+            // Update preview square & label
+            pickerSquare.style.backgroundColor = activeColor;
+            pickerHex.textContent = activeColor.toUpperCase();
 
-            const limitedDist = Math.min(dist, radius - 10);
-            const handleX = radius + limitedDist * Math.cos(angle * Math.PI / 180);
-            const handleY = radius + limitedDist * Math.sin(angle * Math.PI / 180);
-            
-            handle.style.left = `${handleX}px`;
-            handle.style.top = `${handleY}px`;
+            // Handle position inside wheel boundaries
+            const limitedDist = Math.min(dist, radius - 8);
+            handle.style.left = `${radius + limitedDist * Math.cos(angle * Math.PI / 180)}px`;
+            handle.style.top = `${radius + limitedDist * Math.sin(angle * Math.PI / 180)}px`;
         }
 
-        container.addEventListener('mousedown', (e) => { isDragging = true; handleColorPick(e); });
-        window.addEventListener('mousemove', (e) => { if (isDragging) handleColorPick(e); });
+        // Event listeners for Mouse & Touch (Mobile)
+        let isDragging = false;
+        const box = document.getElementById('canvasBox');
+
+        box.addEventListener('mousedown', (e) => { isDragging = true; handlePickerInput(e.clientX, e.clientY); });
+        window.addEventListener('mousemove', (e) => { if (isDragging) handlePickerInput(e.clientX, e.clientY); });
         window.addEventListener('mouseup', () => { isDragging = false; });
+
+        box.addEventListener('touchstart', (e) => { isDragging = true; handlePickerInput(e.touches[0].clientX, e.touches[0].clientY); });
+        window.addEventListener('touchmove', (e) => { if (isDragging) handlePickerInput(e.touches[0].clientX, e.touches[0].clientY); });
+        window.addEventListener('touchend', () => { isDragging = false; });
 
         function hslToHex(h, s, l) {
             l /= 100;
@@ -498,32 +338,15 @@
             return `#${f(0)}${f(8)}${f(4)}`;
         }
 
-        // Navigation controls
-        document.getElementById('startClaimBtn').addEventListener('click', () => {
-            document.getElementById('defaultView').classList.remove('fade-in');
-            document.getElementById('nameCard').classList.add('fade-in');
-        });
+        // --- Submit Selection ---
+        document.getElementById('submitBtn').addEventListener('click', () => {
+            const chosenName = document.getElementById('nameSelect').value;
+            listName.textContent = chosenName;
+            listSquare.style.backgroundColor = activeColor;
+            listHex.textContent = activeColor.toUpperCase();
 
-        document.getElementById('confirmNameBtn').addEventListener('click', () => {
-            const selectedName = document.getElementById('nameSelect').value;
-            if (!selectedName) {
-                alert('Please select your name first.');
-                return;
-            }
-            activeUserName = selectedName;
-            document.getElementById('nameCard').classList.remove('fade-in');
-            document.getElementById('pickerContainer').classList.add('fade-in');
-        });
-
-        document.getElementById('submitColorBtn').addEventListener('click', () => {
-            // Update the list view swatch and name with the submitted choices
-            displayUserName.textContent = activeUserName;
-            listFillPath.setAttribute('fill', currentColor);
-            listHexLabel.textContent = currentColor.toUpperCase();
-
-            // Return to the main view
-            document.getElementById('pickerContainer').classList.remove('fade-in');
-            document.getElementById('defaultView').classList.add('fade-in');
+            pickerView.classList.remove('active');
+            listView.classList.add('active');
         });
     </script>
 </body>

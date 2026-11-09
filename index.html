@@ -508,7 +508,7 @@
                     <div class="color-preview" id="colorPreviewBox">
                         <!-- Injected char.svg loads here -->
                     </div>
-                    <span class="label" id="hexLabel">#FFFFFF</span>
+                    <span class="label" id="hexLabel">#FFBBBB</span>
                 </div>
             </div>
             
@@ -524,7 +524,7 @@
                 <span class="user-name" style="color: #c084fc;">Target Master Color</span>
                 <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
-                    <span class="hex-code" id="masterHexCode">#FFFFFF</span>
+                    <span class="hex-code" id="masterHexCode">#FFBBBB</span>
                 </div>
             </div>
 
@@ -575,8 +575,8 @@
 
         let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || JSON.stringify(defaultEntries));
         let myStoredName = localStorage.getItem('myStoredName') || '';
-        let currentPickedHex = '#FFFFFF';
-        let masterColorHex = '#FFFFFF';
+        let currentPickedHex = '#FFBBBB';
+        let masterColorHex = '#FFBBBB';
         let isMasterMode = false;
         let selectedPlayerName = '';
         let svgFillPath = null;
@@ -669,7 +669,7 @@
                 checkResultsBtn.style.display = "none";
 
                 const existing = savedEntries.find(e => e.name === selectedPlayerName);
-                const targetHex = existing ? existing.hex : '#FFFFFF';
+                const targetHex = existing ? existing.hex : '#FFBBBB';
 
                 setTimeout(() => {
                     setPickerToColor(targetHex);
@@ -701,7 +701,7 @@
             checkResultsBtn.style.display = "none";
 
             const existing = savedEntries.find(e => e.name === selectedPlayerName);
-            const targetHex = existing ? existing.hex : '#FFFFFF';
+            const targetHex = existing ? existing.hex : '#FFBBBB';
 
             setTimeout(() => {
                 setPickerToColor(targetHex);
@@ -725,7 +725,7 @@
         });
 
         function resetPicker() {
-            setPickerToColor('#FFFFFF');
+            setPickerToColor('#FFBBBB');
         }
 
         const radius = canvas.width / 2;
@@ -881,7 +881,7 @@
             }, 400);
         });
 
-        // Render Professional Circular Color Wheel
+        // Render Professional Circular Color Wheel with expanded black edge
         const image = ctx.createImageData(canvas.width, canvas.height);
         const data = image.data;
 
@@ -896,13 +896,14 @@
                     const t = distFromCenter / radius; 
 
                     let saturation, lightness;
-                    if (t <= 0.5) {
-                        const innerT = t * 2;
+                    // Expanded the transition zone so black hits earlier and covers the outer rim better
+                    if (t <= 0.4) {
+                        const innerT = t * 2.5;
                         saturation = innerT;
                         lightness = 1.0 - (innerT * 0.5);
                     } else {
                         saturation = 1.0;
-                        const outerT = (t - 0.5) * 2;
+                        const outerT = (t - 0.4) / 0.6;
                         lightness = 0.5 * (1.0 - outerT);
                     }
 

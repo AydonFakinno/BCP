@@ -490,7 +490,7 @@
                     <div class="color-preview" id="colorPreviewBox">
                         <!-- Injected char.svg loads here -->
                     </div>
-                    <span class="label" id="hexLabel">#C69389</span>
+                    <span class="label" id="hexLabel">#B0705E</span>
                 </div>
             </div>
             
@@ -506,7 +506,7 @@
                 <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Target Master Color</span>
                 <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
-                    <span class="hex-code" id="masterHexCode">#C69389</span>
+                    <span class="hex-code" id="masterHexCode">#B0705E</span>
                 </div>
             </div>
 
@@ -556,8 +556,8 @@
         ];
 
         let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || JSON.stringify(defaultEntries));
-        let currentPickedHex = '#C69389';
-        let masterColorHex = '#C69389';
+        let currentPickedHex = '#B0705E';
+        let masterColorHex = '#B0705E';
         let isMasterMode = false;
         let selectedPlayerName = '';
         let svgFillPath = null;
@@ -665,7 +665,7 @@
             checkResultsBtn.style.display = "none";
 
             const existing = savedEntries.find(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());
-            const targetHex = existing ? existing.hex : '#C69389';
+            const targetHex = existing ? existing.hex : '#B0705E';
 
             setTimeout(() => {
                 setPickerToColor(targetHex);
@@ -695,7 +695,7 @@
         });
 
         function resetPicker() {
-            setPickerToColor('#C69389');
+            setPickerToColor('#B0705E');
         }
 
         function setPickerToColor(targetHex) {

@@ -843,7 +843,7 @@
             }, 400);
         });
 
-        // Render 2D Skin Tone Grid
+        // Render 2D Skin Tone Grid (Extended slightly into cool/violet tones)
         const image = ctx.createImageData(canvas.width, canvas.height);
         const data = image.data;
 
@@ -852,8 +852,11 @@
                 const nx = x / (canvas.width - 1);
                 const ny = y / (canvas.height - 1);
 
-                const hue = 10 + (nx * 32); 
-                const saturation = 0.15 + (ny * 0.45) + (Math.abs(nx - 0.5) * 0.1);
+                // Extended hue range starting slightly lower into cool violet/mauve undertones (~345 deg / -15) up to warm golden yellows (~42 deg)
+                let hue = 345 + (nx * 57); 
+                if (hue >= 360) hue -= 360;
+
+                const saturation = 0.12 + (ny * 0.42) + (Math.abs(nx - 0.4) * 0.12);
                 const lightness = 0.92 - (ny * 0.78);
 
                 const [red, green, blue] = hslToRgb(hue / 360, saturation, lightness);

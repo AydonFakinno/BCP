@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Picker</title>
+    <title>Skin Tone Picker</title>
     <style>
         * {
             box-sizing: border-box;
@@ -346,13 +346,13 @@
             position: relative;
         }
 
-        /* Circular Color Wheel Container */
+        /* 2D Skin Tone Square Palette Container */
         .canvas-container {
             position: relative;
             width: 206px;
             height: 206px;
             cursor: crosshair;
-            border-radius: 50%;
+            border-radius: 16px;
             border: 3px solid #ffffff;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
             overflow: hidden;
@@ -363,7 +363,7 @@
 
         canvas {
             display: block;
-            border-radius: 50%;
+            border-radius: 12px;
             width: 200px;
             height: 200px;
         }
@@ -484,7 +484,7 @@
                         <canvas id="colorWheel" width="200" height="200"></canvas>
                         <div class="color-handle" id="colorHandle"></div>
                     </div>
-                    <span class="label">Pick a Color</span>
+                    <span class="label">Pick Skin Tone</span>
                 </div>
                 <div class="square-wrapper">
                     <div class="color-preview" id="colorPreviewBox">
@@ -550,9 +550,9 @@
         const deviceBadge = document.getElementById('deviceBadge');
 
         const defaultEntries = [
-            { name: "Alex", hex: "#FF4500" },
-            { name: "Sarah", hex: "#00E5FF" },
-            { name: "Mark", hex: "#A855F7" }
+            { name: "Alex", hex: "#E0AC69" },
+            { name: "Sarah", hex: "#F5D0B1" },
+            { name: "Mark", hex: "#8D5524" }
         ];
 
         let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || JSON.stringify(defaultEntries));
@@ -650,7 +650,7 @@
             selectedPlayerName = enteredName;
             nameCard.classList.remove('fade-in');
 
-            modeIndicator.textContent = `${selectedPlayerName}'s Pick`;
+            modeIndicator.textContent = `${selectedPlayerName}'s Skin Tone`;
             modeIndicator.className = "mode-indicator player";
             submitColorBtn.style.display = "block";
             checkResultsBtn.style.display = "none";
@@ -674,7 +674,7 @@
             isMasterMode = true;
             defaultView.classList.remove('fade-in');
             
-            modeIndicator.textContent = "Master Target Color";
+            modeIndicator.textContent = "Master Target Skin Tone";
             modeIndicator.className = "mode-indicator master";
             submitColorBtn.style.display = "none";
             checkResultsBtn.style.display = "block";
@@ -689,8 +689,6 @@
             setPickerToColor('#FFBBBB');
         }
 
-        const radius = canvas.width / 2;
-
         function setPickerToColor(targetHex) {
             currentPickedHex = targetHex;
             hexLabel.textContent = targetHex;
@@ -700,22 +698,18 @@
             }
 
             const targetRgb = hexToRgb(targetHex);
-            let closestX = radius;
-            let closestY = radius;
+            let closestX = canvas.width / 2;
+            let closestY = canvas.height / 2;
             let minDiff = Infinity;
 
             for (let x = 0; x < canvas.width; x += 2) {
                 for (let y = 0; y < canvas.height; y += 2) {
-                    const dx = x - radius;
-                    const dy = y - radius;
-                    if (Math.sqrt(dx * dx + dy * dy) <= radius) {
-                        const pixel = ctx.getImageData(x, y, 1, 1).data;
-                        const diff = Math.abs(pixel[0] - targetRgb.r) + Math.abs(pixel[1] - targetRgb.g) + Math.abs(pixel[2] - targetRgb.b);
-                        if (diff < minDiff) {
-                            minDiff = diff;
-                            closestX = x;
-                            closestY = y;
-                        }
+                    const pixel = ctx.getImageData(x, y, 1, 1).data;
+                    const diff = Math.abs(pixel[0] - targetRgb.r) + Math.abs(pixel[1] - targetRgb.g) + Math.abs(pixel[2] - targetRgb.b);
+                    if (diff < minDiff) {
+                        minDiff = diff;
+                        closestX = x;
+                        closestY = y;
                     }
                 }
             }
@@ -840,50 +834,31 @@
             }, 400);
         });
 
-        // Render Professional Circular Color Wheel
+        // Render 2D Skin Tone Grid (X-axis: Undertone temperature, Y-axis: Darkness/Lightness)
         const image = ctx.createImageData(canvas.width, canvas.height);
         const data = image.data;
 
-        for (let x = -radius; x < radius; x++) {
-            for (let y = -radius; y < radius; y++) {
-                const distFromCenter = Math.sqrt(x * x + y * y);
-                if (distFromCenter <= radius) {
-                    let red, green, blue;
+        for (let x = 0; x < canvas.width; x++) {
+            for (let y = 0; y < canvas.height; y++) {
+                const nx = x / (canvas.width - 1); // 0 (Cool/Pinkish) to 1 (Warm/Golden-Olive)
+                const ny = y / (canvas.height - 1); // 0 (Light/Fair) to 1 (Deep/Dark)
 
-                    if (distFromCenter >= radius - 2) {
-                        red = 0;
-                        green = 0;
-                        blue = 0;
-                    } else {
-                        let angle = Math.atan2(y, x) * (180 / Math.PI);
-                        if (angle < 0) angle += 360;
+                // Human skin tone hue bounds (ranges between soft reds/pinks ~10deg up to golden yellows ~42deg)
+                const hue = 10 + (nx * 32); 
+                
+                // Saturation varies naturally across skin depth
+                const saturation = 0.15 + (ny * 0.45) + (Math.abs(nx - 0.5) * 0.1);
 
-                        const hue = angle;
-                        const t = distFromCenter / radius; 
+                // Lightness spans from high luminance (fair skin) down to low luminance (deep skin)
+                const lightness = 0.92 - (ny * 0.78);
 
-                        let saturation, lightness;
-                        if (t <= 0.35) {
-                            const innerT = t * 2.85;
-                            saturation = innerT;
-                            lightness = 1.0 - (innerT * 0.5);
-                        } else {
-                            saturation = 1.0;
-                            const outerT = (t - 0.35) / 0.65;
-                            lightness = 0.5 * (1.0 - outerT);
-                        }
+                const [red, green, blue] = hslToRgb(hue / 360, saturation, lightness);
 
-                        const rgb = hslToRgb(hue / 360, saturation, lightness);
-                        red = rgb[0];
-                        green = rgb[1];
-                        blue = rgb[2];
-                    }
-
-                    const pxIndex = ((y + radius) * canvas.width + (x + radius)) * 4;
-                    data[pxIndex] = red;
-                    data[pxIndex + 1] = green;
-                    data[pxIndex + 2] = blue;
-                    data[pxIndex + 3] = 255;
-                }
+                const pxIndex = (y * canvas.width + x) * 4;
+                data[pxIndex] = red;
+                data[pxIndex + 1] = green;
+                data[pxIndex + 2] = blue;
+                data[pxIndex + 3] = 255;
             }
         }
         ctx.putImageData(image, 0, 0);
@@ -918,21 +893,13 @@
             let x = (e.clientX || e.touches[0].clientX) - rect.left;
             let y = (e.clientY || e.touches[0].clientY) - rect.top;
 
-            const dx = x - radius;
-            let dy = y - radius;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist > radius) {
-                x = radius + (dx / dist) * radius;
-                y = radius + (dy / dist) * radius;
-            }
+            x = Math.max(0, Math.min(x, canvas.width - 1));
+            y = Math.max(0, Math.min(y, canvas.height - 1));
 
             handle.style.left = `${x}px`;
             handle.style.top = `${y}px`;
 
-            const sampledX = Math.min(Math.max(0, Math.floor(x)), canvas.width - 1);
-            const sampledY = Math.min(Math.max(0, Math.floor(y)), canvas.height - 1);
-            const pixel = ctx.getImageData(sampledX, sampledY, 1, 1).data;
+            const pixel = ctx.getImageData(Math.floor(x), Math.floor(y), 1, 1).data;
             const hex = "#" + ((1 << 24) + (pixel[0] << 16) + (pixel[1] << 8) + pixel[2]).toString(16).slice(1).toUpperCase();
 
             currentPickedHex = hex;

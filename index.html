@@ -471,7 +471,7 @@
         <!-- Free Text Name Input Card -->
         <div class="card" id="nameCard">
             <h2>Enter Your Name</h2>
-            <input type="text" class="name-input" id="nameInput" placeholder="Type your name..." autocomplete="off">
+            <input type="text" class="name-input" id="nameInput" placeholder="Type your name..." autocomplete="off" autofocus>
             <button class="confirm-name-btn" id="confirmNameBtn">Continue to Pick</button>
         </div>
 
@@ -636,7 +636,16 @@
             nameInput.value = '';
             setTimeout(() => {
                 nameCard.classList.add('fade-in');
-                nameInput.focus(); // Autofocus on text box
+                
+                // Ensure reliable focus after fade transition completes
+                const onTransitionEnd = (e) => {
+                    if (e.propertyName === 'opacity') {
+                        nameInput.focus();
+                        nameCard.removeEventListener('transitionend', onTransitionEnd);
+                    }
+                };
+                nameCard.addEventListener('transitionend', onTransitionEnd);
+                nameInput.focus();
             }, 300);
         });
 

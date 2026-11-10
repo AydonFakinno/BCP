@@ -737,7 +737,7 @@
                 savedEntries.push({ name: selectedPlayerName, hex: currentPickedHex });
             }
 
-="localStorage.setItem('savedEntries', JSON.stringify(savedEntries));"
+            localStorage.setItem('savedEntries', JSON.stringify(savedEntries));
             renderEntries();
 
             pickerContainer.classList.remove('fade-in');

@@ -490,7 +490,7 @@
                     <div class="color-preview" id="colorPreviewBox">
                         <!-- Injected char.svg loads here -->
                     </div>
-                    <span class="label" id="hexLabel">#CEA7A0</span>
+                    <span class="label" id="hexLabel">#C69389</span>
                 </div>
             </div>
             
@@ -506,7 +506,7 @@
                 <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Target Master Color</span>
                 <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
-                    <span class="hex-code" id="masterHexCode">#CEA7A0</span>
+                    <span class="hex-code" id="masterHexCode">#C69389</span>
                 </div>
             </div>
 
@@ -556,8 +556,8 @@
         ];
 
         let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || JSON.stringify(defaultEntries));
-        let currentPickedHex = '#CEA7A0';
-        let masterColorHex = '#CEA7A0';
+        let currentPickedHex = '#C69389';
+        let masterColorHex = '#C69389';
         let isMasterMode = false;
         let selectedPlayerName = '';
         let svgFillPath = null;
@@ -665,7 +665,7 @@
             checkResultsBtn.style.display = "none";
 
             const existing = savedEntries.find(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());
-            const targetHex = existing ? existing.hex : '#CEA7A0';
+            const targetHex = existing ? existing.hex : '#C69389';
 
             setTimeout(() => {
                 setPickerToColor(targetHex);
@@ -695,7 +695,7 @@
         });
 
         function resetPicker() {
-            setPickerToColor('#CEA7A0');
+            setPickerToColor('#C69389');
         }
 
         function setPickerToColor(targetHex) {
@@ -852,7 +852,6 @@
                 const nx = x / (canvas.width - 1);
                 const ny = y / (canvas.height - 1);
 
-                // Extended hue range starting slightly lower into cool violet/mauve undertones (~345 deg / -15) up to warm golden yellows (~42 deg)
                 let hue = 345 + (nx * 57); 
                 if (hue >= 360) hue -= 360;
 

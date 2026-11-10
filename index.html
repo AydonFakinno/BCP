@@ -490,7 +490,7 @@
                     <div class="color-preview" id="colorPreviewBox">
                         <!-- Injected char.svg loads here -->
                     </div>
-                    <span class="label" id="hexLabel">#FFBBBB</span>
+                    <span class="label" id="hexLabel">#CEA7A0</span>
                 </div>
             </div>
             
@@ -506,7 +506,7 @@
                 <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Target Master Color</span>
                 <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
-                    <span class="hex-code" id="masterHexCode">#FFBBBB</span>
+                    <span class="hex-code" id="masterHexCode">#CEA7A0</span>
                 </div>
             </div>
 
@@ -556,8 +556,8 @@
         ];
 
         let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || JSON.stringify(defaultEntries));
-        let currentPickedHex = '#FFBBBB';
-        let masterColorHex = '#FFBBBB';
+        let currentPickedHex = '#CEA7A0';
+        let masterColorHex = '#CEA7A0';
         let isMasterMode = false;
         let selectedPlayerName = '';
         let svgFillPath = null;
@@ -665,7 +665,7 @@
             checkResultsBtn.style.display = "none";
 
             const existing = savedEntries.find(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());
-            const targetHex = existing ? existing.hex : '#FFBBBB';
+            const targetHex = existing ? existing.hex : '#CEA7A0';
 
             setTimeout(() => {
                 setPickerToColor(targetHex);
@@ -695,7 +695,7 @@
         });
 
         function resetPicker() {
-            setPickerToColor('#FFBBBB');
+            setPickerToColor('#CEA7A0');
         }
 
         function setPickerToColor(targetHex) {
@@ -737,7 +737,7 @@
                 savedEntries.push({ name: selectedPlayerName, hex: currentPickedHex });
             }
 
-            localStorage.setItem('savedEntries', JSON.stringify(savedEntries));
+="localStorage.setItem('savedEntries', JSON.stringify(savedEntries));"
             renderEntries();
 
             pickerContainer.classList.remove('fade-in');

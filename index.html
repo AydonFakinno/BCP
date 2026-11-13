@@ -472,26 +472,26 @@
 
         <!-- Default Main View -->
         <div class="default-view fade-in" id="defaultView">
-            <div class="success-banner" id="successBanner">Tipp belküldve!</div>
+            <div class="success-banner" id="successBanner">A színed elküldve!</div>
             
             <div class="list-container">
-                <div class="list-title">Beküldött tippek</div>
+                <div class="list-title">Mentett színek</div>
                 <ul class="color-list" id="colorList">
                     <!-- Dynamic entries render here -->
                 </ul>
             </div>
 
             <div class="btn-group">
-                <button class="claim-btn" id="startClaimBtn">Tipp megadása</button>
+                <button class="claim-btn" id="startClaimBtn">Szín Igénylése</button>
                 <button class="master-btn" id="enterMasterBtn">Cél Szín Megadása</button>
             </div>
         </div>
 
         <!-- Free Text Name Input Card -->
         <div class="card" id="nameCard">
-            <h2>Add meg a neved!</h2>
-            <input type="text" class="name-input" id="nameInput" autocomplete="off" autofocus>
-            <button class="confirm-name-btn" id="confirmNameBtn">Tovább</button>
+            <h2>Add meg a neved</h2>
+            <input type="text" class="name-input" id="nameInput" placeholder="Írd be a neved..." autocomplete="off" autofocus>
+            <button class="confirm-name-btn" id="confirmNameBtn">Tovább a választáshoz</button>
         </div>
 
         <!-- Interactive Skin Tone Slider UI -->
@@ -502,7 +502,7 @@
                 <div class="color-preview" id="colorPreviewBox">
                     <!-- Injected char.svg loads here -->
                 </div>
-                <span class="label" id="hexLabel">#B07E6A</span>
+                <span class="label" id="hexLabel">50%</span>
 
                 <div class="slider-wrapper">
                     <div class="slider-container">
@@ -516,7 +516,7 @@
             </div>
             
             <div class="submit-wrapper">
-                <button class="submit-btn" id="submitColorBtn">Tipp Beküldése</button>
+                <button class="submit-btn" id="submitColorBtn">Szín Beküldése</button>
                 <button class="master-btn" id="checkResultsBtn" style="display: none;">Eredmények Ellenőrzése</button>
             </div>
         </div>
@@ -527,7 +527,7 @@
                 <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Cél Szín</span>
                 <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
-                    <span class="hex-code" id="masterHexCode">#B07E6A</span>
+                    <span class="hex-code" id="masterHexCode">50%</span>
                 </div>
             </div>
 
@@ -569,7 +569,9 @@
 
         let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || '[]');
         let currentPickedHex = '#B07E6A';
+        let currentSliderVal = 50;
         let masterColorHex = '#B07E6A';
+        let masterSliderVal = 50;
         let isMasterMode = false;
         let selectedPlayerName = '';
         let svgFillPath = null;
@@ -616,7 +618,7 @@
                 li.style.textAlign = 'center';
                 li.style.color = '#71717a';
                 li.style.padding = '1rem';
-                li.textContent = 'Nincs beküldve tipp.';
+                li.textContent = 'Még nincsenek mentett színek. Kattints a "Szín Igénylése" gombra a kezdéshez!';
                 colorList.appendChild(li);
                 return;
             }
@@ -628,7 +630,7 @@
                     <span class="user-name">${entry.name}</span>
                     <div class="color-info">
                         ${getMiniSvgHtml(entry.hex)}
-                        <span class="hex-code">${entry.hex.toUpperCase()}</span>
+                        <span class="hex-code">${entry.sliderVal}%</span>
                     </div>
                 `;
                 colorList.appendChild(li);
@@ -681,16 +683,16 @@
             selectedPlayerName = enteredName;
             nameCard.classList.remove('fade-in');
 
-            modeIndicator.textContent = `Szerinted milyen színű lesz Berci?`;
+            modeIndicator.textContent = `${selectedPlayerName} színe`;
             modeIndicator.className = "mode-indicator player";
             submitColorBtn.style.display = "block";
             checkResultsBtn.style.display = "none";
 
             const existing = savedEntries.find(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());
-            const targetHex = existing ? existing.hex : '#B07E6A';
+            const targetVal = existing ? existing.sliderVal : 50;
 
             setTimeout(() => {
-                setSliderToColor(targetHex);
+                setSliderToValue(targetVal);
                 pickerContainer.classList.add('fade-in');
             }, 300);
         });
@@ -705,7 +707,7 @@
             isMasterMode = true;
             defaultView.classList.remove('fade-in');
             
-            modeIndicator.textContent = "Milyen színű lett Berci?";
+            modeIndicator.textContent = "Cél Szín Megadása";
             modeIndicator.className = "mode-indicator master";
             submitColorBtn.style.display = "none";
             checkResultsBtn.style.display = "block";
@@ -717,7 +719,7 @@
         });
 
         function resetPicker() {
-            setSliderToColor('#B07E6A');
+            setSliderToValue(50);
         }
 
         // Custom endpoints mapped smoothly from Tekla (#BF998F) to Zsolt (#A26346)
@@ -769,14 +771,18 @@
             return rgbToHex(r, g, b);
         }
 
-        function setSliderToColor(targetHex) {
-            currentPickedHex = targetHex;
-            hexLabel.textContent = targetHex.toUpperCase();
+        function setSliderToValue(val) {
+            currentSliderVal = val;
+            skinSlider.value = val;
+            currentPickedHex = getColorFromSlider(val);
+            hexLabel.textContent = `${val}%`;
 
             if (svgFillPath) {
-                svgFillPath.style.fill = targetHex;
+                svgFillPath.style.fill = currentPickedHex;
             }
+        }
 
+        function setSliderToColor(targetHex) {
             const targetRgb = hexToRgb(targetHex);
             let bestVal = 50;
             let minDiff = Infinity;
@@ -791,19 +797,12 @@
                 }
             }
 
-            skinSlider.value = bestVal;
+            setSliderToValue(bestVal);
         }
 
         skinSlider.addEventListener('input', (e) => {
             const val = parseInt(e.target.value);
-            const hex = getColorFromSlider(val);
-            
-            currentPickedHex = hex;
-            hexLabel.textContent = hex.toUpperCase();
-
-            if (svgFillPath) {
-                svgFillPath.style.fill = hex;
-            }
+            setSliderToValue(val);
         });
 
         submitColorBtn.addEventListener('click', () => {
@@ -811,9 +810,10 @@
             
             if (existingIndex >= 0) {
                 savedEntries[existingIndex].hex = currentPickedHex;
+                savedEntries[existingIndex].sliderVal = currentSliderVal;
                 savedEntries[existingIndex].name = selectedPlayerName;
             } else {
-                savedEntries.push({ name: selectedPlayerName, hex: currentPickedHex });
+                savedEntries.push({ name: selectedPlayerName, hex: currentPickedHex, sliderVal: currentSliderVal });
             }
 
             localStorage.setItem('savedEntries', JSON.stringify(savedEntries));
@@ -849,14 +849,16 @@
 
         checkResultsBtn.addEventListener('click', () => {
             masterColorHex = currentPickedHex;
+            masterSliderVal = currentSliderVal;
             masterColorInfo.innerHTML = `
                 ${getMiniSvgHtml(masterColorHex)}
-                <span class="hex-code" id="masterHexCode">${masterColorHex.toUpperCase()}</span>
+                <span class="hex-code" id="masterHexCode">${masterSliderVal}%</span>
             `;
 
             const entries = savedEntries.map(e => ({
                 name: e.name,
                 hex: e.hex,
+                sliderVal: e.sliderVal !== undefined ? e.sliderVal : 50,
                 matchScore: parseFloat(calculateColorMatch(e.hex, masterColorHex))
             }));
 
@@ -889,7 +891,7 @@
                     <div class="color-info">
                         <span class="score-match">${entry.matchScore}%</span>
                         ${getMiniSvgHtml(entry.hex)}
-                        <span class="hex-code">${entry.hex.toUpperCase()}</span>
+                        <span class="hex-code">${entry.sliderVal}%</span>
                     </div>
                 `;
                 leaderboardList.appendChild(li);

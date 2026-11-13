@@ -27,7 +27,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 25vh;
+            height: 20vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -38,7 +38,7 @@
         }
 
         .page-title {
-            font-size: 7.25rem;
+            font-size: 5rem;
             font-weight: 700;
             color: #ffffff;
             letter-spacing: -1px;
@@ -304,9 +304,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1.25rem;
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
         }
 
         .mode-indicator {
@@ -335,8 +335,77 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.5rem;
+            gap: 1rem;
             width: 100%;
+        }
+
+        /* Dual Palettes + Slider Row */
+        .slider-palettes-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.75rem;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .endpoint-palette-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .endpoint-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #e4e4e7;
+        }
+
+        .mini-canvas-container {
+            position: relative;
+            width: 146px;
+            height: 146px;
+            cursor: crosshair;
+            border-radius: 14px;
+            border: 2px solid #ffffff;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: none;
+        }
+
+        .mini-canvas-container canvas {
+            display: block;
+            width: 142px;
+            height: 142px;
+            border-radius: 11px;
+        }
+
+        .color-handle {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+            z-index: 5;
+        }
+
+        .endpoint-hex {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #a1a1aa;
+            background-color: #1c1c21;
+            padding: 0.15rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid #2e2e36;
         }
 
         .slider-wrapper {
@@ -345,7 +414,7 @@
             align-items: center;
             gap: 0.5rem;
             width: 100%;
-            max-width: 320px;
+            max-width: 280px;
         }
 
         /* Skin Tone Slider Container */
@@ -362,7 +431,7 @@
             width: 100%;
             height: 14px;
             border-radius: 9999px;
-            background: linear-gradient(to right, #edc5d3, #b88a9c, #7a5563, #362114);
+            background: linear-gradient(to right, #EDC5D3, #917374, #362114);
             outline: none;
             border: 2px solid #2e2e36;
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
@@ -389,15 +458,15 @@
             display: flex;
             justify-content: space-between;
             width: 100%;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #a1a1aa;
             font-weight: 500;
         }
 
         /* Vector SVG Preview Box */
         .color-preview {
-            width: 160px;
-            height: 160px;
+            width: 145px;
+            height: 145px;
             background-color: transparent;
             display: flex;
             align-items: center;
@@ -412,9 +481,10 @@
         }
 
         .label {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            font-family: monospace;
             color: #a1a1aa;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .submit-wrapper {
@@ -422,6 +492,7 @@
             flex-direction: column;
             align-items: center;
             gap: 1rem;
+            margin-top: 0.25rem;
         }
 
         /* Results Leaderboard View */
@@ -494,7 +565,7 @@
             <button class="confirm-name-btn" id="confirmNameBtn">Continue to Pick</button>
         </div>
 
-        <!-- Interactive Skin Tone Slider UI -->
+        <!-- Interactive Skin Tone Slider + Dual Endpoint Palettes UI -->
         <div class="picker-container" id="pickerContainer">
             <div class="mode-indicator player" id="modeIndicator">Player Pick</div>
             
@@ -502,15 +573,39 @@
                 <div class="color-preview" id="colorPreviewBox">
                     <!-- Injected char.svg loads here -->
                 </div>
-                <span class="label" id="hexLabel">#916d7d</span>
+                <span class="label" id="hexLabel">#917374</span>
 
-                <div class="slider-wrapper">
-                    <div class="slider-container">
-                        <input type="range" min="0" max="100" value="50" class="skin-slider" id="skinSlider">
-                        <div class="slider-labels">
-                            <span>Tekla</span>
-                            <span>Zsolt</span>
+                <!-- Left Palette (Tekla) - Slider - Right Palette (Zsolt) -->
+                <div class="slider-palettes-row">
+                    <!-- Tekla Endpoint Palette -->
+                    <div class="endpoint-palette-box">
+                        <span class="endpoint-title">Tekla Tone</span>
+                        <div class="mini-canvas-container" id="leftCanvasContainer">
+                            <canvas id="leftPalette" width="142" height="142"></canvas>
+                            <div class="color-handle" id="leftHandle"></div>
                         </div>
+                        <span class="endpoint-hex" id="leftHexLabel">#EDC5D3</span>
+                    </div>
+
+                    <!-- Center Slider -->
+                    <div class="slider-wrapper">
+                        <div class="slider-container">
+                            <input type="range" min="0" max="100" value="50" class="skin-slider" id="skinSlider">
+                            <div class="slider-labels">
+                                <span>Tekla</span>
+                                <span>Zsolt</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Zsolt Endpoint Palette -->
+                    <div class="endpoint-palette-box">
+                        <span class="endpoint-title">Zsolt Tone</span>
+                        <div class="mini-canvas-container" id="rightCanvasContainer">
+                            <canvas id="rightPalette" width="142" height="142"></canvas>
+                            <div class="color-handle" id="rightHandle"></div>
+                        </div>
+                        <span class="endpoint-hex" id="rightHexLabel">#362114</span>
                     </div>
                 </div>
             </div>
@@ -527,7 +622,7 @@
                 <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Target Master Color</span>
                 <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
-                    <span class="hex-code" id="masterHexCode">#916d7d</span>
+                    <span class="hex-code" id="masterHexCode">#917374</span>
                 </div>
             </div>
 
@@ -567,9 +662,24 @@
         const hexLabel = document.getElementById('hexLabel');
         const deviceBadge = document.getElementById('deviceBadge');
 
+        // Dual Endpoint Palette Elements
+        const leftCanvas = document.getElementById('leftPalette');
+        const leftCtx = leftCanvas.getContext('2d');
+        const leftContainer = document.getElementById('leftCanvasContainer');
+        const leftHandle = document.getElementById('leftHandle');
+        const leftHexLabel = document.getElementById('leftHexLabel');
+
+        const rightCanvas = document.getElementById('rightPalette');
+        const rightCtx = rightCanvas.getContext('2d');
+        const rightContainer = document.getElementById('rightCanvasContainer');
+        const rightHandle = document.getElementById('rightHandle');
+        const rightHexLabel = document.getElementById('rightHexLabel');
+
         let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || '[]');
-        let currentPickedHex = '#916d7d';
-        let masterColorHex = '#916d7d';
+        let leftEndpointHex = '#EDC5D3';  // Tekla
+        let rightEndpointHex = '#362114'; // Zsolt
+        let currentPickedHex = '#917374';
+        let masterColorHex = '#917374';
         let isMasterMode = false;
         let selectedPlayerName = '';
         let svgFillPath = null;
@@ -646,6 +756,11 @@
         window.addEventListener('DOMContentLoaded', () => {
             updateDeviceStatus();
             renderEntries();
+            drawSkinPalette(leftCtx, leftCanvas);
+            drawSkinPalette(rightCtx, rightCanvas);
+            positionHandleToHex(leftCtx, leftCanvas, leftHandle, leftEndpointHex);
+            positionHandleToHex(rightCtx, rightCanvas, rightHandle, rightEndpointHex);
+            updateSliderAppearanceAndColor();
         });
         window.addEventListener('resize', updateDeviceStatus);
 
@@ -695,10 +810,13 @@
             checkResultsBtn.style.display = "none";
 
             const existing = savedEntries.find(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());
-            const targetHex = existing ? existing.hex : '#916d7d';
 
             setTimeout(() => {
-                setSliderToColor(targetHex);
+                if (existing) {
+                    setSliderToColor(existing.hex);
+                } else {
+                    resetPicker();
+                }
                 pickerContainer.classList.add('fade-in');
             }, 300);
         });
@@ -725,15 +843,124 @@
         });
 
         function resetPicker() {
-            setSliderToColor('#916d7d');
+            skinSlider.value = 50;
+            updateSliderAppearanceAndColor();
         }
 
-        // Custom endpoints mapped smoothly from Tekla (#edc5d3) to Zsolt (#362114)
-        const skinPaletteStops = [
-            { pos: 0, hex: "#edc5d3" },   // Tekla
-            { pos: 50, hex: "#916d7d" },  // Midpoint
-            { pos: 100, hex: "#362114" }  // Zsolt
-        ];
+        // Render the 2D Skin Tone Grid (Extended slightly into cool/violet tones)
+        function drawSkinPalette(ctx, canvas) {
+            const image = ctx.createImageData(canvas.width, canvas.height);
+            const data = image.data;
+
+            for (let x = 0; x < canvas.width; x++) {
+                for (let y = 0; y < canvas.height; y++) {
+                    const nx = x / (canvas.width - 1);
+                    const ny = y / (canvas.height - 1);
+
+                    let hue = 345 + (nx * 57); 
+                    if (hue >= 360) hue -= 360;
+
+                    const saturation = 0.12 + (ny * 0.42) + (Math.abs(nx - 0.4) * 0.12);
+                    const lightness = 0.92 - (ny * 0.78);
+
+                    const [red, green, blue] = hslToRgb(hue / 360, saturation, lightness);
+
+                    const pxIndex = (y * canvas.width + x) * 4;
+                    data[pxIndex] = red;
+                    data[pxIndex + 1] = green;
+                    data[pxIndex + 2] = blue;
+                    data[pxIndex + 3] = 255;
+                }
+            }
+            ctx.putImageData(image, 0, 0);
+        }
+
+        function hslToRgb(h, s, l) {
+            let r, g, b;
+            if (s === 0) {
+                r = g = b = l;
+            } else {
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                r = hueToRgb(p, q, h + 1/3);
+                g = hueToRgb(p, q, h);
+                b = hueToRgb(p, q, h - 1/3);
+            }
+            return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        }
+
+        function hueToRgb(p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        }
+
+        function positionHandleToHex(ctx, canvas, handleEl, targetHex) {
+            const targetRgb = hexToRgb(targetHex);
+            let closestX = canvas.width / 2;
+            let closestY = canvas.height / 2;
+            let minDiff = Infinity;
+
+            for (let x = 0; x < canvas.width; x += 2) {
+                for (let y = 0; y < canvas.height; y += 2) {
+                    const pixel = ctx.getImageData(x, y, 1, 1).data;
+                    const diff = Math.abs(pixel[0] - targetRgb.r) + Math.abs(pixel[1] - targetRgb.g) + Math.abs(pixel[2] - targetRgb.b);
+                    if (diff < minDiff) {
+                        minDiff = diff;
+                        closestX = x;
+                        closestY = y;
+                    }
+                }
+            }
+            handleEl.style.left = `${closestX}px`;
+            handleEl.style.top = `${closestY}px`;
+        }
+
+        function setupPaletteDrag(container, canvas, ctx, handleEl, isLeft) {
+            let dragging = false;
+
+            function handlePick(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.clientX !== undefined ? e.clientX : e.touches[0].clientX;
+                const clientY = e.clientY !== undefined ? e.clientY : e.touches[0].clientY;
+
+                let x = clientX - rect.left;
+                let y = clientY - rect.top;
+
+                x = Math.max(0, Math.min(x, canvas.width - 1));
+                y = Math.max(0, Math.min(y, canvas.height - 1));
+
+                handleEl.style.left = `${x}px`;
+                handleEl.style.top = `${y}px`;
+
+                const pixel = ctx.getImageData(Math.floor(x), Math.floor(y), 1, 1).data;
+                const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
+
+                if (isLeft) {
+                    leftEndpointHex = hex;
+                    leftHexLabel.textContent = hex;
+                } else {
+                    rightEndpointHex = hex;
+                    rightHexLabel.textContent = hex;
+                }
+
+                updateSliderAppearanceAndColor();
+            }
+
+            container.addEventListener('mousedown', (e) => { dragging = true; handlePick(e); });
+            window.addEventListener('mousemove', (e) => { if (dragging) handlePick(e); });
+            window.addEventListener('mouseup', () => { dragging = false; });
+
+            container.addEventListener('touchstart', (e) => { dragging = true; handlePick(e); }, { passive: true });
+            window.addEventListener('touchmove', (e) => { if (dragging) handlePick(e); }, { passive: true });
+            window.addEventListener('touchend', () => { dragging = false; });
+        }
+
+        setupPaletteDrag(leftContainer, leftCanvas, leftCtx, leftHandle, true);
+        setupPaletteDrag(rightContainer, rightCanvas, rightCtx, rightHandle, false);
 
         function hexToRgb(hex) {
             const cleanHex = hex.replace('#', '');
@@ -753,28 +980,29 @@
 
         function getColorFromSlider(val) {
             const p = val / 100;
-            let lower = skinPaletteStops[0];
-            let upper = skinPaletteStops[skinPaletteStops.length - 1];
+            const rgb1 = hexToRgb(leftEndpointHex);
+            const rgb2 = hexToRgb(rightEndpointHex);
 
-            for (let i = 0; i < skinPaletteStops.length - 1; i++) {
-                if (p >= skinPaletteStops[i].pos / 100 && p <= skinPaletteStops[i+1].pos / 100) {
-                    lower = skinPaletteStops[i];
-                    upper = skinPaletteStops[i+1];
-                    break;
-                }
-            }
-
-            const range = (upper.pos - lower.pos) / 100;
-            const localP = range === 0 ? 0 : (p - (lower.pos / 100)) / range;
-
-            const rgb1 = hexToRgb(lower.hex);
-            const rgb2 = hexToRgb(upper.hex);
-
-            const r = rgb1.r + (rgb2.r - rgb1.r) * localP;
-            const g = rgb1.g + (rgb2.g - rgb1.g) * localP;
-            const b = rgb1.b + (rgb2.b - rgb1.b) * localP;
+            const r = rgb1.r + (rgb2.r - rgb1.r) * p;
+            const g = rgb1.g + (rgb2.g - rgb1.g) * p;
+            const b = rgb1.b + (rgb2.b - rgb1.b) * p;
 
             return rgbToHex(r, g, b);
+        }
+
+        function updateSliderAppearanceAndColor() {
+            const midHex = getColorFromSlider(50);
+            skinSlider.style.background = `linear-gradient(to right, ${leftEndpointHex}, ${midHex}, ${rightEndpointHex})`;
+
+            const val = parseInt(skinSlider.value);
+            const hex = getColorFromSlider(val);
+            
+            currentPickedHex = hex;
+            hexLabel.textContent = hex;
+
+            if (svgFillPath) {
+                svgFillPath.style.fill = hex;
+            }
         }
 
         function setSliderToColor(targetHex) {
@@ -802,17 +1030,7 @@
             skinSlider.value = bestVal;
         }
 
-        skinSlider.addEventListener('input', (e) => {
-            const val = parseInt(e.target.value);
-            const hex = getColorFromSlider(val);
-            
-            currentPickedHex = hex;
-            hexLabel.textContent = hex;
-
-            if (svgFillPath) {
-                svgFillPath.style.fill = hex;
-            }
-        });
+        skinSlider.addEventListener('input', updateSliderAppearanceAndColor);
 
         submitColorBtn.addEventListener('click', () => {
             const existingIndex = savedEntries.findIndex(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());

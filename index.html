@@ -472,31 +472,31 @@
 
         <!-- Default Main View -->
         <div class="default-view fade-in" id="defaultView">
-            <div class="success-banner" id="successBanner">Tipp belküldve![cite: 2]</div>
+            <div class="success-banner" id="successBanner">Tipp belküldve!</div>
             
             <div class="list-container">
-                <div class="list-title">Beküldött tippek[cite: 2]</div>
+                <div class="list-title">Beküldött tippek</div>
                 <ul class="color-list" id="colorList">
                     <!-- Dynamic entries render here -->
                 </ul>
             </div>
 
             <div class="btn-group">
-                <button class="claim-btn" id="startClaimBtn">Tipp megadása[cite: 2]</button>
-                <button class="master-btn" id="enterMasterBtn">Cél Szín Megadása[cite: 2]</button>
+                <button class="claim-btn" id="startClaimBtn">Tipp megadása</button>
+                <button class="master-btn" id="enterMasterBtn">Cél Szín Megadása</button>
             </div>
         </div>
 
         <!-- Free Text Name Input Card -->
         <div class="card" id="nameCard">
-            <h2>Add meg a neved![cite: 2]</h2>
+            <h2>Add meg a neved!</h2>
             <input type="text" class="name-input" id="nameInput" autocomplete="off" autofocus>
-            <button class="confirm-name-btn" id="confirmNameBtn">Tovább[cite: 2]</button>
+            <button class="confirm-name-btn" id="confirmNameBtn">Tovább</button>
         </div>
 
         <!-- Interactive Skin Tone Slider UI -->
         <div class="picker-container" id="pickerContainer">
-            <div class="mode-indicator player" id="modeIndicator">Játékos Színe[cite: 2]</div>
+            <div class="mode-indicator player" id="modeIndicator">Játékos Színe</div>
             
             <div class="picker-content-stack">
                 <div class="color-preview" id="colorPreviewBox">
@@ -508,23 +508,23 @@
                     <div class="slider-container">
                         <input type="range" min="0" max="100" value="50" class="skin-slider" id="skinSlider">
                         <div class="slider-labels">
-                            <span>Tekla[cite: 2]</span>
-                            <span>Zsolt[cite: 2]</span>
+                            <span>Tekla</span>
+                            <span>Zsolt</span>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="submit-wrapper">
-                <button class="submit-btn" id="submitColorBtn">Tipp Beküldése[cite: 2]</button>
-                <button class="master-btn" id="checkResultsBtn" style="display: none;">Eredmények Ellenőrzése[cite: 2]</button>
+                <button class="submit-btn" id="submitColorBtn">Tipp Beküldése</button>
+                <button class="master-btn" id="checkResultsBtn" style="display: none;">Eredmények Ellenőrzése</button>
             </div>
         </div>
 
         <!-- Results Leaderboard View -->
         <div class="results-view" id="resultsView">
             <div class="master-card" id="masterCardSummary">
-                <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Cél Szín[cite: 2]</span>
+                <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Cél Szín</span>
                 <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
                     <span class="hex-code" id="masterHexCode">50%</span>
@@ -532,13 +532,13 @@
             </div>
 
             <div class="list-container">
-                <div class="list-title">Eredménytábla[cite: 2]</div>
+                <div class="list-title">Eredménytábla</div>
                 <ul class="color-list" id="leaderboardList">
                     <!-- Ranked results dynamically rendered here -->
                 </ul>
             </div>
 
-            <button class="reset-btn" id="resetGameBtn">Új Játék[cite: 2]</button>
+            <button class="reset-btn" id="resetGameBtn">Új Játék</button>
         </div>
     </main>
 
@@ -618,7 +618,7 @@
                 li.style.textAlign = 'center';
                 li.style.color = '#71717a';
                 li.style.padding = '1rem';
-                li.textContent = 'Nincs beküldve tipp.';[cite: 2]
+                li.textContent = 'Nincs beküldve tipp.';
                 colorList.appendChild(li);
                 return;
             }
@@ -639,8 +639,8 @@
 
         function updateDeviceStatus() {
             const isTouch = window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
-            const deviceType = isTouch ? 'Mobil / Érintőképernyős eszköz' : 'Asztali gép / PC';[cite: 2]
-            const orientation = window.innerWidth > window.innerHeight ? 'Fekvő' : 'Álló';[cite: 2]
+            const deviceType = isTouch ? 'Mobil / Érintőképernyős eszköz' : 'Asztali gép / PC';
+            const orientation = window.innerWidth > window.innerHeight ? 'Fekvő' : 'Álló';
 
             deviceBadge.textContent = `${deviceType} • ${orientation}`;
         }
@@ -676,14 +676,14 @@
         confirmNameBtn.addEventListener('click', () => {
             const enteredName = nameInput.value.trim();
             if (!enteredName) {
-                alert("Kérlek, add meg a neved!");[cite: 2]
+                alert("Kérlek, add meg a neved!");
                 return;
             }
 
             selectedPlayerName = enteredName;
             nameCard.classList.remove('fade-in');
 
-            modeIndicator.textContent = `Szerinted milyen színű lesz Berci?`;[cite: 2]
+            modeIndicator.textContent = `Szerinted milyen színű lesz Berci?`;
             modeIndicator.className = "mode-indicator player";
             submitColorBtn.style.display = "block";
             checkResultsBtn.style.display = "none";
@@ -707,7 +707,7 @@
             isMasterMode = true;
             defaultView.classList.remove('fade-in');
             
-            modeIndicator.textContent = "Milyen színű lett Berci?";[cite: 2]
+            modeIndicator.textContent = "Milyen színű lett Berci?";
             modeIndicator.className = "mode-indicator master";
             submitColorBtn.style.display = "none";
             checkResultsBtn.style.display = "block";
@@ -857,7 +857,7 @@
 
                 if (rankNum === 1) {
                     rankClass += ' first-place';
-                    winnerBadge = `<span class="winner-tag">GYŐZTES</span>`;[cite: 2]
+                    winnerBadge = `<span class="winner-tag">GYŐZTES</span>`;
                 } else if (rankNum === 2) {
                     rankClass += ' second-place';
                 } else if (rankNum === 3) {

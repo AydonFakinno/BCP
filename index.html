@@ -517,7 +517,7 @@
 
             <div class="btn-group">
                 <button class="claim-btn" id="startClaimBtn">Tipp megadása</button>
-                <button class="master-btn" id="enterMasterBtn">Valós Szín Megadása</button>
+                <button class="master-btn" id="enterMasterBtn">Valós Szín Beküldése</button>
             </div>
         </div>
 
@@ -536,7 +536,7 @@
                 <div class="color-preview" id="colorPreviewBox">
                     <!-- Injected char.svg loads here -->
                 </div>
-                <span class="label" id="hexLabel">50% sötét bőrű magyar állampolgár</span>
+                <span class="label" id="hexLabel">50% barna bőrű magyar állampolgár</span>
 
                 <div class="slider-wrapper">
                     <div class="slider-container">
@@ -561,7 +561,7 @@
                 <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Valós Szín</span>
                 <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
-                    <span class="hex-code" id="masterHexCode">50% sbmá</span>
+                    <span class="hex-code" id="masterHexCode">50% bbmá</span>
                 </div>
             </div>
 
@@ -664,7 +664,7 @@
                     <span class="user-name">${entry.name}</span>
                     <div class="color-info">
                         ${getMiniSvgHtml(entry.hex)}
-                        <span class="hex-code">${entry.sliderVal !== undefined ? entry.sliderVal : 50}% sbmá</span>
+                        <span class="hex-code">${entry.sliderVal !== undefined ? entry.sliderVal : 50}% bbmá</span>
                     </div>
                 `;
                 colorList.appendChild(li);
@@ -810,7 +810,7 @@
             currentSliderVal = val;
             skinSlider.value = val;
             currentPickedHex = getColorFromSlider(val);
-            hexLabel.textContent = `${val}% sötét bőrű magyar állampolgár`;
+            hexLabel.textContent = `${val}% barna bőrű magyar állampolgár`;
 
             if (svgFillPath) {
                 svgFillPath.style.fill = currentPickedHex;
@@ -869,7 +869,7 @@
             masterSliderVal = currentSliderVal;
             masterColorInfo.innerHTML = `
                 ${getMiniSvgHtml(masterColorHex)}
-                <span class="hex-code" id="masterHexCode">${masterSliderVal}% sbmá</span>
+                <span class="hex-code" id="masterHexCode">${masterSliderVal}% bbmá</span>
             `;
 
             const entries = savedEntries.map(e => ({
@@ -900,9 +900,9 @@
                         <span class="user-name">${entry.name}</span>
                     </div>
                     <div class="color-info">
-                        <span class="score-match">${entry.matchScore}%</span>
+                        <span class="score-match">${entry.matchScore}% egyezés</span>
                         ${getMiniSvgHtml(entry.hex)}
-                        <span class="hex-code">${entry.sliderVal}% sbmá</span>
+                        <span class="hex-code">${entry.sliderVal}% bbmá</span>
                     </div>
                 `;
                 leaderboardList.appendChild(li);

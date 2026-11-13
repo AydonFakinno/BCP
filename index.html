@@ -248,7 +248,6 @@
 
         .score-match {
             font-weight: 700;
-            color: #4ade80;
             font-family: monospace;
             font-size: 1.2rem;
             min-width: 75px;
@@ -863,6 +862,24 @@
             return accuracy.toFixed(1);
         }
 
+        function getMatchColor(score) {
+            // Interpolates from red (0%) through yellow (50%) to green (100%)
+            const s = Math.max(0, Math.min(100, score)) / 100;
+            let r, g, b;
+            if (s < 0.5) {
+                const t = s * 2;
+                r = 239; // #ef4444 (red)
+                g = Math.round(68 + (200 - 68) * t);
+                b = 68;
+            } else {
+                const t = (s - 0.5) * 2;
+                r = Math.round(239 - (239 - 74) * t);
+                g = 222; // approaches #4ade80 (green)
+                b = Math.round(68 + (128 - 68) * t);
+            }
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
         checkResultsBtn.addEventListener('click', () => {
             masterColorHex = currentPickedHex;
             masterSliderVal = currentSliderVal;
@@ -892,6 +909,7 @@
                 else if (rankNum === 3) posClass = 'pos-3';
 
                 const posBadge = `<span class="pos-badge ${posClass}">#${rankNum}</span>`;
+                const matchColorStyle = `color: ${getMatchColor(entry.matchScore)};`;
 
                 li.innerHTML = `
                     <div class="user-name-group">
@@ -901,7 +919,7 @@
                     <div class="color-info">
                         ${getMiniSvgHtml(entry.hex)}
                         <span class="hex-code">${entry.sliderVal}% BBMÁ</span>
-                        <span class="score-match">${entry.matchScore}% egyezés</span>
+                        <span class="score-match" style="${matchColorStyle}">${entry.matchScore}% egyezés</span>
                     </div>
                 `;
                 leaderboardList.appendChild(li);

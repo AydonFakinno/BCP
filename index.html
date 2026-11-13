@@ -27,7 +27,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 20vh;
+            height: 18vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -38,7 +38,7 @@
         }
 
         .page-title {
-            font-size: 5rem;
+            font-size: 4rem;
             font-weight: 700;
             color: #ffffff;
             letter-spacing: -1px;
@@ -46,14 +46,13 @@
         }
 
         .device-badge {
-            margin-top: 0.5rem;
-            font-size: 0.85rem;
+            margin-top: 0.4rem;
+            font-size: 0.8rem;
             color: #71717a;
             background-color: #1c1c21;
-            padding: 0.25rem 0.75rem;
+            padding: 0.2rem 0.6rem;
             border-radius: 9999px;
             border: 1px solid #2e2e36;
-            letter-spacing: 0.2px;
         }
 
         /* Interactive Main View */
@@ -65,8 +64,8 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 1.5rem;
-            margin-top: 5vh;
+            padding: 1rem;
+            margin-top: 4vh;
         }
 
         /* View Containers (Fade Transitions) */
@@ -304,15 +303,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.25rem;
+            gap: 1rem;
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
         }
 
         .mode-indicator {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            padding: 0.4rem 1rem;
+            padding: 0.35rem 0.9rem;
             border-radius: 9999px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -335,16 +334,16 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             width: 100%;
         }
 
-        /* Dual Palettes + Slider Row */
+        /* Three Palettes + Slider Row */
         .slider-palettes-row {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1.75rem;
+            gap: 1.25rem;
             width: 100%;
             flex-wrap: wrap;
         }
@@ -353,23 +352,23 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.45rem;
+            gap: 0.35rem;
         }
 
         .endpoint-title {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: #e4e4e7;
         }
 
         .mini-canvas-container {
             position: relative;
-            width: 146px;
-            height: 146px;
+            width: 124px;
+            height: 124px;
             cursor: crosshair;
-            border-radius: 14px;
+            border-radius: 12px;
             border: 2px solid #ffffff;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -379,15 +378,15 @@
 
         .mini-canvas-container canvas {
             display: block;
-            width: 142px;
-            height: 142px;
-            border-radius: 11px;
+            width: 120px;
+            height: 120px;
+            border-radius: 9px;
         }
 
         .color-handle {
             position: absolute;
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border: 2px solid #ffffff;
             border-radius: 50%;
             box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
@@ -400,10 +399,10 @@
 
         .endpoint-hex {
             font-family: monospace;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #a1a1aa;
             background-color: #1c1c21;
-            padding: 0.15rem 0.5rem;
+            padding: 0.1rem 0.4rem;
             border-radius: 6px;
             border: 1px solid #2e2e36;
         }
@@ -412,9 +411,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.4rem;
             width: 100%;
-            max-width: 280px;
+            max-width: 260px;
         }
 
         /* Skin Tone Slider Container */
@@ -422,7 +421,7 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.4rem;
             align-items: center;
         }
 
@@ -431,7 +430,7 @@
             width: 100%;
             height: 14px;
             border-radius: 9999px;
-            background: linear-gradient(to right, #BF998F, #683B23);
+            background: linear-gradient(to right, #BF998F, #B78A6F, #683B23);
             outline: none;
             border: 2px solid #2e2e36;
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
@@ -440,8 +439,8 @@
         input[type=range].skin-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             background: #ffffff;
             cursor: pointer;
@@ -458,15 +457,15 @@
             display: flex;
             justify-content: space-between;
             width: 100%;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #a1a1aa;
             font-weight: 500;
         }
 
         /* Vector SVG Preview Box */
         .color-preview {
-            width: 145px;
-            height: 145px;
+            width: 120px;
+            height: 120px;
             background-color: transparent;
             display: flex;
             align-items: center;
@@ -481,7 +480,7 @@
         }
 
         .label {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-family: monospace;
             color: #a1a1aa;
             font-weight: 600;
@@ -491,7 +490,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             margin-top: 0.25rem;
         }
 
@@ -565,7 +564,7 @@
             <button class="confirm-name-btn" id="confirmNameBtn">Continue to Pick</button>
         </div>
 
-        <!-- Interactive Skin Tone Slider + Dual Endpoint Palettes UI -->
+        <!-- Interactive Skin Tone Slider + Three Palettes UI -->
         <div class="picker-container" id="pickerContainer">
             <div class="mode-indicator player" id="modeIndicator">Player Pick</div>
             
@@ -573,18 +572,28 @@
                 <div class="color-preview" id="colorPreviewBox">
                     <!-- Injected char.svg loads here -->
                 </div>
-                <span class="label" id="hexLabel">#946A59</span>
+                <span class="label" id="hexLabel">#B78A6F</span>
 
-                <!-- Left Palette (Tekla) - Slider - Right Palette (Zsolt) -->
+                <!-- Three Palettes + Slider Row -->
                 <div class="slider-palettes-row">
-                    <!-- Tekla Endpoint Palette -->
+                    <!-- Tekla Palette (Left) -->
                     <div class="endpoint-palette-box">
-                        <span class="endpoint-title">Tekla Tone</span>
+                        <span class="endpoint-title">Tekla</span>
                         <div class="mini-canvas-container" id="leftCanvasContainer">
-                            <canvas id="leftPalette" width="142" height="142"></canvas>
+                            <canvas id="leftPalette" width="120" height="120"></canvas>
                             <div class="color-handle" id="leftHandle"></div>
                         </div>
                         <span class="endpoint-hex" id="leftHexLabel">#BF998F</span>
+                    </div>
+
+                    <!-- Middle Palette (Middle Stop) -->
+                    <div class="endpoint-palette-box">
+                        <span class="endpoint-title">Middle</span>
+                        <div class="mini-canvas-container" id="midCanvasContainer">
+                            <canvas id="midPalette" width="120" height="120"></canvas>
+                            <div class="color-handle" id="midHandle"></div>
+                        </div>
+                        <span class="endpoint-hex" id="midHexLabel">#B78A6F</span>
                     </div>
 
                     <!-- Center Slider -->
@@ -598,11 +607,11 @@
                         </div>
                     </div>
 
-                    <!-- Zsolt Endpoint Palette -->
+                    <!-- Zsolt Palette (Right) -->
                     <div class="endpoint-palette-box">
-                        <span class="endpoint-title">Zsolt Tone</span>
+                        <span class="endpoint-title">Zsolt</span>
                         <div class="mini-canvas-container" id="rightCanvasContainer">
-                            <canvas id="rightPalette" width="142" height="142"></canvas>
+                            <canvas id="rightPalette" width="120" height="120"></canvas>
                             <div class="color-handle" id="rightHandle"></div>
                         </div>
                         <span class="endpoint-hex" id="rightHexLabel">#683B23</span>
@@ -622,7 +631,7 @@
                 <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Target Master Color</span>
                 <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
-                    <span class="hex-code" id="masterHexCode">#946A59</span>
+                    <span class="hex-code" id="masterHexCode">#B78A6F</span>
                 </div>
             </div>
 
@@ -662,12 +671,18 @@
         const hexLabel = document.getElementById('hexLabel');
         const deviceBadge = document.getElementById('deviceBadge');
 
-        // Dual Endpoint Palette Elements
+        // Three Palette Elements (Left, Middle, Right)
         const leftCanvas = document.getElementById('leftPalette');
         const leftCtx = leftCanvas.getContext('2d');
         const leftContainer = document.getElementById('leftCanvasContainer');
         const leftHandle = document.getElementById('leftHandle');
         const leftHexLabel = document.getElementById('leftHexLabel');
+
+        const midCanvas = document.getElementById('midPalette');
+        const midCtx = midCanvas.getContext('2d');
+        const midContainer = document.getElementById('midCanvasContainer');
+        const midHandle = document.getElementById('midHandle');
+        const midHexLabel = document.getElementById('midHexLabel');
 
         const rightCanvas = document.getElementById('rightPalette');
         const rightCtx = rightCanvas.getContext('2d');
@@ -676,10 +691,11 @@
         const rightHexLabel = document.getElementById('rightHexLabel');
 
         let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || '[]');
-        let leftEndpointHex = '#BF998F';  // Tekla
-        let rightEndpointHex = '#683B23'; // Zsolt
-        let currentPickedHex = '#946A59'; // Direct midpoint between #BF998F and #683B23
-        let masterColorHex = '#946A59';
+        let leftEndpointHex = '#BF998F';  // Tekla default
+        let midEndpointHex = '#B78A6F';   // Middle default
+        let rightEndpointHex = '#683B23'; // Zsolt default
+        let currentPickedHex = '#B78A6F'; 
+        let masterColorHex = '#B78A6F';
         let isMasterMode = false;
         let selectedPlayerName = '';
         let svgFillPath = null;
@@ -757,8 +773,10 @@
             updateDeviceStatus();
             renderEntries();
             drawSkinPalette(leftCtx, leftCanvas);
+            drawSkinPalette(midCtx, midCanvas);
             drawSkinPalette(rightCtx, rightCanvas);
             positionHandleToHex(leftCtx, leftCanvas, leftHandle, leftEndpointHex);
+            positionHandleToHex(midCtx, midCanvas, midHandle, midEndpointHex);
             positionHandleToHex(rightCtx, rightCanvas, rightHandle, rightEndpointHex);
             updateSliderAppearanceAndColor();
         });
@@ -911,7 +929,7 @@
             handleEl.style.top = `${closestY}px`;
         }
 
-        function setupPaletteDrag(container, canvas, ctx, handleEl, isLeft) {
+        function setupPaletteDrag(container, canvas, ctx, handleEl, type) {
             let dragging = false;
 
             function handlePick(e) {
@@ -931,9 +949,12 @@
                 const pixel = ctx.getImageData(Math.floor(x), Math.floor(y), 1, 1).data;
                 const hex = rgbToHex(pixel[0], pixel[1], pixel[2]);
 
-                if (isLeft) {
+                if (type === 'left') {
                     leftEndpointHex = hex;
                     leftHexLabel.textContent = hex;
+                } else if (type === 'mid') {
+                    midEndpointHex = hex;
+                    midHexLabel.textContent = hex;
                 } else {
                     rightEndpointHex = hex;
                     rightHexLabel.textContent = hex;
@@ -951,8 +972,9 @@
             window.addEventListener('touchend', () => { dragging = false; });
         }
 
-        setupPaletteDrag(leftContainer, leftCanvas, leftCtx, leftHandle, true);
-        setupPaletteDrag(rightContainer, rightCanvas, rightCtx, rightHandle, false);
+        setupPaletteDrag(leftContainer, leftCanvas, leftCtx, leftHandle, 'left');
+        setupPaletteDrag(midContainer, midCanvas, midCtx, midHandle, 'mid');
+        setupPaletteDrag(rightContainer, rightCanvas, rightCtx, rightHandle, 'right');
 
         function hexToRgb(hex) {
             const cleanHex = hex.replace('#', '');
@@ -973,17 +995,27 @@
         function getColorFromSlider(val) {
             const p = val / 100;
             const rgb1 = hexToRgb(leftEndpointHex);
+            const midRgb = hexToRgb(midEndpointHex);
             const rgb2 = hexToRgb(rightEndpointHex);
 
-            const r = rgb1.r + (rgb2.r - rgb1.r) * p;
-            const g = rgb1.g + (rgb2.g - rgb1.g) * p;
-            const b = rgb1.b + (rgb2.b - rgb1.b) * p;
+            let r, g, b;
+            if (p <= 0.5) {
+                const localP = p * 2;
+                r = rgb1.r + (midRgb.r - rgb1.r) * localP;
+                g = rgb1.g + (midRgb.g - rgb1.g) * localP;
+                b = rgb1.b + (midRgb.b - rgb1.b) * localP;
+            } else {
+                const localP = (p - 0.5) * 2;
+                r = midRgb.r + (rgb2.r - midRgb.r) * localP;
+                g = midRgb.g + (rgb2.g - midRgb.g) * localP;
+                b = midRgb.b + (rgb2.b - midRgb.b) * localP;
+            }
 
             return rgbToHex(r, g, b);
         }
 
         function updateSliderAppearanceAndColor() {
-            skinSlider.style.background = `linear-gradient(to right, ${leftEndpointHex}, ${rightEndpointHex})`;
+            skinSlider.style.background = `linear-gradient(to right, ${leftEndpointHex}, ${midEndpointHex}, ${rightEndpointHex})`;
 
             const val = parseInt(skinSlider.value);
             const hex = getColorFromSlider(val);

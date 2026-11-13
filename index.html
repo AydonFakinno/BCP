@@ -431,7 +431,7 @@
             width: 100%;
             height: 14px;
             border-radius: 9999px;
-            background: linear-gradient(to right, #EDC5D3, #917374, #362114);
+            background: linear-gradient(to right, #BF998F, #BE9A87, #683B23);
             outline: none;
             border: 2px solid #2e2e36;
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
@@ -573,7 +573,7 @@
                 <div class="color-preview" id="colorPreviewBox">
                     <!-- Injected char.svg loads here -->
                 </div>
-                <span class="label" id="hexLabel">#917374</span>
+                <span class="label" id="hexLabel">#BE9A87</span>
 
                 <!-- Left Palette (Tekla) - Slider - Right Palette (Zsolt) -->
                 <div class="slider-palettes-row">
@@ -584,7 +584,7 @@
                             <canvas id="leftPalette" width="142" height="142"></canvas>
                             <div class="color-handle" id="leftHandle"></div>
                         </div>
-                        <span class="endpoint-hex" id="leftHexLabel">#EDC5D3</span>
+                        <span class="endpoint-hex" id="leftHexLabel">#BF998F</span>
                     </div>
 
                     <!-- Center Slider -->
@@ -605,7 +605,7 @@
                             <canvas id="rightPalette" width="142" height="142"></canvas>
                             <div class="color-handle" id="rightHandle"></div>
                         </div>
-                        <span class="endpoint-hex" id="rightHexLabel">#362114</span>
+                        <span class="endpoint-hex" id="rightHexLabel">#683B23</span>
                     </div>
                 </div>
             </div>
@@ -622,7 +622,7 @@
                 <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Target Master Color</span>
                 <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
-                    <span class="hex-code" id="masterHexCode">#917374</span>
+                    <span class="hex-code" id="masterHexCode">#BE9A87</span>
                 </div>
             </div>
 
@@ -676,10 +676,10 @@
         const rightHexLabel = document.getElementById('rightHexLabel');
 
         let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || '[]');
-        let leftEndpointHex = '#EDC5D3';  // Tekla
-        let rightEndpointHex = '#362114'; // Zsolt
-        let currentPickedHex = '#917374';
-        let masterColorHex = '#917374';
+        let leftEndpointHex = '#BF998F';  // Tekla default
+        let rightEndpointHex = '#683B23'; // Zsolt default
+        let currentPickedHex = '#BE9A87'; // Middle default
+        let masterColorHex = '#BE9A87';
         let isMasterMode = false;
         let selectedPlayerName = '';
         let svgFillPath = null;
@@ -847,7 +847,7 @@
             updateSliderAppearanceAndColor();
         }
 
-        // Render the 2D Skin Tone Grid (Extended slightly into cool/violet tones)
+        // Render the 2D Skin Tone Grid
         function drawSkinPalette(ctx, canvas) {
             const image = ctx.createImageData(canvas.width, canvas.height);
             const data = image.data;
@@ -981,17 +981,29 @@
         function getColorFromSlider(val) {
             const p = val / 100;
             const rgb1 = hexToRgb(leftEndpointHex);
+            const midRgb = hexToRgb('#BE9A87');
             const rgb2 = hexToRgb(rightEndpointHex);
 
-            const r = rgb1.r + (rgb2.r - rgb1.r) * p;
-            const g = rgb1.g + (rgb2.g - rgb1.g) * p;
-            const b = rgb1.b + (rgb2.b - rgb1.b) * p;
+            let r, g, b;
+            if (p <= 0.5) {
+                // Interpolate between Tekla and #BE9A87
+                const localP = p * 2;
+                r = rgb1.r + (midRgb.r - rgb1.r) * localP;
+                g = rgb1.g + (midRgb.g - rgb1.g) * localP;
+                b = rgb1.b + (midRgb.b - rgb1.b) * localP;
+            } else {
+                // Interpolate between #BE9A87 and Zsolt
+                const localP = (p - 0.5) * 2;
+                r = midRgb.r + (rgb2.r - midRgb.r) * localP;
+                g = midRgb.g + (rgb2.g - midRgb.g) * localP;
+                b = midRgb.b + (rgb2.b - midRgb.b) * localP;
+            }
 
             return rgbToHex(r, g, b);
         }
 
         function updateSliderAppearanceAndColor() {
-            const midHex = getColorFromSlider(50);
+            const midHex = getColorFromSlider(50); // evaluates to #BE9A87 when slider is at 50%
             skinSlider.style.background = `linear-gradient(to right, ${leftEndpointHex}, ${midHex}, ${rightEndpointHex})`;
 
             const val = parseInt(skinSlider.value);

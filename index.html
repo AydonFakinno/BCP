@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Skin Tone Picker</title>
+    <title>Berci Tipszmiksz</title>
     <style>
         * {
             box-sizing: border-box;
@@ -38,7 +38,7 @@
         }
 
         .page-title {
-            font-size: 7.25rem;
+            font-size: 5rem;
             font-weight: 700;
             color: #ffffff;
             letter-spacing: -1px;
@@ -362,7 +362,7 @@
             width: 100%;
             height: 14px;
             border-radius: 9999px;
-            background: linear-gradient(to right, #edc5d3, #b88a9c, #7a5563, #362114);
+            background: linear-gradient(to right, #BF998F, #B07E6A, #A26346);
             outline: none;
             border: 2px solid #2e2e36;
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
@@ -463,8 +463,8 @@
 
     <!-- Header Section -->
     <header class="top-section">
-        <h1 class="page-title">Color Picker</h1>
-        <div class="device-badge" id="deviceBadge">Detecting device...</div>
+        <h1 class="page-title">Berci Tipszmiksz</h1>
+        <div class="device-badge" id="deviceBadge">Eszköz észlelése...</div>
     </header>
 
     <!-- Interactive Workspace -->
@@ -472,31 +472,31 @@
 
         <!-- Default Main View -->
         <div class="default-view fade-in" id="defaultView">
-            <div class="success-banner" id="successBanner">Your color has been submitted!</div>
+            <div class="success-banner" id="successBanner">Tipp belküldve![cite: 2]</div>
             
             <div class="list-container">
-                <div class="list-title">Claimed Colors</div>
+                <div class="list-title">Beküldött tippek[cite: 2]</div>
                 <ul class="color-list" id="colorList">
                     <!-- Dynamic entries render here -->
                 </ul>
             </div>
 
             <div class="btn-group">
-                <button class="claim-btn" id="startClaimBtn">Claim Color</button>
-                <button class="master-btn" id="enterMasterBtn">Enter Master Color</button>
+                <button class="claim-btn" id="startClaimBtn">Tipp megadása[cite: 2]</button>
+                <button class="master-btn" id="enterMasterBtn">Cél Szín Megadása[cite: 2]</button>
             </div>
         </div>
 
         <!-- Free Text Name Input Card -->
         <div class="card" id="nameCard">
-            <h2>Enter Your Name</h2>
-            <input type="text" class="name-input" id="nameInput" placeholder="Type your name..." autocomplete="off" autofocus>
-            <button class="confirm-name-btn" id="confirmNameBtn">Continue to Pick</button>
+            <h2>Add meg a neved![cite: 2]</h2>
+            <input type="text" class="name-input" id="nameInput" autocomplete="off" autofocus>
+            <button class="confirm-name-btn" id="confirmNameBtn">Tovább[cite: 2]</button>
         </div>
 
         <!-- Interactive Skin Tone Slider UI -->
         <div class="picker-container" id="pickerContainer">
-            <div class="mode-indicator player" id="modeIndicator">Player Pick</div>
+            <div class="mode-indicator player" id="modeIndicator">Játékos Színe[cite: 2]</div>
             
             <div class="picker-content-stack">
                 <div class="color-preview" id="colorPreviewBox">
@@ -508,23 +508,23 @@
                     <div class="slider-container">
                         <input type="range" min="0" max="100" value="50" class="skin-slider" id="skinSlider">
                         <div class="slider-labels">
-                            <span>Tekla</span>
-                            <span>Zsolt</span>
+                            <span>Tekla[cite: 2]</span>
+                            <span>Zsolt[cite: 2]</span>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="submit-wrapper">
-                <button class="submit-btn" id="submitColorBtn">Submit Color</button>
-                <button class="master-btn" id="checkResultsBtn" style="display: none;">Check Results</button>
+                <button class="submit-btn" id="submitColorBtn">Tipp Beküldése[cite: 2]</button>
+                <button class="master-btn" id="checkResultsBtn" style="display: none;">Eredmények Ellenőrzése[cite: 2]</button>
             </div>
         </div>
 
         <!-- Results Leaderboard View -->
         <div class="results-view" id="resultsView">
             <div class="master-card" id="masterCardSummary">
-                <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Target Master Color</span>
+                <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Cél Szín[cite: 2]</span>
                 <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
                     <span class="hex-code" id="masterHexCode">50%</span>
@@ -532,13 +532,13 @@
             </div>
 
             <div class="list-container">
-                <div class="list-title">Leaderboard Results</div>
+                <div class="list-title">Eredménytábla[cite: 2]</div>
                 <ul class="color-list" id="leaderboardList">
                     <!-- Ranked results dynamically rendered here -->
                 </ul>
             </div>
 
-            <button class="reset-btn" id="resetGameBtn">Play Again</button>
+            <button class="reset-btn" id="resetGameBtn">Új Játék[cite: 2]</button>
         </div>
     </main>
 
@@ -568,9 +568,9 @@
         const deviceBadge = document.getElementById('deviceBadge');
 
         let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || '[]');
-        let currentPickedHex = '#916d7d';
+        let currentPickedHex = '#B07E6A';
         let currentSliderVal = 50;
-        let masterColorHex = '#916d7d';
+        let masterColorHex = '#B07E6A';
         let masterSliderVal = 50;
         let isMasterMode = false;
         let selectedPlayerName = '';
@@ -594,7 +594,7 @@
                 }
                 renderEntries();
             })
-            .catch(err => console.error("Error loading char.svg:", err));
+            .catch(err => console.error("Hiba a char.svg betöltésekor:", err));
 
         function getMiniSvgHtml(hex) {
             if (!svgRawText) return `<div class="swatch-svg" style="background-color: ${hex};"></div>`;
@@ -618,7 +618,7 @@
                 li.style.textAlign = 'center';
                 li.style.color = '#71717a';
                 li.style.padding = '1rem';
-                li.textContent = 'No colors claimed yet. Click Claim Color to start!';
+                li.textContent = 'Nincs beküldve tipp.';[cite: 2]
                 colorList.appendChild(li);
                 return;
             }
@@ -639,8 +639,8 @@
 
         function updateDeviceStatus() {
             const isTouch = window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
-            const deviceType = isTouch ? 'Mobile / Touch Device' : 'Desktop / PC';
-            const orientation = window.innerWidth > window.innerHeight ? 'Landscape' : 'Portrait';
+            const deviceType = isTouch ? 'Mobil / Érintőképernyős eszköz' : 'Asztali gép / PC';[cite: 2]
+            const orientation = window.innerWidth > window.innerHeight ? 'Fekvő' : 'Álló';[cite: 2]
 
             deviceBadge.textContent = `${deviceType} • ${orientation}`;
         }
@@ -676,14 +676,14 @@
         confirmNameBtn.addEventListener('click', () => {
             const enteredName = nameInput.value.trim();
             if (!enteredName) {
-                alert("Please type your name!");
+                alert("Kérlek, add meg a neved!");[cite: 2]
                 return;
             }
 
             selectedPlayerName = enteredName;
             nameCard.classList.remove('fade-in');
 
-            modeIndicator.textContent = `${selectedPlayerName}'s Skin Tone`;
+            modeIndicator.textContent = `Szerinted milyen színű lesz Berci?`;[cite: 2]
             modeIndicator.className = "mode-indicator player";
             submitColorBtn.style.display = "block";
             checkResultsBtn.style.display = "none";
@@ -707,7 +707,7 @@
             isMasterMode = true;
             defaultView.classList.remove('fade-in');
             
-            modeIndicator.textContent = "Master Target Skin Tone";
+            modeIndicator.textContent = "Milyen színű lett Berci?";[cite: 2]
             modeIndicator.className = "mode-indicator master";
             submitColorBtn.style.display = "none";
             checkResultsBtn.style.display = "block";
@@ -722,11 +722,11 @@
             setSliderToValue(50);
         }
 
-        // Custom endpoints mapped smoothly from Tekla (#edc5d3) to Zsolt (#362114)
+        // Custom endpoints mapped smoothly from Tekla (#BF998F) to Zsolt (#A26346)
         const skinPaletteStops = [
-            { pos: 0, hex: "#edc5d3" },   // Tekla
-            { pos: 50, hex: "#916d7d" },  // Midpoint
-            { pos: 100, hex: "#362114" }  // Zsolt
+            { pos: 0, hex: "#BF998F" },   // Tekla
+            { pos: 50, hex: "#B07E6A" },  // Midpoint
+            { pos: 100, hex: "#A26346" }  // Zsolt
         ];
 
         function hexToRgb(hex) {
@@ -775,7 +775,7 @@
             currentSliderVal = val;
             skinSlider.value = val;
             currentPickedHex = getColorFromSlider(val);
-            hexLabel.textContent = `${val}%`;
+            hexLabel.textContent = `${val}% barna bőrű magyar állampolgár`;
 
             if (svgFillPath) {
                 svgFillPath.style.fill = currentPickedHex;
@@ -834,7 +834,7 @@
             masterSliderVal = currentSliderVal;
             masterColorInfo.innerHTML = `
                 ${getMiniSvgHtml(masterColorHex)}
-                <span class="hex-code" id="masterHexCode">${masterSliderVal}%</span>
+                <span class="hex-code" id="masterHexCode">${masterSliderVal}% barna bőrű magyar állampolgár</span>
             `;
 
             const entries = savedEntries.map(e => ({
@@ -857,7 +857,7 @@
 
                 if (rankNum === 1) {
                     rankClass += ' first-place';
-                    winnerBadge = `<span class="winner-tag">WINNER</span>`;
+                    winnerBadge = `<span class="winner-tag">GYŐZTES</span>`;[cite: 2]
                 } else if (rankNum === 2) {
                     rankClass += ' second-place';
                 } else if (rankNum === 3) {
@@ -871,9 +871,9 @@
                         ${winnerBadge}
                     </div>
                     <div class="color-info">
-                        <span class="score-match">${entry.matchScore}%</span>
+                        <span class="score-match">${entry.matchScore}% barna</span>
                         ${getMiniSvgHtml(entry.hex)}
-                        <span class="hex-code">${entry.sliderVal}%</span>
+                        <span class="hex-code">${entry.sliderVal}% bőrű</span>
                     </div>
                 `;
                 leaderboardList.appendChild(li);

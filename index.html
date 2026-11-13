@@ -630,7 +630,7 @@
                     <span class="user-name">${entry.name}</span>
                     <div class="color-info">
                         ${getMiniSvgHtml(entry.hex)}
-                        <span class="hex-code">${entry.sliderVal !== undefined ? entry.sliderVal : 50}% BBMÁ</span>
+                        <span class="hex-code">${entry.sliderVal !== undefined ? entry.sliderVal : 50}% sbmá</span>
                     </div>
                 `;
                 colorList.appendChild(li);
@@ -775,7 +775,7 @@
             currentSliderVal = val;
             skinSlider.value = val;
             currentPickedHex = getColorFromSlider(val);
-            hexLabel.textContent = `${val}% barna bőrű magyar állampolgár`;
+            hexLabel.textContent = `${val}% sötét bőrű magyar állampolgár`;
 
             if (svgFillPath) {
                 svgFillPath.style.fill = currentPickedHex;
@@ -834,7 +834,7 @@
             masterSliderVal = currentSliderVal;
             masterColorInfo.innerHTML = `
                 ${getMiniSvgHtml(masterColorHex)}
-                <span class="hex-code" id="masterHexCode">${masterSliderVal}% BBMÁ</span>
+                <span class="hex-code" id="masterHexCode">${masterSliderVal}% sbmá</span>
             `;
 
             const entries = savedEntries.map(e => ({
@@ -873,7 +873,7 @@
                     <div class="color-info">
                         <span class="score-match">${entry.matchScore}%</span>
                         ${getMiniSvgHtml(entry.hex)}
-                        <span class="hex-code">${entry.sliderVal}% BBMÁ</span>
+                        <span class="hex-code">${entry.sliderVal}% sbmá</span>
                     </div>
                 `;
                 leaderboardList.appendChild(li);

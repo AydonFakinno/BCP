@@ -847,34 +847,24 @@
             }, 400);
         });
 
-        function calculateColorMatch(hex1, hex2) {
-            const rgb1 = hexToRgb(hex1);
-            const rgb2 = hexToRgb(hex2);
-
-            const distance = Math.sqrt(
-                Math.pow(rgb1.r - rgb2.r, 2) +
-                Math.pow(rgb1.g - rgb2.g, 2) +
-                Math.pow(rgb1.b - rgb2.b, 2)
-            );
-
-            const maxDistance = Math.sqrt(Math.pow(255, 2) * 3);
-            const accuracy = Math.max(0, 100 - (distance / maxDistance * 100));
+        function calculateSliderMatch(sliderVal, targetSliderVal) {
+            const diff = Math.abs(sliderVal - targetSliderVal);
+            const accuracy = Math.max(0, 100 - diff);
             return accuracy.toFixed(1);
         }
 
         function getMatchColor(score) {
-            // Interpolates from red (0%) through yellow (50%) to green (100%)
             const s = Math.max(0, Math.min(100, score)) / 100;
             let r, g, b;
             if (s < 0.5) {
                 const t = s * 2;
-                r = 239; // #ef4444 (red)
+                r = 239;
                 g = Math.round(68 + (200 - 68) * t);
                 b = 68;
             } else {
                 const t = (s - 0.5) * 2;
                 r = Math.round(239 - (239 - 74) * t);
-                g = 222; // approaches #4ade80 (green)
+                g = 222;
                 b = Math.round(68 + (128 - 68) * t);
             }
             return `rgb(${r}, ${g}, ${b})`;
@@ -888,12 +878,15 @@
                 <span class="hex-code" id="masterHexCode">${masterSliderVal}% BBMÁ</span>
             `;
 
-            const entries = savedEntries.map(e => ({
-                name: e.name,
-                hex: e.hex,
-                sliderVal: e.sliderVal !== undefined ? e.sliderVal : 50,
-                matchScore: parseFloat(calculateColorMatch(e.hex, masterColorHex))
-            }));
+            const entries = savedEntries.map(e => {
+                const entrySliderVal = e.sliderVal !== undefined ? e.sliderVal : 50;
+                return {
+                    name: e.name,
+                    hex: e.hex,
+                    sliderVal: entrySliderVal,
+                    matchScore: parseFloat(calculateSliderMatch(entrySliderVal, masterSliderVal))
+                };
+            });
 
             entries.sort((a, b) => b.matchScore - a.matchScore);
 

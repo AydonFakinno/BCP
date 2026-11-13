@@ -447,15 +447,34 @@
             box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
         }
 
-        .winner-tag {
-            background-color: #eab308;
-            color: #000000;
+        .pos-badge {
             font-size: 0.7rem;
             font-weight: 700;
-            padding: 0.2rem 0.4rem;
+            padding: 0.2rem 0.5rem;
             border-radius: 4px;
             text-transform: uppercase;
             margin-left: 0.5rem;
+            display: inline-block;
+        }
+
+        .pos-1 {
+            background-color: #eab308;
+            color: #000000;
+        }
+
+        .pos-2 {
+            background-color: #94a3b8;
+            color: #000000;
+        }
+
+        .pos-3 {
+            background-color: #b45309;
+            color: #ffffff;
+        }
+
+        .pos-rest {
+            background-color: #3f3f46;
+            color: #a1a1aa;
         }
     </style>
 </head>
@@ -502,7 +521,7 @@
                 <div class="color-preview" id="colorPreviewBox">
                     <!-- Injected char.svg loads here -->
                 </div>
-                <span class="label" id="hexLabel">50%</span>
+                <span class="label" id="hexLabel">50% sötét bőrű magyar állampolgár</span>
 
                 <div class="slider-wrapper">
                     <div class="slider-container">
@@ -527,7 +546,7 @@
                 <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Valós Szín</span>
                 <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
-                    <span class="hex-code" id="masterHexCode">50%</span>
+                    <span class="hex-code" id="masterHexCode">50% sbmá</span>
                 </div>
             </div>
 
@@ -852,23 +871,17 @@
                 const li = document.createElement('li');
                 li.className = 'color-item';
                 
-                let rankClass = 'rank-num';
-                let winnerBadge = '';
+                let posClass = 'pos-rest';
+                if (rankNum === 1) posClass = 'pos-1';
+                else if (rankNum === 2) posClass = 'pos-2';
+                else if (rankNum === 3) posClass = 'pos-3';
 
-                if (rankNum === 1) {
-                    rankClass += ' first-place';
-                    winnerBadge = `<span class="winner-tag">GYŐZTES</span>`;
-                } else if (rankNum === 2) {
-                    rankClass += ' second-place';
-                } else if (rankNum === 3) {
-                    rankClass += ' third-place';
-                }
+                const posBadge = `<span class="pos-badge ${posClass}">#${rankNum}</span>`;
 
                 li.innerHTML = `
                     <div>
-                        <span class="${rankClass}">#${rankNum}</span>
                         <span class="user-name">${entry.name}</span>
-                        ${winnerBadge}
+                        ${posBadge}
                     </div>
                     <div class="color-info">
                         <span class="score-match">${entry.matchScore}%</span>

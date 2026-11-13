@@ -90,7 +90,7 @@
             align-items: center;
             gap: 1.25rem;
             width: 100%;
-            max-width: 480px;
+            max-width: 560px;
             z-index: 2;
             position: relative;
         }
@@ -219,6 +219,12 @@
             width: 100%;
         }
 
+        .user-name-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
         .user-name {
             font-weight: 600;
             color: #f4f4f5;
@@ -231,6 +237,23 @@
             gap: 1rem;
         }
 
+        .hex-code {
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: #a1a1aa;
+            min-width: 85px;
+            text-align: right;
+        }
+
+        .score-match {
+            font-weight: 700;
+            color: #4ade80;
+            font-family: monospace;
+            font-size: 1.2rem;
+            min-width: 55px;
+            text-align: right;
+        }
+
         /* Larger Miniature SVG Thumbnail Box */
         .swatch-svg {
             width: 64px;
@@ -241,24 +264,12 @@
             justify-content: center;
             overflow: hidden;
             padding: 0;
+            flex-shrink: 0;
         }
 
         .swatch-svg svg {
             width: 100%;
             height: 100%;
-        }
-
-        .hex-code {
-            font-family: monospace;
-            font-size: 1.1rem;
-            color: #a1a1aa;
-        }
-
-        .score-match {
-            font-weight: 700;
-            color: #4ade80;
-            font-family: monospace;
-            font-size: 1.2rem;
         }
 
         /* Free Text Name Input Card */
@@ -431,7 +442,7 @@
             align-items: center;
             gap: 1.25rem;
             width: 100%;
-            max-width: 480px;
+            max-width: 560px;
             z-index: 5;
         }
 
@@ -453,7 +464,6 @@
             padding: 0.2rem 0.5rem;
             border-radius: 4px;
             text-transform: uppercase;
-            margin-left: 0.5rem;
             display: inline-block;
         }
 
@@ -809,6 +819,7 @@
         submitColorBtn.addEventListener('click', () => {
             const existingIndex = savedEntries.findIndex(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());
             
+            ,
             if (existingIndex >= 0) {
                 savedEntries[existingIndex].hex = currentPickedHex;
                 savedEntries[existingIndex].sliderVal = currentSliderVal;
@@ -879,9 +890,9 @@
                 const posBadge = `<span class="pos-badge ${posClass}">#${rankNum}</span>`;
 
                 li.innerHTML = `
-                    <div>
-                        <span class="user-name">${entry.name}</span>
+                    <div class="user-name-group">
                         ${posBadge}
+                        <span class="user-name">${entry.name}</span>
                     </div>
                     <div class="color-info">
                         <span class="score-match">${entry.matchScore}%</span>

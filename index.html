@@ -27,7 +27,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 20vh;
+            height: 25vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -38,7 +38,7 @@
         }
 
         .page-title {
-            font-size: 5rem;
+            font-size: 7.25rem;
             font-weight: 700;
             color: #ffffff;
             letter-spacing: -1px;
@@ -304,9 +304,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.25rem;
+            gap: 1.5rem;
             width: 100%;
-            max-width: 500px;
+            max-width: 800px;
         }
 
         .mode-indicator {
@@ -335,7 +335,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem;
             width: 100%;
         }
 
@@ -362,7 +362,7 @@
             width: 100%;
             height: 14px;
             border-radius: 9999px;
-            background: linear-gradient(to right, #BF998F, #A26346);
+            background: linear-gradient(to right, #edc5d3, #b88a9c, #7a5563, #362114);
             outline: none;
             border: 2px solid #2e2e36;
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
@@ -389,15 +389,15 @@
             display: flex;
             justify-content: space-between;
             width: 100%;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #a1a1aa;
             font-weight: 500;
         }
 
         /* Vector SVG Preview Box */
         .color-preview {
-            width: 145px;
-            height: 145px;
+            width: 160px;
+            height: 160px;
             background-color: transparent;
             display: flex;
             align-items: center;
@@ -412,10 +412,9 @@
         }
 
         .label {
-            font-size: 0.95rem;
-            font-family: monospace;
+            font-size: 0.9rem;
             color: #a1a1aa;
-            font-weight: 600;
+            font-weight: 500;
         }
 
         .submit-wrapper {
@@ -423,7 +422,6 @@
             flex-direction: column;
             align-items: center;
             gap: 1rem;
-            margin-top: 0.25rem;
         }
 
         /* Results Leaderboard View */
@@ -504,15 +502,14 @@
                 <div class="color-preview" id="colorPreviewBox">
                     <!-- Injected char.svg loads here -->
                 </div>
-                <span class="label" id="hexLabel">#B07E6A</span>
+                <span class="label" id="hexLabel">#916d7d</span>
 
-                <!-- Clean Slider Wrapper -->
                 <div class="slider-wrapper">
                     <div class="slider-container">
                         <input type="range" min="0" max="100" value="50" class="skin-slider" id="skinSlider">
                         <div class="slider-labels">
-                            <span>Tekla (#BF998F)</span>
-                            <span>Zsolt (#A26346)</span>
+                            <span>Tekla</span>
+                            <span>Zsolt</span>
                         </div>
                     </div>
                 </div>
@@ -530,7 +527,7 @@
                 <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Target Master Color</span>
                 <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
-                    <span class="hex-code" id="masterHexCode">#B07E6A</span>
+                    <span class="hex-code" id="masterHexCode">#916d7d</span>
                 </div>
             </div>
 
@@ -570,10 +567,9 @@
         const hexLabel = document.getElementById('hexLabel');
         const deviceBadge = document.getElementById('deviceBadge');
 
-        const leftEndpointHex = '#BF998F';  // Tekla
-        const rightEndpointHex = '#A26346'; // Zsolt
-        let currentPickedHex = '#B07E6A';   // 50% midpoint
-        let masterColorHex = '#B07E6A';
+        let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || '[]');
+        let currentPickedHex = '#916d7d';
+        let masterColorHex = '#916d7d';
         let isMasterMode = false;
         let selectedPlayerName = '';
         let svgFillPath = null;
@@ -650,7 +646,6 @@
         window.addEventListener('DOMContentLoaded', () => {
             updateDeviceStatus();
             renderEntries();
-            updateSliderAppearanceAndColor();
         });
         window.addEventListener('resize', updateDeviceStatus);
 
@@ -676,6 +671,14 @@
 
         startClaimBtn.addEventListener('click', openNamePrompt);
 
+        window.addEventListener('load', () => {
+            if (savedEntries.length === 0) {
+                setTimeout(() => {
+                    openNamePrompt();
+                }, 100);
+            }
+        });
+
         confirmNameBtn.addEventListener('click', () => {
             const enteredName = nameInput.value.trim();
             if (!enteredName) {
@@ -692,13 +695,10 @@
             checkResultsBtn.style.display = "none";
 
             const existing = savedEntries.find(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());
+            const targetHex = existing ? existing.hex : '#916d7d';
 
             setTimeout(() => {
-                if (existing) {
-                    setSliderToColor(existing.hex);
-                } else {
-                    resetPicker();
-                }
+                setSliderToColor(targetHex);
                 pickerContainer.classList.add('fade-in');
             }, 300);
         });
@@ -725,9 +725,15 @@
         });
 
         function resetPicker() {
-            skinSlider.value = 50;
-            updateSliderAppearanceAndColor();
+            setSliderToColor('#916d7d');
         }
+
+        // Custom endpoints mapped smoothly from Tekla (#edc5d3) to Zsolt (#362114)
+        const skinPaletteStops = [
+            { pos: 0, hex: "#edc5d3" },   // Tekla
+            { pos: 50, hex: "#916d7d" },  // Midpoint
+            { pos: 100, hex: "#362114" }  // Zsolt
+        ];
 
         function hexToRgb(hex) {
             const cleanHex = hex.replace('#', '');
@@ -747,28 +753,28 @@
 
         function getColorFromSlider(val) {
             const p = val / 100;
-            const rgb1 = hexToRgb(leftEndpointHex);
-            const rgb2 = hexToRgb(rightEndpointHex);
+            let lower = skinPaletteStops[0];
+            let upper = skinPaletteStops[skinPaletteStops.length - 1];
 
-            const r = rgb1.r + (rgb2.r - rgb1.r) * p;
-            const g = rgb1.g + (rgb2.g - rgb1.g) * p;
-            const b = rgb1.b + (rgb2.b - rgb1.b) * p;
+            for (let i = 0; i < skinPaletteStops.length - 1; i++) {
+                if (p >= skinPaletteStops[i].pos / 100 && p <= skinPaletteStops[i+1].pos / 100) {
+                    lower = skinPaletteStops[i];
+                    upper = skinPaletteStops[i+1];
+                    break;
+                }
+            }
+
+            const range = (upper.pos - lower.pos) / 100;
+            const localP = range === 0 ? 0 : (p - (lower.pos / 100)) / range;
+
+            const rgb1 = hexToRgb(lower.hex);
+            const rgb2 = hexToRgb(upper.hex);
+
+            const r = rgb1.r + (rgb2.r - rgb1.r) * localP;
+            const g = rgb1.g + (rgb2.g - rgb1.g) * localP;
+            const b = rgb1.b + (rgb2.b - rgb1.b) * localP;
 
             return rgbToHex(r, g, b);
-        }
-
-        function updateSliderAppearanceAndColor() {
-            skinSlider.style.background = `linear-gradient(to right, ${leftEndpointHex}, ${rightEndpointHex})`;
-
-            const val = parseInt(skinSlider.value);
-            const hex = getColorFromSlider(val);
-            
-            currentPickedHex = hex;
-            hexLabel.textContent = hex;
-
-            if (svgFillPath) {
-                svgFillPath.style.fill = hex;
-            }
         }
 
         function setSliderToColor(targetHex) {
@@ -796,7 +802,17 @@
             skinSlider.value = bestVal;
         }
 
-        skinSlider.addEventListener('input', updateSliderAppearanceAndColor);
+        skinSlider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            const hex = getColorFromSlider(val);
+            
+            currentPickedHex = hex;
+            hexLabel.textContent = hex;
+
+            if (svgFillPath) {
+                svgFillPath.style.fill = hex;
+            }
+        });
 
         submitColorBtn.addEventListener('click', () => {
             const existingIndex = savedEntries.findIndex(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());

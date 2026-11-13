@@ -243,6 +243,7 @@
             color: #a1a1aa;
             min-width: 85px;
             text-align: right;
+            flex-shrink: 0;
         }
 
         .score-match {
@@ -252,6 +253,7 @@
             font-size: 1.2rem;
             min-width: 55px;
             text-align: right;
+            flex-shrink: 0;
         }
 
         /* Larger Miniature SVG Thumbnail Box */
@@ -465,6 +467,8 @@
             border-radius: 4px;
             text-transform: uppercase;
             display: inline-block;
+            min-width: 28px;
+            text-align: center;
         }
 
         .pos-1 {
@@ -819,7 +823,6 @@
         submitColorBtn.addEventListener('click', () => {
             const existingIndex = savedEntries.findIndex(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());
             
-            ,
             if (existingIndex >= 0) {
                 savedEntries[existingIndex].hex = currentPickedHex;
                 savedEntries[existingIndex].sliderVal = currentSliderVal;

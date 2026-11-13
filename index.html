@@ -303,9 +303,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             width: 100%;
-            max-width: 1000px;
+            max-width: 1050px;
         }
 
         .mode-indicator {
@@ -334,11 +334,39 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.6rem;
             width: 100%;
         }
 
-        /* Three Palettes + Slider Row */
+        /* Controls Top Bar (Toggle Middle Stop) */
+        .picker-controls-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #a1a1aa;
+            background-color: #1c1c21;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            border: 1px solid #2e2e36;
+            cursor: pointer;
+            user-select: none;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+
+        .picker-controls-bar:hover {
+            border-color: #52525b;
+            color: #f4f4f5;
+        }
+
+        .picker-controls-bar input[type="checkbox"] {
+            cursor: pointer;
+            accent-color: #6366f1;
+            width: 15px;
+            height: 15px;
+        }
+
+        /* Palettes + Slider Row */
         .slider-palettes-row {
             display: flex;
             align-items: center;
@@ -353,6 +381,13 @@
             flex-direction: column;
             align-items: center;
             gap: 0.35rem;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .endpoint-palette-box.disabled {
+            opacity: 0.25;
+            pointer-events: none;
+            filter: grayscale(100%);
         }
 
         .endpoint-title {
@@ -430,7 +465,7 @@
             width: 100%;
             height: 14px;
             border-radius: 9999px;
-            background: linear-gradient(to right, #BF998F, #B78A6F, #683B23);
+            background: linear-gradient(to right, #BF998F, #B78A6F, #A26346);
             outline: none;
             border: 2px solid #2e2e36;
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
@@ -574,6 +609,12 @@
                 </div>
                 <span class="label" id="hexLabel">#B78A6F</span>
 
+                <!-- Middle Stop Toggle Checkbox Bar -->
+                <label class="picker-controls-bar">
+                    <input type="checkbox" id="toggleMiddleStop" checked>
+                    <span>Enable Middle Stop</span>
+                </label>
+
                 <!-- Three Palettes + Slider Row -->
                 <div class="slider-palettes-row">
                     <!-- Tekla Palette (Left) -->
@@ -587,7 +628,7 @@
                     </div>
 
                     <!-- Middle Palette (Middle Stop) -->
-                    <div class="endpoint-palette-box">
+                    <div class="endpoint-palette-box" id="midPaletteBox">
                         <span class="endpoint-title">Middle</span>
                         <div class="mini-canvas-container" id="midCanvasContainer">
                             <canvas id="midPalette" width="120" height="120"></canvas>
@@ -614,7 +655,7 @@
                             <canvas id="rightPalette" width="120" height="120"></canvas>
                             <div class="color-handle" id="rightHandle"></div>
                         </div>
-                        <span class="endpoint-hex" id="rightHexLabel">#683B23</span>
+                        <span class="endpoint-hex" id="rightHexLabel">#A26346</span>
                     </div>
                 </div>
             </div>
@@ -670,6 +711,8 @@
         const colorPreviewBox = document.getElementById('colorPreviewBox');
         const hexLabel = document.getElementById('hexLabel');
         const deviceBadge = document.getElementById('deviceBadge');
+        const toggleMiddleStop = document.getElementById('toggleMiddleStop');
+        const midPaletteBox = document.getElementById('midPaletteBox');
 
         // Three Palette Elements (Left, Middle, Right)
         const leftCanvas = document.getElementById('leftPalette');
@@ -693,7 +736,7 @@
         let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || '[]');
         let leftEndpointHex = '#BF998F';  // Tekla default
         let midEndpointHex = '#B78A6F';   // Middle default
-        let rightEndpointHex = '#683B23'; // Zsolt default
+        let rightEndpointHex = '#A26346'; // Zsolt default (Updated)
         let currentPickedHex = '#B78A6F'; 
         let masterColorHex = '#B78A6F';
         let isMasterMode = false;
@@ -995,27 +1038,41 @@
         function getColorFromSlider(val) {
             const p = val / 100;
             const rgb1 = hexToRgb(leftEndpointHex);
-            const midRgb = hexToRgb(midEndpointHex);
             const rgb2 = hexToRgb(rightEndpointHex);
 
-            let r, g, b;
-            if (p <= 0.5) {
-                const localP = p * 2;
-                r = rgb1.r + (midRgb.r - rgb1.r) * localP;
-                g = rgb1.g + (midRgb.g - rgb1.g) * localP;
-                b = rgb1.b + (midRgb.b - rgb1.b) * localP;
+            if (!toggleMiddleStop.checked) {
+                // 2-stop interpolation between left and right endpoints
+                const r = rgb1.r + (rgb2.r - rgb1.r) * p;
+                const g = rgb1.g + (rgb2.g - rgb1.g) * p;
+                const b = rgb1.b + (rgb2.b - rgb1.b) * p;
+                return rgbToHex(r, g, b);
             } else {
-                const localP = (p - 0.5) * 2;
-                r = midRgb.r + (rgb2.r - midRgb.r) * localP;
-                g = midRgb.g + (rgb2.g - midRgb.g) * localP;
-                b = midRgb.b + (rgb2.b - midRgb.b) * localP;
+                // 3-stop interpolation across left, middle, and right endpoints
+                const midRgb = hexToRgb(midEndpointHex);
+                let r, g, b;
+                if (p <= 0.5) {
+                    const localP = p * 2;
+                    r = rgb1.r + (midRgb.r - rgb1.r) * localP;
+                    g = rgb1.g + (midRgb.g - rgb1.g) * localP;
+                    b = rgb1.b + (midRgb.b - rgb1.b) * localP;
+                } else {
+                    const localP = (p - 0.5) * 2;
+                    r = midRgb.r + (rgb2.r - midRgb.r) * localP;
+                    g = midRgb.g + (rgb2.g - midRgb.g) * localP;
+                    b = midRgb.b + (rgb2.b - midRgb.b) * localP;
+                }
+                return rgbToHex(r, g, b);
             }
-
-            return rgbToHex(r, g, b);
         }
 
         function updateSliderAppearanceAndColor() {
-            skinSlider.style.background = `linear-gradient(to right, ${leftEndpointHex}, ${midEndpointHex}, ${rightEndpointHex})`;
+            if (!toggleMiddleStop.checked) {
+                skinSlider.style.background = `linear-gradient(to right, ${leftEndpointHex}, ${rightEndpointHex})`;
+                midPaletteBox.classList.add('disabled');
+            } else {
+                skinSlider.style.background = `linear-gradient(to right, ${leftEndpointHex}, ${midEndpointHex}, ${rightEndpointHex})`;
+                midPaletteBox.classList.remove('disabled');
+            }
 
             const val = parseInt(skinSlider.value);
             const hex = getColorFromSlider(val);
@@ -1054,6 +1111,7 @@
         }
 
         skinSlider.addEventListener('input', updateSliderAppearanceAndColor);
+        toggleMiddleStop.addEventListener('change', updateSliderAppearanceAndColor);
 
         submitColorBtn.addEventListener('click', () => {
             const existingIndex = savedEntries.findIndex(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());
@@ -1111,7 +1169,7 @@
 
             entries.sort((a, b) => b.matchScore - a.matchScore);
 
-            leaderboardList.innerHTML = '';
+            leaderboardList.innerHTML = ``;
             entries.forEach((entry, index) => {
                 const rankNum = index + 1;
                 const li = document.createElement('li');

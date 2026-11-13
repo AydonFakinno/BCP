@@ -304,7 +304,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2rem;
+            gap: 1.5rem;
             width: 100%;
             max-width: 800px;
         }
@@ -330,28 +330,30 @@
             border: 1px solid #a855f7;
         }
 
-        .picker-elements {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4rem;
-            width: 100%;
-        }
-
-        .slider-wrapper, .square-wrapper, .submit-wrapper {
+        /* Centered Picker Layout Stack */
+        .picker-content-stack {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1.25rem;
-            position: relative;
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            max-width: 320px;
         }
 
         /* Skin Tone Slider Container */
         .slider-container {
-            width: 260px;
+            width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 0.5rem;
             align-items: center;
         }
 
@@ -360,7 +362,7 @@
             width: 100%;
             height: 14px;
             border-radius: 9999px;
-            background: linear-gradient(to right, #F5D0B1, #E0AC69, #B0705E, #8D5524, #3b2219);
+            background: linear-gradient(to right, #FAEDCD, #F5D0B1, #B0705E, #8D5524, #3b2219);
             outline: none;
             border: 2px solid #2e2e36;
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
@@ -394,8 +396,8 @@
 
         /* Vector SVG Preview Box */
         .color-preview {
-            width: 206px;
-            height: 206px;
+            width: 160px;
+            height: 160px;
             background-color: transparent;
             display: flex;
             align-items: center;
@@ -410,9 +412,16 @@
         }
 
         .label {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: #a1a1aa;
             font-weight: 500;
+        }
+
+        .submit-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
         }
 
         /* Results Leaderboard View */
@@ -488,7 +497,13 @@
         <!-- Interactive Skin Tone Slider UI -->
         <div class="picker-container" id="pickerContainer">
             <div class="mode-indicator player" id="modeIndicator">Player Pick</div>
-            <div class="picker-elements">
+            
+            <div class="picker-content-stack">
+                <div class="color-preview" id="colorPreviewBox">
+                    <!-- Injected char.svg loads here -->
+                </div>
+                <span class="label" id="hexLabel">#B0705E</span>
+
                 <div class="slider-wrapper">
                     <div class="slider-container">
                         <input type="range" min="0" max="100" value="50" class="skin-slider" id="skinSlider">
@@ -497,13 +512,6 @@
                             <span>Dark</span>
                         </div>
                     </div>
-                    <span class="label">Slide to Pick Tone</span>
-                </div>
-                <div class="square-wrapper">
-                    <div class="color-preview" id="colorPreviewBox">
-                        <!-- Injected char.svg loads here -->
-                    </div>
-                    <span class="label" id="hexLabel">#B0705E</span>
                 </div>
             </div>
             
@@ -559,13 +567,8 @@
         const hexLabel = document.getElementById('hexLabel');
         const deviceBadge = document.getElementById('deviceBadge');
 
-        const defaultEntries = [
-            { name: "Alex", hex: "#E0AC69" },
-            { name: "Sarah", hex: "#F5D0B1" },
-            { name: "Mark", hex: "#8D5524" }
-        ];
-
-        let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || JSON.stringify(defaultEntries));
+        // Clean initial list (no dummy entries)
+        let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || '[]');
         let currentPickedHex = '#B0705E';
         let masterColorHex = '#B0705E';
         let isMasterMode = false;
@@ -609,6 +612,15 @@
 
         function renderEntries() {
             colorList.innerHTML = '';
+            if (savedEntries.length === 0) {
+                const li = document.createElement('li');
+                li.style.textAlign = 'center';
+                li.style.color = '#71717a';
+                li.style.padding = '1rem';
+                li.textContent = 'No colors claimed yet. Click Claim Color to start!';
+                colorList.appendChild(li);
+                return;
+            }
             savedEntries.forEach(entry => {
                 const li = document.createElement('li');
                 li.className = 'color-item';
@@ -638,7 +650,7 @@
         });
         window.addEventListener('resize', updateDeviceStatus);
 
-        startClaimBtn.addEventListener('click', () => {
+        function openNamePrompt() {
             isMasterMode = false;
             successBanner.classList.remove('show');
             defaultView.classList.remove('fade-in');
@@ -656,6 +668,18 @@
                 nameCard.addEventListener('transitionend', onTransitionEnd);
                 nameInput.focus();
             }, 300);
+        }
+
+        startClaimBtn.addEventListener('click', openNamePrompt);
+
+        // If list is completely empty on load, pull up the name card by default
+        window.addEventListener('load', () => {
+            if (savedEntries.length === 0) {
+                // Short delay to let default view render first, then transition smoothly to name prompt
+                setTimeout(() => {
+                    openNamePrompt();
+                }, 100);
+            }
         });
 
         confirmNameBtn.addEventListener('click', () => {
@@ -707,13 +731,12 @@
             setSliderToColor('#B0705E');
         }
 
-        // Smooth color interpolation mapping from palest (0) to darkest (100)
         const skinPaletteStops = [
-            { pos: 0, hex: "#FAEDCD" },   // Very pale / fair
-            { pos: 25, hex: "#F5D0B1" },  // Light fair
-            { pos: 50, hex: "#B0705E" },  // Medium neutral (Center)
-            { pos: 75, hex: "#8D5524" },  // Deep olive / tan
-            { pos: 100, hex: "#3b2219" }  // Deepest dark
+            { pos: 0, hex: "#FAEDCD" },
+            { pos: 25, hex: "#F5D0B1" },
+            { pos: 50, hex: "#B0705E" },
+            { pos: 75, hex: "#8D5524" },
+            { pos: 100, hex: "#3b2219" }
         ];
 
         function hexToRgb(hex) {
@@ -734,7 +757,6 @@
 
         function getColorFromSlider(val) {
             const p = val / 100;
-            // Find surrounding stops
             let lower = skinPaletteStops[0];
             let upper = skinPaletteStops[skinPaletteStops.length - 1];
 
@@ -767,7 +789,6 @@
                 svgFillPath.style.fill = targetHex;
             }
 
-            // Find closest slider value
             const targetRgb = hexToRgb(targetHex);
             let bestVal = 50;
             let minDiff = Infinity;
@@ -895,7 +916,7 @@
 
         resetGameBtn.addEventListener('click', () => {
             localStorage.removeItem('savedEntries');
-            savedEntries = JSON.parse(JSON.stringify(defaultEntries));
+            savedEntries = JSON.parse(JSON.stringify([]));
             renderEntries();
             
             resultsView.classList.remove('fade-in');

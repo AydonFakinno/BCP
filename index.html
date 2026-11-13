@@ -362,7 +362,7 @@
             width: 100%;
             height: 14px;
             border-radius: 9999px;
-            background: linear-gradient(to right, #FAEDCD, #F5D0B1, #B0705E, #8D5524, #3b2219);
+            background: linear-gradient(to right, #edc5d3, #b88a9c, #7a5563, #362114);
             outline: none;
             border: 2px solid #2e2e36;
             box-shadow: 0 4px 12px rgba(0,0,0,0.4);
@@ -502,14 +502,14 @@
                 <div class="color-preview" id="colorPreviewBox">
                     <!-- Injected char.svg loads here -->
                 </div>
-                <span class="label" id="hexLabel">#B0705E</span>
+                <span class="label" id="hexLabel">#916d7d</span>
 
                 <div class="slider-wrapper">
                     <div class="slider-container">
                         <input type="range" min="0" max="100" value="50" class="skin-slider" id="skinSlider">
                         <div class="slider-labels">
-                            <span>Pale</span>
-                            <span>Dark</span>
+                            <span>Tekla</span>
+                            <span>Zsolt</span>
                         </div>
                     </div>
                 </div>
@@ -527,7 +527,7 @@
                 <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Target Master Color</span>
                 <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
-                    <span class="hex-code" id="masterHexCode">#B0705E</span>
+                    <span class="hex-code" id="masterHexCode">#916d7d</span>
                 </div>
             </div>
 
@@ -567,10 +567,9 @@
         const hexLabel = document.getElementById('hexLabel');
         const deviceBadge = document.getElementById('deviceBadge');
 
-        // Clean initial list (no dummy entries)
         let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || '[]');
-        let currentPickedHex = '#B0705E';
-        let masterColorHex = '#B0705E';
+        let currentPickedHex = '#916d7d';
+        let masterColorHex = '#916d7d';
         let isMasterMode = false;
         let selectedPlayerName = '';
         let svgFillPath = null;
@@ -672,10 +671,8 @@
 
         startClaimBtn.addEventListener('click', openNamePrompt);
 
-        // If list is completely empty on load, pull up the name card by default
         window.addEventListener('load', () => {
             if (savedEntries.length === 0) {
-                // Short delay to let default view render first, then transition smoothly to name prompt
                 setTimeout(() => {
                     openNamePrompt();
                 }, 100);
@@ -698,7 +695,7 @@
             checkResultsBtn.style.display = "none";
 
             const existing = savedEntries.find(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());
-            const targetHex = existing ? existing.hex : '#B0705E';
+            const targetHex = existing ? existing.hex : '#916d7d';
 
             setTimeout(() => {
                 setSliderToColor(targetHex);
@@ -728,15 +725,14 @@
         });
 
         function resetPicker() {
-            setSliderToColor('#B0705E');
+            setSliderToColor('#916d7d');
         }
 
+        // Custom endpoints mapped smoothly from Tekla (#edc5d3) to Zsolt (#362114)
         const skinPaletteStops = [
-            { pos: 0, hex: "#FAEDCD" },
-            { pos: 25, hex: "#F5D0B1" },
-            { pos: 50, hex: "#B0705E" },
-            { pos: 75, hex: "#8D5524" },
-            { pos: 100, hex: "#3b2219" }
+            { pos: 0, hex: "#edc5d3" },   // Tekla
+            { pos: 50, hex: "#916d7d" },  // Midpoint
+            { pos: 100, hex: "#362114" }  // Zsolt
         ];
 
         function hexToRgb(hex) {
@@ -916,7 +912,7 @@
 
         resetGameBtn.addEventListener('click', () => {
             localStorage.removeItem('savedEntries');
-            savedEntries = JSON.parse(JSON.stringify([]));
+            savedEntries = [];
             renderEntries();
             
             resultsView.classList.remove('fade-in');

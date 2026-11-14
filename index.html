@@ -170,7 +170,7 @@
             color: #ffffff;
         }
 
-        /* Scrollable Picked Colors List */
+        /* Scrollable Flexible Picked Colors List */
         .list-container {
             width: auto;
             max-width: 100%;
@@ -716,6 +716,7 @@
                         nameCard.removeEventListener('transitionend', onTransitionEnd);
                     }
                 };
+                nameCard.classList.remove('fade-in'); // handled smoothly via transition
                 nameCard.addEventListener('transitionend', onTransitionEnd);
                 nameInput.focus();
             }, 300);

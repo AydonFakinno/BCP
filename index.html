@@ -209,9 +209,9 @@
         }
 
         .color-item {
-            display: grid;
-            grid-template-columns: 42px minmax(0, 1fr) auto auto;
+            display: flex;
             align-items: center;
+            justify-content: space-between;
             background-color: #2a2a32;
             padding: 1rem 1.25rem;
             border-radius: 16px;
@@ -225,7 +225,7 @@
             align-items: center;
             gap: 0.75rem;
             min-width: 0;
-            width: 100%;
+            flex: 1;
         }
 
         .user-name {
@@ -239,10 +239,11 @@
             width: 100%;
         }
 
-        .color-info-group {
+        .color-info {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem;
+            flex-shrink: 0;
         }
 
         .hex-code {
@@ -569,9 +570,8 @@
         <div class="results-view" id="resultsView">
             <div class="master-card" id="masterCardSummary">
                 <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Valós Szín</span>
-                <div class="color-info-group">
+                <div class="color-info" id="masterColorInfo">
                     <!-- Master SVG icon renders here -->
-                    <span id="masterSvgContainer"></span>
                     <span class="hex-code" id="masterHexCode">50% BBMÁ</span>
                 </div>
             </div>
@@ -604,7 +604,6 @@
         const resultsView = document.getElementById('resultsView');
         const masterColorInfo = document.getElementById('masterColorInfo');
         const masterHexCode = document.getElementById('masterHexCode');
-        const masterSvgContainer = document.getElementById('masterSvgContainer');
         const leaderboardList = document.getElementById('leaderboardList');
         const resetGameBtn = document.getElementById('resetGameBtn');
 
@@ -673,11 +672,10 @@
                 li.className = 'color-item';
                 
                 li.innerHTML = `
-                    <span class="pos-badge pos-rest" style="visibility: hidden;">#0</span>
                     <div class="user-name-group">
                         <span class="user-name" title="${entry.name}">${entry.name}</span>
                     </div>
-                    <div class="color-info-group">
+                    <div class="color-info">
                         ${getMiniSvgHtml(entry.hex)}
                         <span class="hex-code">${entry.sliderVal !== undefined ? entry.sliderVal : 50}% BBMÁ</span>
                     </div>
@@ -889,8 +887,10 @@
         checkResultsBtn.addEventListener('click', () => {
             masterColorHex = currentPickedHex;
             masterSliderVal = currentSliderVal;
-            masterHexCode.textContent = `${masterSliderVal}% BBMÁ`;
-            masterSvgContainer.innerHTML = getMiniSvgHtml(masterColorHex);
+            masterColorInfo.innerHTML = `
+                ${getMiniSvgHtml(masterColorHex)}
+                <span class="hex-code" id="masterHexCode">${masterSliderVal}% BBMÁ</span>
+            `;
 
             const entries = savedEntries.map(e => {
                 const entrySliderVal = e.sliderVal !== undefined ? e.sliderVal : 50;
@@ -919,15 +919,15 @@
                 const matchColorStyle = `color: ${getMatchColor(entry.matchScore)};`;
 
                 li.innerHTML = `
-                    ${posBadge}
                     <div class="user-name-group">
+                        ${posBadge}
                         <span class="user-name" title="${entry.name}">${entry.name}</span>
                     </div>
-                    <div class="color-info-group">
+                    <div class="color-info">
                         ${getMiniSvgHtml(entry.hex)}
                         <span class="hex-code">${entry.sliderVal}% BBMÁ</span>
+                        <span class="score-match" style="${matchColorStyle}">${entry.matchScore}% egyezés</span>
                     </div>
-                    <span class="score-match" style="${matchColorStyle}">${entry.matchScore}% egyezés</span>
                 `;
                 leaderboardList.appendChild(li);
             });

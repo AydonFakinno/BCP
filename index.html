@@ -570,9 +570,9 @@
             <div class="master-card" id="masterCardSummary">
                 <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Valós Szín</span>
                 <div class="color-info-group">
-                    <span class="hex-code" id="masterHexCode">50% BBMÁ</span>
                     <!-- Master SVG icon renders here -->
                     <span id="masterSvgContainer"></span>
+                    <span class="hex-code" id="masterHexCode">50% BBMÁ</span>
                 </div>
             </div>
 
@@ -678,8 +678,8 @@
                         <span class="user-name" title="${entry.name}">${entry.name}</span>
                     </div>
                     <div class="color-info-group">
-                        <span class="hex-code">${entry.sliderVal !== undefined ? entry.sliderVal : 50}% BBMÁ</span>
                         ${getMiniSvgHtml(entry.hex)}
+                        <span class="hex-code">${entry.sliderVal !== undefined ? entry.sliderVal : 50}% BBMÁ</span>
                     </div>
                 `;
                 colorList.appendChild(li);
@@ -924,8 +924,8 @@
                         <span class="user-name" title="${entry.name}">${entry.name}</span>
                     </div>
                     <div class="color-info-group">
-                        <span class="hex-code">${entry.sliderVal}% BBMÁ</span>
                         ${getMiniSvgHtml(entry.hex)}
+                        <span class="hex-code">${entry.sliderVal}% BBMÁ</span>
                     </div>
                     <span class="score-match" style="${matchColorStyle}">${entry.matchScore}% egyezés</span>
                 `;

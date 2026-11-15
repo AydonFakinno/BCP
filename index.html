@@ -287,7 +287,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow: visible;
             padding: 0;
             flex-shrink: 0;
         }
@@ -295,6 +295,7 @@
         .swatch-svg svg {
             width: 100%;
             height: 100%;
+            overflow: visible;
         }
 
         /* Free Text Name Input Card */
@@ -438,13 +439,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow: visible;
             padding: 0;
         }
 
         .color-preview svg {
             width: 100%;
             height: 100%;
+            overflow: visible;
         }
 
         /* Side by Side Choice Grid */
@@ -494,11 +496,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: visible;
         }
 
         .choice-svg-box svg {
             width: 100%;
             height: 100%;
+            overflow: visible;
+        }
+
+        /* Shift GTA logo slightly left to center it perfectly */
+        .choice-svg-box.logo-box svg {
+            transform: translateX(-4px);
         }
 
         .choice-label {
@@ -646,7 +655,7 @@
             <div class="choice-options-grid">
                 <label class="choice-card" id="cardLogoOpt">
                     <input type="radio" name="eventChoice" value="GTA VI" id="radioLogo" checked>
-                    <div class="choice-svg-box" id="logoPreviewBox">
+                    <div class="choice-svg-box logo-box" id="logoPreviewBox">
                         <!-- logo.svg loads here -->
                     </div>
                     <span class="choice-label">GTA VI</span>
@@ -736,7 +745,7 @@
         let svgRawText = '';
         let logoRawText = '';
 
-        // Fetch char.svg and logo.svg dynamically and preserve full overlay structures
+        // Fetch char.svg and logo.svg dynamically
         Promise.all([
             fetch('char.svg').then(res => res.text()),
             fetch('logo.svg').then(res => res.text())
@@ -744,57 +753,41 @@
             svgRawText = charText;
             logoRawText = logoText;
 
-            updateSvgFills(currentPickedHex);
+            loadSvgAssets();
             renderEntries();
         }).catch(err => console.error("Hiba az SVG fájlok betöltésekor:", err));
 
-        function updateSvgFills(hex) {
-            // Apply fill color to the main fill element or path while keeping overlay strokes/details intact
-            const applyToContainer = (container) => {
-                container.innerHTML = svgRawText;
+        function loadSvgAssets() {
+            const injectSvg = (container, text, isLogo = false) => {
+                container.innerHTML = text;
                 const embeddedSvg = container.querySelector('svg');
                 if (embeddedSvg) {
                     embeddedSvg.style.width = '100%';
                     embeddedSvg.style.height = '100%';
-                }
-                const fillPath = container.querySelector('#fill') || container.querySelector('path');
-                if (fillPath) {
-                    fillPath.style.fill = hex;
+                    embeddedSvg.style.overflow = 'visible';
+                    if (isLogo) {
+                        embeddedSvg.style.transform = 'translateX(-4px)';
+                    }
                 }
             };
 
-            applyToContainer(colorPreviewBox);
-            applyToContainer(charPreviewSmallBox);
-
-            logoPreviewBox.innerHTML = logoRawText;
-            const logoSvg = logoPreviewBox.querySelector('svg');
-            if (logoSvg) {
-                logoSvg.style.width = '100%';
-                logoSvg.style.height = '100%';
-            }
+            injectSvg(colorPreviewBox, svgRawText);
+            injectSvg(charPreviewSmallBox, svgRawText);
+            injectSvg(logoPreviewBox, logoRawText, true);
         }
 
-        function getMiniSvgHtml(hex) {
-            if (!svgRawText) return `<div class="swatch-svg" style="background-color: ${hex};"></div>`;
+        function getSvgHtml(text, isLogo = false) {
+            if (!text) return `<div class="swatch-svg"></div>`;
             const parser = new DOMParser();
-            const doc = parser.parseFromString(svgRawText, 'image/svg+xml');
-            const pathElem = doc.querySelector('#fill') || doc.querySelector('path');
-            if (pathElem) {
-                pathElem.style.fill = hex;
-            }
+            const doc = parser.parseFromString(text, 'image/svg+xml');
             const svgElem = doc.querySelector('svg');
             if (svgElem) {
-                return `<div class="swatch-svg">${svgElem.outerHTML}</div>`;
-            }
-            return `<div class="swatch-svg" style="background-color: ${hex};"></div>`;
-        }
-
-        function getLogoSvgHtml() {
-            if (!logoRawText) return `<div class="swatch-svg"></div>`;
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(logoRawText, 'image/svg+xml');
-            const svgElem = doc.querySelector('svg');
-            if (svgElem) {
+                svgElem.style.width = '100%';
+                svgElem.style.height = '100%';
+                svgElem.style.overflow = 'visible';
+                if (isLogo) {
+                    svgElem.style.transform = 'translateX(-4px)';
+                }
                 return `<div class="swatch-svg">${svgElem.outerHTML}</div>`;
             }
             return `<div class="swatch-svg"></div>`;
@@ -815,7 +808,7 @@
                 const li = document.createElement('li');
                 li.className = 'color-item';
                 
-                const choiceThumbnail = entry.choice === 'GTA VI' ? getLogoSvgHtml() : getMiniSvgHtml(entry.hex);
+                const choiceThumbnail = entry.choice === 'GTA VI' ? getSvgHtml(logoRawText, true) : getSvgHtml(svgRawText);
 
                 li.innerHTML = `
                     <div class="user-name-group">
@@ -824,7 +817,7 @@
                     <div class="color-info">
                         ${choiceThumbnail}
                         <span class="choice-badge">${entry.choice || 'GTA VI'}</span>
-                        ${getMiniSvgHtml(entry.hex)}
+                        ${getSvgHtml(svgRawText)}
                         <span class="hex-code">${entry.sliderVal !== undefined ? entry.sliderVal : 50}% BBMÁ</span>
                     </div>
                 `;
@@ -960,10 +953,6 @@
             skinSlider.value = val;
             currentPickedHex = getColorFromSlider(val);
             hexLabel.textContent = `${val}% barna bőrű magyar állampolgár`;
-
-            if (svgRawText) {
-                updateSvgFills(currentPickedHex);
-            }
         }
 
         skinSlider.addEventListener('input', (e) => {
@@ -1068,12 +1057,12 @@
             masterSliderVal = currentSliderVal;
             masterChoice = currentChoice;
 
-            const masterThumbnail = masterChoice === 'GTA VI' ? getLogoSvgHtml() : getMiniSvgHtml(masterColorHex);
+            const masterThumbnail = masterChoice === 'GTA VI' ? getSvgHtml(logoRawText, true) : getSvgHtml(svgRawText);
 
             masterColorInfo.innerHTML = `
                 ${masterThumbnail}
                 <span class="choice-badge">${masterChoice}</span>
-                ${getMiniSvgHtml(masterColorHex)}
+                ${getSvgHtml(svgRawText)}
                 <span class="hex-code" id="masterHexCode">${masterSliderVal}% BBMÁ</span>
             `;
 
@@ -1104,7 +1093,7 @@
 
                 const posBadge = `<span class="pos-badge ${posClass}">#${rankNum}</span>`;
                 const matchColorStyle = `color: ${getMatchColor(entry.matchScore)};`;
-                const entryThumbnail = entry.choice === 'GTA VI' ? getLogoSvgHtml() : getMiniSvgHtml(entry.hex);
+                const entryThumbnail = entry.choice === 'GTA VI' ? getSvgHtml(logoRawText, true) : getSvgHtml(svgRawText);
 
                 li.innerHTML = `
                     <div class="user-name-group">
@@ -1114,7 +1103,7 @@
                     <div class="color-info">
                         ${entryThumbnail}
                         <span class="choice-badge">${entry.choice}</span>
-                        ${getMiniSvgHtml(entry.hex)}
+                        ${getSvgHtml(svgRawText)}
                         <span class="hex-code">${entry.sliderVal}% BBMÁ</span>
                         <span class="score-match" style="${matchColorStyle}">${entry.matchScore}% egyezés</span>
                     </div>

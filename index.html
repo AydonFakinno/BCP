@@ -70,7 +70,7 @@
         }
 
         /* View Containers (Fade Transitions) */
-        .default-view, .card, .picker-container, .results-view {
+        .default-view, .card, .picker-container, .choice-container-step, .results-view {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
@@ -78,7 +78,7 @@
             position: absolute;
         }
 
-        .default-view.fade-in, .card.fade-in, .picker-container.fade-in, .results-view.fade-in {
+        .default-view.fade-in, .card.fade-in, .picker-container.fade-in, .choice-container-step.fade-in, .results-view.fade-in {
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
@@ -124,7 +124,7 @@
             justify-content: center;
         }
 
-        .claim-btn, .master-btn, .submit-btn, .reset-btn, .confirm-name-btn {
+        .claim-btn, .master-btn, .submit-btn, .next-btn, .reset-btn, .confirm-name-btn {
             font-size: 0.95rem;
             font-weight: 600;
             padding: 0.85rem 1.75rem;
@@ -134,13 +134,13 @@
             transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .claim-btn, .submit-btn, .confirm-name-btn {
+        .claim-btn, .submit-btn, .next-btn, .confirm-name-btn {
             background-color: #6366f1;
             color: #ffffff;
             box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
         }
 
-        .claim-btn:hover, .submit-btn:hover, .confirm-name-btn:hover {
+        .claim-btn:hover, .submit-btn:hover, .next-btn:hover, .confirm-name-btn:hover {
             background-color: #4f46e5;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
@@ -170,14 +170,18 @@
             color: #ffffff;
         }
 
-        /* Scrollable Picked Colors List */
+        /* Scrollable Flexible Picked Colors List */
         .list-container {
-            width: 100%;
+            width: auto;
+            max-width: 100%;
             background-color: #1c1c21;
             border-radius: 20px;
             border: 1px solid #2e2e36;
             padding: 1.5rem;
             box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            display: inline-flex;
+            flex-direction: column;
+            align-items: stretch;
         }
 
         .list-title {
@@ -197,6 +201,7 @@
             flex-direction: column;
             gap: 1rem;
             padding-right: 0.25rem;
+            width: auto;
         }
 
         .color-list::-webkit-scrollbar {
@@ -211,13 +216,13 @@
         .color-item {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start;
             background-color: #2a2a32;
             padding: 1rem 1.25rem;
             border-radius: 16px;
             border: 1px solid #3f3f46;
-            width: 100%;
-            gap: 1rem;
+            width: auto;
+            gap: 1.5rem;
         }
 
         .user-name-group {
@@ -225,7 +230,6 @@
             align-items: center;
             gap: 0.75rem;
             min-width: 0;
-            flex: 1;
         }
 
         .user-name {
@@ -235,8 +239,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            display: block;
-            width: 100%;
+            max-width: 180px;
         }
 
         .color-info {
@@ -262,6 +265,17 @@
             font-size: 1.2rem;
             min-width: 130px;
             text-align: right;
+            flex-shrink: 0;
+        }
+
+        .choice-badge {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #c084fc;
+            background-color: rgba(168, 85, 247, 0.15);
+            border: 1px solid #a855f7;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
             flex-shrink: 0;
         }
 
@@ -321,8 +335,8 @@
             color: #52525b;
         }
 
-        /* Color Selection Screen Container */
-        .picker-container {
+        /* Color Selection & Choice Screen Containers */
+        .picker-container, .choice-container-step {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -433,6 +447,66 @@
             height: 100%;
         }
 
+        /* Side by Side Choice Grid */
+        .choice-options-grid {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            align-items: center;
+            margin: 1rem 0;
+        }
+
+        .choice-card {
+            background-color: #1c1c21;
+            border: 2px solid #2e2e36;
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            width: 180px;
+            transition: all 0.2s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .choice-card:hover {
+            border-color: #6366f1;
+            transform: translateY(-2px);
+        }
+
+        .choice-card.selected {
+            border-color: #6366f1;
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+
+        .choice-card input[type="radio"] {
+            accent-color: #6366f1;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .choice-svg-box {
+            width: 90px;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .choice-svg-box svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .choice-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f4f4f5;
+        }
+
         .label {
             font-size: 0.9rem;
             color: #a1a1aa;
@@ -517,7 +591,7 @@
 
         <!-- Default Main View -->
         <div class="default-view fade-in" id="defaultView">
-            <div class="success-banner" id="successBanner">Tipp belküldve!</div>
+            <div class="success-banner" id="successBanner">Tipp beküldve!</div>
             
             <div class="list-container">
                 <div class="list-title">Beküldött tippek</div>
@@ -539,9 +613,9 @@
             <button class="confirm-name-btn" id="confirmNameBtn">Tovább</button>
         </div>
 
-        <!-- Interactive Skin Tone Slider UI -->
+        <!-- Step 1: Interactive Skin Tone Slider UI -->
         <div class="picker-container" id="pickerContainer">
-            <div class="mode-indicator player" id="modeIndicator">Játékos Színe</div>
+            <div class="mode-indicator player" id="modeIndicator">Szerinted milyen színű lesz Berci?</div>
             
             <div class="picker-content-stack">
                 <div class="color-preview" id="colorPreviewBox">
@@ -561,7 +635,34 @@
             </div>
             
             <div class="submit-wrapper">
-                <button class="submit-btn" id="submitColorBtn">Tipp Beküldése</button>
+                <button class="next-btn" id="nextToChoiceBtn">Tovább</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Second Question Choice UI (Logo vs Char) -->
+        <div class="choice-container-step" id="choiceContainerStep">
+            <div class="mode-indicator player" id="choiceModeIndicator">Szerinted melyik jön ki előbb?</div>
+            
+            <div class="choice-options-grid">
+                <label class="choice-card" id="cardLogoOpt">
+                    <input type="radio" name="eventChoice" value="GTA VI" id="radioLogo" checked>
+                    <div class="choice-svg-box" id="logoPreviewBox">
+                        <!-- logo.svg loads here -->
+                    </div>
+                    <span class="choice-label">GTA VI</span>
+                </label>
+
+                <label class="choice-card" id="cardCharOpt">
+                    <input type="radio" name="eventChoice" value="Berci" id="radioChar">
+                    <div class="choice-svg-box" id="charPreviewSmallBox">
+                        <!-- char.svg loads here -->
+                    </div>
+                    <span class="choice-label">Berci</span>
+                </label>
+            </div>
+            
+            <div class="submit-wrapper">
+                <button class="submit-btn" id="submitFinalTipBtn">Tipp Beküldése</button>
                 <button class="master-btn" id="checkResultsBtn" style="display: none;">Eredmények Ellenőrzése</button>
             </div>
         </div>
@@ -569,10 +670,9 @@
         <!-- Results Leaderboard View -->
         <div class="results-view" id="resultsView">
             <div class="master-card" id="masterCardSummary">
-                <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Valós Szín</span>
+                <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Valós Eredmény</span>
                 <div class="color-info" id="masterColorInfo">
-                    <!-- Master SVG icon renders here -->
-                    <span class="hex-code" id="masterHexCode">50% BBMÁ</span>
+                    <!-- Master info renders here -->
                 </div>
             </div>
 
@@ -594,52 +694,89 @@
         const nameInput = document.getElementById('nameInput');
         const nameCard = document.getElementById('nameCard');
         const confirmNameBtn = document.getElementById('confirmNameBtn');
+        
         const pickerContainer = document.getElementById('pickerContainer');
         const modeIndicator = document.getElementById('modeIndicator');
-        const submitColorBtn = document.getElementById('submitColorBtn');
+        const skinSlider = document.getElementById('skinSlider');
+        const colorPreviewBox = document.getElementById('colorPreviewBox');
+        const hexLabel = document.getElementById('hexLabel');
+        const nextToChoiceBtn = document.getElementById('nextToChoiceBtn');
+
+        const choiceContainerStep = document.getElementById('choiceContainerStep');
+        const choiceModeIndicator = document.getElementById('choiceModeIndicator');
+        const logoPreviewBox = document.getElementById('logoPreviewBox');
+        const charPreviewSmallBox = document.getElementById('charPreviewSmallBox');
+        const radioLogo = document.getElementById('radioLogo');
+        const radioChar = document.getElementById('radioChar');
+        const cardLogoOpt = document.getElementById('cardLogoOpt');
+        const cardCharOpt = document.getElementById('cardCharOpt');
+        const submitFinalTipBtn = document.getElementById('submitFinalTipBtn');
         const checkResultsBtn = document.getElementById('checkResultsBtn');
+
         const colorList = document.getElementById('colorList');
         const successBanner = document.getElementById('successBanner');
         
         const resultsView = document.getElementById('resultsView');
         const masterColorInfo = document.getElementById('masterColorInfo');
-        const masterHexCode = document.getElementById('masterHexCode');
         const leaderboardList = document.getElementById('leaderboardList');
         const resetGameBtn = document.getElementById('resetGameBtn');
-
-        const skinSlider = document.getElementById('skinSlider');
-        const colorPreviewBox = document.getElementById('colorPreviewBox');
-        const hexLabel = document.getElementById('hexLabel');
         const deviceBadge = document.getElementById('deviceBadge');
 
         let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || '[]');
         let currentPickedHex = '#B07E6A';
         let currentSliderVal = 50;
+        let currentChoice = 'GTA VI';
+
         let masterColorHex = '#B07E6A';
         let masterSliderVal = 50;
+        let masterChoice = 'GTA VI';
+
         let isMasterMode = false;
         let selectedPlayerName = '';
         let svgFillPath = null;
         let svgRawText = '';
+        let logoRawText = '';
 
-        // Fetch and load external character SVG dynamically
-        fetch('char.svg')
-            .then(response => response.text())
-            .then(svgText => {
-                svgRawText = svgText;
-                colorPreviewBox.innerHTML = svgText;
-                const embeddedSvg = colorPreviewBox.querySelector('svg');
-                if (embeddedSvg) {
-                    embeddedSvg.style.width = '100%';
-                    embeddedSvg.style.height = '100%';
-                }
-                svgFillPath = colorPreviewBox.querySelector('#fill') || colorPreviewBox.querySelector('path');
-                if (svgFillPath) {
-                    svgFillPath.style.fill = currentPickedHex;
-                }
-                renderEntries();
-            })
-            .catch(err => console.error("Hiba a char.svg betöltésekor:", err));
+        // Fetch char.svg and logo.svg dynamically
+        Promise.all([
+            fetch('char.svg').then(res => res.text()),
+            fetch('logo.svg').then(res => res.text())
+        ]).then(([charText, logoText]) => {
+            svgRawText = charText;
+            logoRawText = logoText;
+
+            // Render preview boxes
+            colorPreviewBox.innerHTML = svgRawText;
+            const embeddedSvg = colorPreviewBox.querySelector('svg');
+            if (embeddedSvg) {
+                embeddedSvg.style.width = '100%';
+                embeddedSvg.style.height = '100%';
+            }
+            svgFillPath = colorPreviewBox.querySelector('#fill') || colorPreviewBox.querySelector('path');
+            if (svgFillPath) {
+                svgFillPath.style.fill = currentPickedHex;
+            }
+
+            logoPreviewBox.innerHTML = logoText;
+            const logoSvg = logoPreviewBox.querySelector('svg');
+            if (logoSvg) {
+                logoSvg.style.width = '100%';
+                logoSvg.style.height = '100%';
+            }
+
+            charPreviewSmallBox.innerHTML = svgRawText;
+            const charSmallSvg = charPreviewSmallBox.querySelector('svg');
+            if (charSmallSvg) {
+                charSmallSvg.style.width = '100%';
+                charSmallSvg.style.height = '100%';
+            }
+            const smallFillPath = charPreviewSmallBox.querySelector('#fill') || charPreviewSmallBox.querySelector('path');
+            if (smallFillPath) {
+                smallFillPath.style.fill = currentPickedHex;
+            }
+
+            renderEntries();
+        }).catch(err => console.error("Hiba az SVG fájlok betöltésekor:", err));
 
         function getMiniSvgHtml(hex) {
             if (!svgRawText) return `<div class="swatch-svg" style="background-color: ${hex};"></div>`;
@@ -654,6 +791,17 @@
                 return `<div class="swatch-svg">${svgElem.outerHTML}</div>`;
             }
             return `<div class="swatch-svg" style="background-color: ${hex};"></div>`;
+        }
+
+        function getLogoSvgHtml() {
+            if (!logoRawText) return `<div class="swatch-svg"></div>`;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(logoRawText, 'image/svg+xml');
+            const svgElem = doc.querySelector('svg');
+            if (svgElem) {
+                return `<div class="swatch-svg">${svgElem.outerHTML}</div>`;
+            }
+            return `<div class="swatch-svg"></div>`;
         }
 
         function renderEntries() {
@@ -671,11 +819,15 @@
                 const li = document.createElement('li');
                 li.className = 'color-item';
                 
+                const choiceThumbnail = entry.choice === 'GTA VI' ? getLogoSvgHtml() : getMiniSvgHtml(entry.hex);
+
                 li.innerHTML = `
                     <div class="user-name-group">
                         <span class="user-name" title="${entry.name}">${entry.name}</span>
                     </div>
                     <div class="color-info">
+                        ${choiceThumbnail}
+                        <span class="choice-badge">${entry.choice || 'GTA VI'}</span>
                         ${getMiniSvgHtml(entry.hex)}
                         <span class="hex-code">${entry.sliderVal !== undefined ? entry.sliderVal : 50}% BBMÁ</span>
                     </div>
@@ -706,14 +858,6 @@
             nameInput.value = '';
             setTimeout(() => {
                 nameCard.classList.add('fade-in');
-                
-                const onTransitionEnd = (e) => {
-                    if (e.propertyName === 'opacity') {
-                        nameInput.focus();
-                        nameCard.removeEventListener('transitionend', onTransitionEnd);
-                    }
-                };
-                nameCard.addEventListener('transitionend', onTransitionEnd);
                 nameInput.focus();
             }, 300);
         }
@@ -732,8 +876,7 @@
 
             modeIndicator.textContent = `Szerinted milyen színű lesz Berci?`;
             modeIndicator.className = "mode-indicator player";
-            submitColorBtn.style.display = "block";
-            checkResultsBtn.style.display = "none";
+            nextToChoiceBtn.style.display = "block";
 
             const existing = savedEntries.find(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());
             const targetVal = existing && existing.sliderVal !== undefined ? existing.sliderVal : 50;
@@ -756,8 +899,6 @@
             
             modeIndicator.textContent = "Milyen színű lett Berci?";
             modeIndicator.className = "mode-indicator master";
-            submitColorBtn.style.display = "none";
-            checkResultsBtn.style.display = "block";
 
             setTimeout(() => {
                 resetPicker();
@@ -827,6 +968,10 @@
             if (svgFillPath) {
                 svgFillPath.style.fill = currentPickedHex;
             }
+            const smallFillPath = charPreviewSmallBox.querySelector('#fill') || charPreviewSmallBox.querySelector('path');
+            if (smallFillPath) {
+                smallFillPath.style.fill = currentPickedHex;
+            }
         }
 
         skinSlider.addEventListener('input', (e) => {
@@ -834,21 +979,63 @@
             setSliderToValue(val);
         });
 
-        submitColorBtn.addEventListener('click', () => {
+        // Transition from Color Picker to Choice Step
+        nextToChoiceBtn.addEventListener('click', () => {
+            pickerContainer.classList.remove('fade-in');
+
+            if (isMasterMode) {
+                choiceModeIndicator.textContent = "Valódi eredmény: Melyik jött ki előbb?";
+                choiceModeIndicator.className = "mode-indicator master";
+                submitFinalTipBtn.style.display = "none";
+                checkResultsBtn.style.display = "block";
+            } else {
+                choiceModeIndicator.textContent = "Szerinted melyik jön ki előbb?";
+                choiceModeIndicator.className = "mode-indicator player";
+                submitFinalTipBtn.style.display = "block";
+                checkResultsBtn.style.display = "none";
+            }
+
+            // Set default radio state
+            radioLogo.checked = true;
+            updateChoiceCards('GTA VI');
+
+            setTimeout(() => {
+                choiceContainerStep.classList.add('fade-in');
+            }, 300);
+        });
+
+        function updateChoiceCards(selectedVal) {
+            currentChoice = selectedVal;
+            if (selectedVal === 'GTA VI') {
+                cardLogoOpt.classList.add('selected');
+                cardCharOpt.classList.remove('selected');
+                radioLogo.checked = true;
+            } else {
+                cardCharOpt.classList.add('selected');
+                cardLogoOpt.classList.remove('selected');
+                radioChar.checked = true;
+            }
+        }
+
+        cardLogoOpt.addEventListener('click', () => updateChoiceCards('GTA VI'));
+        cardCharOpt.addEventListener('click', () => updateChoiceCards('Berci'));
+
+        submitFinalTipBtn.addEventListener('click', () => {
             const existingIndex = savedEntries.findIndex(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());
             
             if (existingIndex >= 0) {
                 savedEntries[existingIndex].hex = currentPickedHex;
                 savedEntries[existingIndex].sliderVal = currentSliderVal;
+                savedEntries[existingIndex].choice = currentChoice;
                 savedEntries[existingIndex].name = selectedPlayerName;
             } else {
-                savedEntries.push({ name: selectedPlayerName, hex: currentPickedHex, sliderVal: currentSliderVal });
+                savedEntries.push({ name: selectedPlayerName, hex: currentPickedHex, sliderVal: currentSliderVal, choice: currentChoice });
             }
 
             localStorage.setItem('savedEntries', JSON.stringify(savedEntries));
             renderEntries();
 
-            pickerContainer.classList.remove('fade-in');
+            choiceContainerStep.classList.remove('fade-in');
 
             setTimeout(() => {
                 resetPicker();
@@ -887,18 +1074,29 @@
         checkResultsBtn.addEventListener('click', () => {
             masterColorHex = currentPickedHex;
             masterSliderVal = currentSliderVal;
+            masterChoice = currentChoice;
+
+            const masterThumbnail = masterChoice === 'GTA VI' ? getLogoSvgHtml() : getMiniSvgHtml(masterColorHex);
+
             masterColorInfo.innerHTML = `
+                ${masterThumbnail}
+                <span class="choice-badge">${masterChoice}</span>
                 ${getMiniSvgHtml(masterColorHex)}
                 <span class="hex-code" id="masterHexCode">${masterSliderVal}% BBMÁ</span>
             `;
 
             const entries = savedEntries.map(e => {
                 const entrySliderVal = e.sliderVal !== undefined ? e.sliderVal : 50;
+                const colorMatch = parseFloat(calculateSliderMatch(entrySliderVal, masterSliderVal));
+                const choiceMatch = (e.choice === masterChoice) ? 1 : 0;
+                // Combined scoring or sorted primarily by color match score
                 return {
                     name: e.name,
                     hex: e.hex,
                     sliderVal: entrySliderVal,
-                    matchScore: parseFloat(calculateSliderMatch(entrySliderVal, masterSliderVal))
+                    choice: e.choice || 'GTA VI',
+                    matchScore: colorMatch,
+                    choiceMatch: choiceMatch
                 };
             });
 
@@ -917,6 +1115,7 @@
 
                 const posBadge = `<span class="pos-badge ${posClass}">#${rankNum}</span>`;
                 const matchColorStyle = `color: ${getMatchColor(entry.matchScore)};`;
+                const entryThumbnail = entry.choice === 'GTA VI' ? getLogoSvgHtml() : getMiniSvgHtml(entry.hex);
 
                 li.innerHTML = `
                     <div class="user-name-group">
@@ -924,6 +1123,8 @@
                         <span class="user-name" title="${entry.name}">${entry.name}</span>
                     </div>
                     <div class="color-info">
+                        ${entryThumbnail}
+                        <span class="choice-badge">${entry.choice}</span>
                         ${getMiniSvgHtml(entry.hex)}
                         <span class="hex-code">${entry.sliderVal}% BBMÁ</span>
                         <span class="score-match" style="${matchColorStyle}">${entry.matchScore}% egyezés</span>
@@ -932,7 +1133,7 @@
                 leaderboardList.appendChild(li);
             });
 
-            pickerContainer.classList.remove('fade-in');
+            choiceContainerStep.classList.remove('fade-in');
 
             setTimeout(() => {
                 resultsView.classList.add('fade-in');

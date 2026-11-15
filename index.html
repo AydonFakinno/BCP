@@ -170,18 +170,14 @@
             color: #ffffff;
         }
 
-        /* Scrollable Flexible Picked Colors List */
+        /* Scrollable Picked Colors List */
         .list-container {
-            width: auto;
-            max-width: 100%;
+            width: 100%;
             background-color: #1c1c21;
             border-radius: 20px;
             border: 1px solid #2e2e36;
             padding: 1.5rem;
             box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-            display: inline-flex;
-            flex-direction: column;
-            align-items: stretch;
         }
 
         .list-title {
@@ -201,7 +197,6 @@
             flex-direction: column;
             gap: 1rem;
             padding-right: 0.25rem;
-            width: auto;
         }
 
         .color-list::-webkit-scrollbar {
@@ -216,13 +211,13 @@
         .color-item {
             display: flex;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: space-between;
             background-color: #2a2a32;
             padding: 1rem 1.25rem;
             border-radius: 16px;
             border: 1px solid #3f3f46;
-            width: auto;
-            gap: 1.5rem;
+            width: 100%;
+            gap: 1rem;
         }
 
         .user-name-group {
@@ -230,6 +225,7 @@
             align-items: center;
             gap: 0.75rem;
             min-width: 0;
+            flex: 1;
         }
 
         .user-name {
@@ -239,7 +235,8 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 180px;
+            display: block;
+            width: 100%;
         }
 
         .color-info {
@@ -611,7 +608,7 @@
 
             <div class="btn-group">
                 <button class="claim-btn" id="startClaimBtn">Tipp Beküldése</button>
-                <button class="master-btn" id="enterMasterBtn">Valós Szín Megadása</button>
+                <button class="master-btn" id="enterMasterBtn">Valós Eredmény Megadása</button>
             </div>
         </div>
 
@@ -744,6 +741,7 @@
         let selectedPlayerName = '';
         let svgRawText = '';
         let logoRawText = '';
+        let svgFillPath = null;
 
         // Fetch char.svg and logo.svg dynamically
         Promise.all([
@@ -758,36 +756,68 @@
         }).catch(err => console.error("Hiba az SVG fájlok betöltésekor:", err));
 
         function loadSvgAssets() {
-            const injectSvg = (container, text, isLogo = false) => {
-                container.innerHTML = text;
-                const embeddedSvg = container.querySelector('svg');
-                if (embeddedSvg) {
-                    embeddedSvg.style.width = '100%';
-                    embeddedSvg.style.height = '100%';
-                    embeddedSvg.style.overflow = 'visible';
-                    if (isLogo) {
-                        embeddedSvg.style.transform = 'translateX(-4px)';
-                    }
-                }
-            };
+            colorPreviewBox.innerHTML = svgRawText;
+            const embeddedSvg = colorPreviewBox.querySelector('svg');
+            if (embeddedSvg) {
+                embeddedSvg.style.width = '100%';
+                embeddedSvg.style.height = '100%';
+                embeddedSvg.style.overflow = 'visible';
+            }
+            svgFillPath = colorPreviewBox.querySelector('#fill') || colorPreviewBox.querySelector('path');
+            if (svgFillPath) {
+                svgFillPath.style.fill = currentPickedHex;
+            }
 
-            injectSvg(colorPreviewBox, svgRawText);
-            injectSvg(charPreviewSmallBox, svgRawText);
-            injectSvg(logoPreviewBox, logoRawText, true);
+            charPreviewSmallBox.innerHTML = svgRawText;
+            const smallSvg = charPreviewSmallBox.querySelector('svg');
+            if (smallSvg) {
+                smallSvg.style.width = '100%';
+                smallSvg.style.height = '100%';
+                smallSvg.style.overflow = 'visible';
+            }
+            const smallFillPath = charPreviewSmallBox.querySelector('#fill') || charPreviewSmallBox.querySelector('path');
+            if (smallFillPath) {
+                smallFillPath.style.fill = currentPickedHex;
+            }
+
+            logoPreviewBox.innerHTML = logoRawText;
+            const logoSvg = logoPreviewBox.querySelector('svg');
+            if (logoSvg) {
+                logoSvg.style.width = '100%';
+                logoSvg.style.height = '100%';
+                logoSvg.style.overflow = 'visible';
+                logoSvg.style.transform = 'translateX(-4px)';
+            }
         }
 
-        function getSvgHtml(text, isLogo = false) {
-            if (!text) return `<div class="swatch-svg"></div>`;
+        function getMiniSvgHtml(hex) {
+            if (!svgRawText) return `<div class="swatch-svg" style="background-color: ${hex};"></div>`;
             const parser = new DOMParser();
-            const doc = parser.parseFromString(text, 'image/svg+xml');
+            const doc = parser.parseFromString(svgRawText, 'image/svg+xml');
+            const pathElem = doc.querySelector('#fill') || doc.querySelector('path');
+            if (pathElem) {
+                pathElem.style.fill = hex;
+            }
             const svgElem = doc.querySelector('svg');
             if (svgElem) {
                 svgElem.style.width = '100%';
                 svgElem.style.height = '100%';
                 svgElem.style.overflow = 'visible';
-                if (isLogo) {
-                    svgElem.style.transform = 'translateX(-4px)';
-                }
+                return `<div class="swatch-svg">${svgElem.outerHTML}</div>`;
+            }
+            return `<div class="swatch-svg" style="background-color: ${hex};"></div>`;
+        }
+
+        function getLogoSvgHtml() {
+            if (!logoRawText) return `<div class="swatch-svg"></div>`;
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(logoRawText, 'image/svg+xml');
+            const svgElem = doc.querySelector('svg');
+            if (svgElem) {
+                svgElem.style.width = '100%';
+                svgElem.style.height = '100%';
+                svgElem.style.overflow = 'visible';
+                svgElem.style.transform = 'translateX(-4px)';
                 return `<div class="swatch-svg">${svgElem.outerHTML}</div>`;
             }
             return `<div class="swatch-svg"></div>`;
@@ -808,7 +838,7 @@
                 const li = document.createElement('li');
                 li.className = 'color-item';
                 
-                const choiceThumbnail = entry.choice === 'GTA VI' ? getSvgHtml(logoRawText, true) : getSvgHtml(svgRawText);
+                const choiceThumbnail = entry.choice === 'GTA VI' ? getLogoSvgHtml() : getMiniSvgHtml(entry.hex);
 
                 li.innerHTML = `
                     <div class="user-name-group">
@@ -817,7 +847,7 @@
                     <div class="color-info">
                         ${choiceThumbnail}
                         <span class="choice-badge">${entry.choice || 'GTA VI'}</span>
-                        ${getSvgHtml(svgRawText)}
+                        ${getMiniSvgHtml(entry.hex)}
                         <span class="hex-code">${entry.sliderVal !== undefined ? entry.sliderVal : 50}% BBMÁ</span>
                     </div>
                 `;
@@ -953,6 +983,14 @@
             skinSlider.value = val;
             currentPickedHex = getColorFromSlider(val);
             hexLabel.textContent = `${val}% barna bőrű magyar állampolgár`;
+
+            if (svgFillPath) {
+                svgFillPath.style.fill = currentPickedHex;
+            }
+            const smallFillPath = charPreviewSmallBox.querySelector('#fill') || charPreviewSmallBox.querySelector('path');
+            if (smallFillPath) {
+                smallFillPath.style.fill = currentPickedHex;
+            }
         }
 
         skinSlider.addEventListener('input', (e) => {
@@ -1057,12 +1095,12 @@
             masterSliderVal = currentSliderVal;
             masterChoice = currentChoice;
 
-            const masterThumbnail = masterChoice === 'GTA VI' ? getSvgHtml(logoRawText, true) : getSvgHtml(svgRawText);
+            const masterThumbnail = masterChoice === 'GTA VI' ? getLogoSvgHtml() : getMiniSvgHtml(masterColorHex);
 
             masterColorInfo.innerHTML = `
                 ${masterThumbnail}
                 <span class="choice-badge">${masterChoice}</span>
-                ${getSvgHtml(svgRawText)}
+                ${getMiniSvgHtml(masterColorHex)}
                 <span class="hex-code" id="masterHexCode">${masterSliderVal}% BBMÁ</span>
             `;
 
@@ -1093,7 +1131,7 @@
 
                 const posBadge = `<span class="pos-badge ${posClass}">#${rankNum}</span>`;
                 const matchColorStyle = `color: ${getMatchColor(entry.matchScore)};`;
-                const entryThumbnail = entry.choice === 'GTA VI' ? getSvgHtml(logoRawText, true) : getSvgHtml(svgRawText);
+                const entryThumbnail = entry.choice === 'GTA VI' ? getLogoSvgHtml() : getMiniSvgHtml(entry.hex);
 
                 li.innerHTML = `
                     <div class="user-name-group">
@@ -1103,7 +1141,7 @@
                     <div class="color-info">
                         ${entryThumbnail}
                         <span class="choice-badge">${entry.choice}</span>
-                        ${getSvgHtml(svgRawText)}
+                        ${getMiniSvgHtml(entry.hex)}
                         <span class="hex-code">${entry.sliderVal}% BBMÁ</span>
                         <span class="score-match" style="${matchColorStyle}">${entry.matchScore}% egyezés</span>
                     </div>

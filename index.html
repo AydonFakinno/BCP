@@ -733,11 +733,10 @@
 
         let isMasterMode = false;
         let selectedPlayerName = '';
-        let svgFillPath = null;
         let svgRawText = '';
         let logoRawText = '';
 
-        // Fetch char.svg and logo.svg dynamically
+        // Fetch char.svg and logo.svg dynamically and preserve full overlay structures
         Promise.all([
             fetch('char.svg').then(res => res.text()),
             fetch('logo.svg').then(res => res.text())
@@ -745,38 +744,35 @@
             svgRawText = charText;
             logoRawText = logoText;
 
-            // Render preview boxes
-            colorPreviewBox.innerHTML = svgRawText;
-            const embeddedSvg = colorPreviewBox.querySelector('svg');
-            if (embeddedSvg) {
-                embeddedSvg.style.width = '100%';
-                embeddedSvg.style.height = '100%';
-            }
-            svgFillPath = colorPreviewBox.querySelector('#fill') || colorPreviewBox.querySelector('path');
-            if (svgFillPath) {
-                svgFillPath.style.fill = currentPickedHex;
-            }
+            updateSvgFills(currentPickedHex);
+            renderEntries();
+        }).catch(err => console.error("Hiba az SVG fájlok betöltésekor:", err));
 
-            logoPreviewBox.innerHTML = logoText;
+        function updateSvgFills(hex) {
+            // Apply fill color to the main fill element or path while keeping overlay strokes/details intact
+            const applyToContainer = (container) => {
+                container.innerHTML = svgRawText;
+                const embeddedSvg = container.querySelector('svg');
+                if (embeddedSvg) {
+                    embeddedSvg.style.width = '100%';
+                    embeddedSvg.style.height = '100%';
+                }
+                const fillPath = container.querySelector('#fill') || container.querySelector('path');
+                if (fillPath) {
+                    fillPath.style.fill = hex;
+                }
+            };
+
+            applyToContainer(colorPreviewBox);
+            applyToContainer(charPreviewSmallBox);
+
+            logoPreviewBox.innerHTML = logoRawText;
             const logoSvg = logoPreviewBox.querySelector('svg');
             if (logoSvg) {
                 logoSvg.style.width = '100%';
                 logoSvg.style.height = '100%';
             }
-
-            charPreviewSmallBox.innerHTML = svgRawText;
-            const charSmallSvg = charPreviewSmallBox.querySelector('svg');
-            if (charSmallSvg) {
-                charSmallSvg.style.width = '100%';
-                charSmallSvg.style.height = '100%';
-            }
-            const smallFillPath = charPreviewSmallBox.querySelector('#fill') || charPreviewSmallBox.querySelector('path');
-            if (smallFillPath) {
-                smallFillPath.style.fill = currentPickedHex;
-            }
-
-            renderEntries();
-        }).catch(err => console.error("Hiba az SVG fájlok betöltésekor:", err));
+        }
 
         function getMiniSvgHtml(hex) {
             if (!svgRawText) return `<div class="swatch-svg" style="background-color: ${hex};"></div>`;
@@ -965,12 +961,8 @@
             currentPickedHex = getColorFromSlider(val);
             hexLabel.textContent = `${val}% barna bőrű magyar állampolgár`;
 
-            if (svgFillPath) {
-                svgFillPath.style.fill = currentPickedHex;
-            }
-            const smallFillPath = charPreviewSmallBox.querySelector('#fill') || charPreviewSmallBox.querySelector('path');
-            if (smallFillPath) {
-                smallFillPath.style.fill = currentPickedHex;
+            if (svgRawText) {
+                updateSvgFills(currentPickedHex);
             }
         }
 
@@ -1088,15 +1080,12 @@
             const entries = savedEntries.map(e => {
                 const entrySliderVal = e.sliderVal !== undefined ? e.sliderVal : 50;
                 const colorMatch = parseFloat(calculateSliderMatch(entrySliderVal, masterSliderVal));
-                const choiceMatch = (e.choice === masterChoice) ? 1 : 0;
-                // Combined scoring or sorted primarily by color match score
                 return {
                     name: e.name,
                     hex: e.hex,
                     sliderVal: entrySliderVal,
                     choice: e.choice || 'GTA VI',
-                    matchScore: colorMatch,
-                    choiceMatch: choiceMatch
+                    matchScore: colorMatch
                 };
             });
 

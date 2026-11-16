@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Babaváró Tippmix</title>
+  <title>Babaváró Tippmix - Eredmények</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -76,6 +76,13 @@
     }
     button:hover { background: #0284c7; color: #fff; }
 
+    .btn-secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: var(--border); color: var(--text); }
+
     .btn-success {
       background: var(--success);
       color: #fff;
@@ -85,13 +92,6 @@
       margin-top: 14px;
     }
     .btn-success:hover { background: var(--success-hover); }
-
-    .btn-secondary {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--border);
-    }
-    .btn-secondary:hover { background: var(--border); color: var(--text); }
 
     .content-area {
       flex: 1;
@@ -170,7 +170,6 @@
       display: block;
     }
 
-    /* Modal űrlap stílusok a tipp beküldéséhez */
     .modal-backdrop {
       display: none;
       position: fixed;
@@ -343,13 +342,11 @@
   <div class="sticky-header-area">
     <header>
       <div>
-        <h1 id="pageTitle">Babaváró Tippmix</h1>
+        <h1>Babaváró Tippmix</h1>
         <div class="subtitle" id="pageSubtitle">Haverok tippjei és becslései</div>
       </div>
-      <!-- Ha NINCS lezárva, megjelenik a "Tipp beküldése" gomb -->
       <div id="actionBtnContainer"></div>
     </header>
-    <!-- Ha le van zárva, itt jelenik meg a sárga hivatalos Eredmények kártya -->
     <div id="officialCardContainer"></div>
   </div>
 
@@ -358,27 +355,12 @@
   </div>
 </div>
 
-<!-- Beküldő Modal (Csak ha nyitva van a játék) -->
+<!-- Beküldő Modal -->
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">
     <form id="pollForm" onsubmit="return false;">
       
-      <!-- Név lépés -->
-      <div class="step-pane active" id="step0">
-        <div class="question-title">Hogy hívnak? <span class="sub-text">Add meg a neved a tipphez!</span></div>
-        <div class="form-group">
-          <input type="text" id="userNameInput" placeholder="pl. Arnold" autocomplete="off">
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="btn-secondary" onclick="closeModal()">Mégse</button>
-          <div class="modal-actions-right">
-            <button type="button" onclick="nextStep(0)">Tovább</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 1. Kérdés -->
-      <div class="step-pane" id="step1">
+      <div class="step-pane active" id="step1">
         <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lett Berci?</span></div>
         <div class="question-img-box">
           <object id="charSvg" type="image/svg+xml" data="char.svg"></object>
@@ -393,15 +375,17 @@
             <input type="range" id="q1Slider" min="0" max="100" value="50" oninput="updateSliderColor(this.value)">
           </div>
         </div>
+        <div class="form-group" style="margin-top: 15px;">
+          <input type="text" id="userNameInput" placeholder="A neved" autocomplete="off">
+        </div>
         <div class="modal-actions">
-          <button type="button" class="btn-secondary" onclick="prevStep(1)">Vissza</button>
+          <button type="button" class="btn-secondary" onclick="closeModal()">Mégse</button>
           <div class="modal-actions-right">
             <button type="button" onclick="nextStep(1)">Tovább</button>
           </div>
         </div>
       </div>
 
-      <!-- 2. Kérdés -->
       <div class="step-pane" id="step2">
         <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jött ki előbb?</span></div>
         <div class="dual-card-grid">
@@ -428,7 +412,6 @@
         </div>
       </div>
 
-      <!-- 3. Kérdés -->
       <div class="step-pane" id="step3">
         <div class="question-title" id="q3HeaderTitle">3. Kérdés: <span class="sub-text">Kinek nagyobb a pénisze?</span></div>
         <div class="dual-card-grid">
@@ -459,7 +442,7 @@
   </div>
 </div>
 
-<div class="version-tag">index-v2.0</div>
+<div class="version-tag">index-v2.1</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -486,18 +469,15 @@
       const cardContainer = document.getElementById("cardContainer");
       const actionBtnContainer = document.getElementById("actionBtnContainer");
 
-      // 1. Ha le van zárva: megjelenik a ragadó sárga Eredmények kártya, és NINCS beküldő gomb
       if (data.locked && data.official) {
         officialContainer.innerHTML = buildEntryCardHtml(data.official, true);
         updateCardCharColor(data.official.a1, "official-char");
         actionBtnContainer.innerHTML = '<span style="color: var(--muted); font-size: 0.9rem; font-weight: 600;">A játék lezárult</span>';
       } else {
-        // Ha nincs lezárva: van gomb a tipp beküldéséhez
         officialContainer.innerHTML = "";
         actionBtnContainer.innerHTML = '<button onclick="openModal()">Tipp beküldése</button>';
       }
 
-      // 2. Haverok listája
       if (!data.entries || data.entries.length === 0) {
         cardContainer.innerHTML = '<div class="status-msg">Még nincsenek beküldött tippek.</div>';
         return;
@@ -523,7 +503,7 @@
     document.getElementById("q1Slider").value = 50;
     document.getElementById("q2_opt1").checked = true;
     document.getElementById("q3_opt1").checked = true;
-    showStep(0);
+    showStep(1);
     modal.classList.add("active");
   }
 
@@ -534,9 +514,9 @@
   function getCurrentStep() {
     const panes = document.querySelectorAll('.step-pane');
     for (let i = 0; i < panes.length; i++) {
-      if (panes[i].classList.contains('active')) return i;
+      if (panes[i].classList.contains('active')) return i + 1;
     }
-    return 0;
+    return 1;
   }
 
   function showStep(step) {
@@ -544,8 +524,7 @@
     document.getElementById('step' + step).classList.add('active');
     
     setTimeout(() => {
-      if (step === 0) document.getElementById("userNameInput").focus();
-      else if (step === 1) document.getElementById("q1Slider").focus();
+      if (step === 1) document.getElementById("q1Slider").focus();
       else if (step === 2) document.getElementById("q2_label1").focus();
       else if (step === 3) document.getElementById("q3_label1").focus();
     }, 50);
@@ -554,7 +533,7 @@
   }
 
   function nextStep(current) {
-    if (current === 0) {
+    if (current === 1) {
       const name = document.getElementById("userNameInput").value.trim();
       if (!name) {
         alert("Kérlek add meg a neved!");
@@ -565,13 +544,18 @@
   }
 
   function prevStep(current) {
-    if (current <= 0) closeModal();
+    if (current <= 1) closeModal();
     else showStep(current - 1);
   }
 
   async function submitTip() {
     const name = document.getElementById("userNameInput").value.trim();
     const q3Checked = document.querySelector('input[name="q3"]:checked');
+    if (!name) {
+      alert("Kérlek add meg a neved az 1. lépésben!");
+      showStep(1);
+      return;
+    }
     if (!q3Checked) {
       alert("Kérlek válassz egy opciót!");
       return;
@@ -594,7 +578,7 @@
         body: JSON.stringify(payload)
       });
       closeModal();
-      loadData(); // Újratölti a listát
+      loadData();
     } catch (err) {
       alert("Hiba történt a beküldés során!");
     } finally {

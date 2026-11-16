@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="hu">
 <head>
@@ -39,7 +38,6 @@
       padding: 20px;
     }
 
-    /* Fixen ragadó fejléc */
     header {
       position: sticky;
       top: 0;
@@ -83,10 +81,13 @@
     .btn-success {
       background: var(--success);
       color: #fff;
+      width: 100%;
+      padding: 14px;
+      font-size: 1.05rem;
+      margin-top: 14px;
     }
     .btn-success:hover { background: var(--success-hover); }
 
-    /* Tartalom terület */
     .content-area {
       flex: 1;
       overflow-y: auto;
@@ -112,19 +113,8 @@
       padding-bottom: 8px;
     }
     .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
-    
-    .btn-text {
-      background: none;
-      border: none;
-      color: var(--accent);
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.95rem;
-      padding: 4px 8px;
-    }
-    .btn-text:hover { text-decoration: underline; background: none; color: var(--accent-hover); }
+    .entry-date { font-size: 0.8rem; color: var(--muted); }
 
-    /* Kártya belső elrendezés: balra a karakter, jobbra a 3 sor */
     .entry-body {
       display: flex;
       align-items: stretch;
@@ -166,7 +156,6 @@
       display: block;
     }
 
-    /* Modal (Lépésenkénti űrlap) */
     .modal-backdrop {
       display: none;
       position: fixed;
@@ -193,10 +182,8 @@
 
     .step-pane { display: none; }
     .step-pane.active { display: block; }
-
     .form-group { margin-bottom: 20px; }
-    
-    /* Címsor stílusok (Kérdések) */
+
     .question-title {
       font-size: 1.15rem;
       font-weight: 700;
@@ -210,7 +197,6 @@
       font-size: 1rem;
     }
 
-    /* SVG Képhely */
     .question-img-box {
       width: 100%;
       height: 160px;
@@ -230,7 +216,6 @@
       object-fit: contain;
     }
 
-    /* Kattintható Kártya Grid a 2. és 3. kérdéshez */
     .dual-card-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -252,9 +237,7 @@
       height: 170px;
       position: relative;
     }
-    .choice-card:hover {
-      border-color: rgba(56, 189, 248, 0.5);
-    }
+    .choice-card:hover { border-color: rgba(56, 189, 248, 0.5); }
     
     .choice-card-option {
       position: absolute;
@@ -306,7 +289,6 @@
       transition: 0.15s;
     }
 
-    /* Slider és Értékjelző */
     .slider-value-display {
       font-size: 1rem;
       font-weight: 400;
@@ -349,21 +331,19 @@
       <h1 id="pageTitle">Hivatalos Eredmények</h1>
       <div class="subtitle" id="pageSubtitle">Add meg a helyes válaszokat a lezáráshoz!</div>
     </div>
-    <button id="mainActionBtn" class="btn-success" onclick="handleMainBtnClick()">Válasz megadása</button>
+    <!-- A fejléc gomb Dinamikusan változik -->
+    <button id="headerActionBtn" onclick="openModal()">Válaszok megadása</button>
   </header>
 
-  <!-- Helyi kártya nézet konténer -->
   <div id="cardContainer" class="content-area">
     <div class="status-msg">Státusz ellenőrzése...</div>
   </div>
 </div>
 
-<!-- Többlépcsős Szerkesztő Modal -->
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">
     <form id="pollForm" onsubmit="return false;">
       
-      <!-- 1. LÉPÉS: 1. KÉRDÉS -->
       <div class="step-pane active" id="step1">
         <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lett Berci?</span></div>
         <div class="question-img-box">
@@ -387,7 +367,6 @@
         </div>
       </div>
 
-      <!-- 2. LÉPÉS: 2. KÉRDÉS (Berci vs GTA VI) -->
       <div class="step-pane" id="step2">
         <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jött ki előbb?</span></div>
         
@@ -427,7 +406,6 @@
         </div>
       </div>
 
-      <!-- 3. LÉPÉS: 3. KÉRDÉS + MENTÉS BÖNGÉSZŐBE -->
       <div class="step-pane" id="step3">
         <div class="question-title" id="q3HeaderTitle">3. Kérdés: <span class="sub-text">Kinek nagyobb a pénisze?</span></div>
         
@@ -462,7 +440,7 @@
         <div class="modal-actions">
           <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(3)">Vissza</button>
           <div class="modal-actions-right">
-            <button type="button" tabindex="-1" class="btn-success" onclick="saveLocalAnswers()">Mentés ideiglenesen</button>
+            <button type="button" tabindex="-1" class="btn-success" onclick="saveLocalAnswers()">Mentés</button>
           </div>
         </div>
       </div>
@@ -471,7 +449,7 @@
   </div>
 </div>
 
-<div class="version-tag">ans-v1.1</div>
+<div class="version-tag">ans-v1.3</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -495,7 +473,6 @@
   let charSvgRaw = null;
   let currentAnswers = null;
 
-  // Betöltéskor ellenőrizzük, hogy le van-e már zárva (kitöltve a 2. sor)
   async function checkLockStatus() {
     const container = document.getElementById("cardContainer");
     try {
@@ -503,14 +480,12 @@
       const data = await res.json();
 
       if (data.locked) {
-        // Ha már kitöltötték a 2. sort, átirányítjuk a főoldalra, hogy ne lehessen csalni
         alert("A hivatalos válaszok már rögzítve vannak! Átirányítás a főoldalra...");
         window.location.href = "./";
         return;
       }
 
-      // Ha még nincs kitöltve, akkor üres az üzenet
-      container.innerHTML = '<div class="status-msg">Még nincsenek megadva válaszok. Kattints a „Válasz megadása” gombra!</div>';
+      renderLocalCard();
     } catch (err) {
       container.innerHTML = '<div class="status-msg">Hiba a státusz ellenőrzésekor. Ellenőrizd a SCRIPT_URL-t!</div>';
     }
@@ -591,26 +566,46 @@
     currentAnswers = {
       a1: Number(document.getElementById("q1Slider").value),
       a2: Number(document.querySelector('input[name="q2"]:checked').value),
-      a3: Number(q3Checked.value)
+      a3: Number(q3Checked.value),
+      dateStr: getFormattedNow()
     };
 
     closeModal();
     renderLocalCard();
   }
 
+  function getFormattedNow() {
+    let d = new Date();
+    let yyyy = d.getFullYear();
+    let mm = String(d.getMonth() + 1).padStart(2, '0');
+    let dd = String(d.getDate()).padStart(2, '0');
+    let hh = String(d.getHours()).padStart(2, '0');
+    let min = String(d.getMinutes()).padStart(2, '0');
+    let sec = String(d.getSeconds()).padStart(2, '0');
+    return `${yyyy}.${mm}.${dd} ${hh}:${min}:${sec}`;
+  }
+
   async function renderLocalCard() {
     await loadCharSvgTemplate();
     const container = document.getElementById("cardContainer");
-    const mainBtn = document.getElementById("mainActionBtn");
+    const headerBtn = document.getElementById("headerActionBtn");
 
-    mainBtn.textContent = "Véglegesítés";
-    mainBtn.className = "";
+    if (!currentAnswers) {
+      headerBtn.textContent = "Válaszok megadása";
+      container.innerHTML = `
+        <div class="status-msg">Még nincsenek megadva válaszok. Kattints fent a „Válaszok megadása” gombra!</div>
+      `;
+      return;
+    }
+
+    // Ha már megvannak az adatok, a fejléc gomb átvált "Szerkesztés"-re
+    headerBtn.textContent = "Szerkesztés";
 
     container.innerHTML = `
       <div class="entry-card">
         <div class="entry-header">
-          <button class="btn-text" onclick="openModal()">Szerkesztés</button>
-          <span class="entry-name">Answers (Hivatalos)</span>
+          <span class="entry-name">Eredmények</span>
+          <span class="entry-date">${currentAnswers.dateStr}</span>
         </div>
         <div class="entry-body">
           ${buildColoredCardChar(currentAnswers.a1)}
@@ -630,15 +625,8 @@
           </div>
         </div>
       </div>
+      <button class="btn-success" id="submitBtn" onclick="finalizeAnswers()">Véglegesítés</button>
     `;
-  }
-
-  function handleMainBtnClick() {
-    if (!currentAnswers) {
-      openModal();
-    } else {
-      finalizeAnswers();
-    }
   }
 
   async function finalizeAnswers() {
@@ -646,9 +634,9 @@
       return;
     }
 
-    const mainBtn = document.getElementById("mainActionBtn");
-    mainBtn.disabled = true;
-    mainBtn.textContent = "Véglegesítés...";
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "Véglegesítés...";
 
     const payload = {
       name: "Answers",
@@ -664,11 +652,11 @@
       });
 
       alert("Sikeres véglegesítés! A játék lezárult.");
-      window.location.href = "./"; // Átirányítás a főoldalra
+      window.location.href = "./";
     } catch (err) {
       alert("Hiba történt a véglegesítés során, próbáld újra!");
-      mainBtn.disabled = false;
-      mainBtn.textContent = "Véglegesítés";
+      btn.disabled = false;
+      btn.textContent = "Véglegesítés";
     }
   }
 
@@ -785,7 +773,6 @@
     } catch (e) {}
   }
 
-  // Induláskor ellenőrizzük a lock státuszt
   checkLockStatus();
 </script>
 </body>

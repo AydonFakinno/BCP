@@ -165,35 +165,61 @@
       object-fit: contain;
     }
 
-    /* Dupla képhely a 2. kérdéshez */
-    .dual-img-grid {
+    /* Kattintható Kártya Grid a 2. kérdéshez */
+    .dual-card-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
-    .dual-img-box {
-      height: 130px;
-      background: rgba(56, 189, 248, 0.05);
-      border: 2px dashed var(--border);
-      border-radius: 10px;
+    .choice-card-option { display: none; }
+    .choice-card {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      padding: 8px;
-      gap: 6px;
+      justify-content: space-between;
+      height: 180px;
     }
-    .dual-img-box object {
+    .choice-card:hover {
+      border-color: rgba(56, 189, 248, 0.5);
+    }
+    .choice-card-option:checked + .choice-card {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+    }
+    .choice-card img, .choice-card object {
       max-width: 100%;
-      max-height: 90px;
+      max-height: 100px;
       object-fit: contain;
+      pointer-events: none; /* Ne zavarja a kattintást */
     }
-    .dual-img-label {
-      font-size: 0.75rem;
-      color: var(--muted);
+    /* GTA logó picit balra igazítva, hogy optikailag középen legyen */
+    .gta-logo-adjust {
+      transform: translateX(-6px);
+    }
+
+    .choice-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 8px;
       font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .choice-card-footer input[type="radio"] {
+      accent-color: var(--accent);
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
     }
 
     /* Slider és Értékjelző */
@@ -215,7 +241,7 @@
     .slider-wrap { display: flex; align-items: center; gap: 14px; }
     input[type="range"] { flex: 1; accent-color: var(--accent); cursor: pointer; }
 
-    /* 1/2 Választó gombok */
+    /* 1/2 Választó gombok a 3. kérdéshez */
     .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .choice-option input { display: none; }
     .choice-box {
@@ -310,32 +336,32 @@
         </div>
       </div>
 
-      <!-- 3. LÉPÉS: 2. KÉRDÉS (Berci vs GTA VI képekkel) -->
+      <!-- 3. LÉPÉS: 2. KÉRDÉS (Kattintható kártyák Berci vs GTA VI) -->
       <div class="step-pane" id="step3">
         <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jön ki előbb?</span></div>
-        <div class="dual-img-grid">
-          <div class="dual-img-box">
+        
+        <div class="dual-card-grid">
+          <!-- 1. Válasz: Berci -->
+          <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option">
+          <label for="q2_opt1" class="choice-card">
             <object id="charSvgStep3" type="image/svg+xml" data="char.svg"></object>
-            <span class="dual-img-label">Berci</span>
-          </div>
-          <div class="dual-img-box">
-            <object type="image/svg+xml" data="logo.svg"></object>
-            <span class="dual-img-label">GTA VI</span>
-          </div>
+            <div class="choice-card-footer">
+              <input type="radio" name="q2_dummy1" tabindex="-1">
+              <span>Berci</span>
+            </div>
+          </label>
+
+          <!-- 2. Válasz: GTA VI -->
+          <input type="radio" name="q2" value="2" id="q2_opt2" class="choice-card-option">
+          <label for="q2_opt2" class="choice-card">
+            <object class="gta-logo-adjust" type="image/svg+xml" data="logo.svg"></object>
+            <div class="choice-card-footer">
+              <input type="radio" name="q2_dummy2" tabindex="-1">
+              <span>GTA VI</span>
+            </div>
+          </label>
         </div>
-        <div class="form-group">
-          <label id="q2Label">Melyik jön ki előbb?</label>
-          <div class="choice-grid">
-            <label class="choice-option">
-              <input type="radio" name="q2" value="1">
-              <span class="choice-box" id="q2Opt1">Berci</span>
-            </label>
-            <label class="choice-option">
-              <input type="radio" name="q2" value="2">
-              <span class="choice-box" id="q2Opt2">GTA VI</span>
-            </label>
-          </div>
-        </div>
+
         <div class="modal-actions">
           <button type="button" class="btn-secondary" onclick="prevStep(3)">&larr; Vissza</button>
           <div class="modal-actions-right">
@@ -376,7 +402,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1010</div>
+<div class="version-tag">v1011</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -403,9 +429,6 @@
   document.getElementById("q2HeaderTitle").innerHTML = `${CONFIG.q2Prefix} <span class="sub-text">${CONFIG.q2Text}</span>`;
   document.getElementById("q3HeaderTitle").innerHTML = `${CONFIG.q3Prefix} <span class="sub-text">${CONFIG.q3Text}</span>`;
 
-  document.getElementById("q2Label").textContent = CONFIG.q2Text;
-  document.getElementById("q2Opt1").textContent = CONFIG.q2Options[1];
-  document.getElementById("q2Opt2").textContent = CONFIG.q2Options[2];
   document.getElementById("q3Label").textContent = CONFIG.q3Text;
   document.getElementById("q3Opt1").textContent = CONFIG.q3Options[1];
   document.getElementById("q3Opt2").textContent = CONFIG.q3Options[2];
@@ -434,6 +457,12 @@
       if (!nameInput.value.trim()) {
         alert("Kérlek add meg a neved!");
         nameInput.focus();
+        return;
+      }
+    } else if (current === 3) {
+      const q2Checked = document.querySelector('input[name="q2"]:checked');
+      if (!q2Checked) {
+        alert("Kérlek válassz egy opciót!");
         return;
       }
     }
@@ -467,7 +496,7 @@
     
     let currentColor = rgbToHex(r, g, b);
 
-    // Színezzük mindkét char.svg-t (a slideres lapon és a 2. kérdésnél lévő Berci képet is)
+    // Színezzük mindkét char.svg-t
     ['charSvg', 'charSvgStep3'].forEach(id => {
       try {
         let svgObj = document.getElementById(id);
@@ -523,13 +552,8 @@
   document.getElementById("pollForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     
-    const q2Checked = document.querySelector('input[name="q2"]:checked');
     const q3Checked = document.querySelector('input[name="q3"]:checked');
 
-    if (!q2Checked) {
-      alert("Kérlek válassz a 2. kérdésnél!");
-      return;
-    }
     if (!q3Checked) {
       alert("Kérlek válassz a 3. kérdésnél!");
       return;
@@ -542,7 +566,7 @@
     const payload = {
       name: document.getElementById("userName").value.trim(),
       a1: Number(document.getElementById("q1Slider").value),
-      a2: Number(q2Checked.value),
+      a2: Number(document.querySelector('input[name="q2"]:checked').value),
       a3: Number(q3Checked.value)
     };
 

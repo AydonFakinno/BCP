@@ -23,9 +23,11 @@
       padding: 20px;
       display: flex;
       justify-content: center;
+      min-height: 100vh;
+      position: relative;
     }
 
-    .container { width: 100%; max-width: 650px; }
+    .container { width: 100%; max-width: 650px; padding-bottom: 30px; }
 
     header {
       display: flex;
@@ -161,6 +163,18 @@
 
     .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
     .status-msg { text-align: center; color: var(--muted); padding: 40px 0; }
+
+    /* Verziószám a sarokban */
+    .version-tag {
+      position: fixed;
+      bottom: 10px;
+      right: 15px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      opacity: 0.5;
+      pointer-events: none;
+      letter-spacing: 0.5px;
+    }
   </style>
 </head>
 <body>
@@ -232,6 +246,9 @@
     </form>
   </div>
 </div>
+
+<!-- Diszkrét verziószám a jobb alsó sarokban -->
+<div class="version-tag">v1001</div>
 
 <script>
   // 1. GOOGLE APPS SCRIPT URL:

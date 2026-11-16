@@ -83,12 +83,33 @@
     .entry-row {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding: 4px 0;
       font-size: 0.95rem;
       gap: 12px;
     }
     .entry-q { color: var(--muted); }
-    .entry-a { font-weight: 600; text-align: right; }
+    .entry-a {
+      font-weight: 600;
+      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .entry-mini-char {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .entry-mini-char svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
 
     /* Modal (Lépésenkénti űrlap) */
     .modal-backdrop {
@@ -426,7 +447,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1018</div>
+<div class="version-tag">v1019</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -454,6 +475,7 @@
   document.getElementById("q3HeaderTitle").innerHTML = `${CONFIG.q3Prefix} <span class="sub-text">${CONFIG.q3Text}</span>`;
 
   const modal = document.getElementById("modalBackdrop");
+  let charSvgRaw = null;
   
   function openModal() {
     showStep(1);
@@ -503,10 +525,8 @@
     return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
   }
 
-  function updateSliderColor(val) {
-    document.getElementById('sliderDisplayVal').textContent = val + '% BBMÁ';
-    
-    let t = val / 100;
+  function getInterpolatedColor(val) {
+    let t = Math.max(0, Math.min(100, Number(val) || 0)) / 100;
     let c1 = hexToRgb("#BF998F");
     let c2 = hexToRgb("#A26346");
     
@@ -514,7 +534,26 @@
     let g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
     let b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
     
-    let currentColor = rgbToHex(r, g, b);
+    return rgbToHex(r, g, b);
+  }
+
+  function buildColoredMiniChar(val) {
+    if (!charSvgRaw) return "";
+    const color = getInterpolatedColor(val);
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(charSvgRaw, "image/svg+xml");
+    const svgEl = doc.querySelector("svg");
+    if (!svgEl) return "";
+
+    svgEl.querySelectorAll('[fill], .fill, #fill').forEach(el => {
+      el.style.fill = color;
+    });
+    return `<span class="entry-mini-char">${svgEl.outerHTML}</span>`;
+  }
+
+  function updateSliderColor(val) {
+    document.getElementById('sliderDisplayVal').textContent = val + '% BBMÁ';
+    const currentColor = getInterpolatedColor(val);
 
     // Színezzük az összes char.svg-t (1., 2. és 3. kérdésnél is)
     ['charSvg', 'charSvgStep3', 'charSvgStep4'].forEach(id => {
@@ -533,9 +572,22 @@
     });
   }
 
+  async function loadCharSvgTemplate() {
+    if (charSvgRaw) return;
+    try {
+      const res = await fetch("char.svg");
+      if (res.ok) {
+        charSvgRaw = await res.text();
+      }
+    } catch (e) {
+      // Ha lokálisan nem érhető el fetch-csel, kihagyjuk
+    }
+  }
+
   async function loadEntries() {
     const listEl = document.getElementById("entriesList");
     try {
+      await loadCharSvgTemplate();
       const res = await fetch(SCRIPT_URL);
       const data = await res.json();
 
@@ -552,7 +604,7 @@
           </div>
           <div class="entry-row">
             <span class="entry-q">${CONFIG.q1Text}</span>
-            <span class="entry-a">${item.a1}% BBMÁ</span>
+            <span class="entry-a">${item.a1}% BBMÁ ${buildColoredMiniChar(item.a1)}</span>
           </div>
           <div class="entry-row">
             <span class="entry-q">${CONFIG.q2Text}</span>

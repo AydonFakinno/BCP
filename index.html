@@ -484,7 +484,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1029</div>
+<div class="version-tag">v1030</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -716,6 +716,30 @@
     } catch (e) {}
   }
 
+  // Dátum formázó segédfüggvény YYYY.MM.DD HH:MM formátumra
+  function formatDateString(rawDate) {
+    if (!rawDate) return "";
+    try {
+      let d = new Date(rawDate);
+      if (!isNaN(d.getTime())) {
+        let yyyy = d.getFullYear();
+        let mm = String(d.getMonth() + 1).padStart(2, '0');
+        let dd = String(d.getDate()).padStart(2, '0');
+        let hh = String(d.getHours()).padStart(2, '0');
+        let min = String(d.getMinutes()).padStart(2, '0');
+        return `${yyyy}.${mm}.${dd} ${hh}:${min}`;
+      }
+    } catch (e) {}
+    
+    // Ha nem sikerül Dátumként értelmezni, de szövegként benne van (pl. 2026-11-16 23:38:00)
+    let clean = String(rawDate).replace('T', ' ').split('.')[0];
+    let parts = clean.split(':');
+    if (parts.length >= 2) {
+      return clean.substring(0, 16).replace(/-/g, '.');
+    }
+    return rawDate;
+  }
+
   async function loadEntries() {
     const listEl = document.getElementById("entriesList");
     const newBtn = document.getElementById("openModalBtn");
@@ -744,7 +768,7 @@
         <div class="entry-card">
           <div class="entry-header">
             <span class="entry-name">${escapeHtml(item.name)}</span>
-            <span class="entry-date">${escapeHtml(item.date)}</span>
+            <span class="entry-date">${formatDateString(item.date)}</span>
           </div>
           <div class="entry-body">
             ${buildColoredCardChar(item.a1)}

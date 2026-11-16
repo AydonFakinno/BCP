@@ -131,22 +131,25 @@
       font-size: 1rem;
     }
 
-    /* Képhely a kérdésekhez */
+    /* SVG Képhely az 1. kérdéshez */
     .question-img-box {
       width: 100%;
-      height: 140px;
+      height: 160px;
       background: rgba(56, 189, 248, 0.05);
       border: 2px dashed var(--border);
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--muted);
-      font-size: 0.85rem;
       margin-bottom: 16px;
       overflow: hidden;
+      padding: 10px;
     }
-    .question-img-box img { width: 100%; height: 100%; object-fit: cover; }
+    .question-img-box object {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
 
     /* Slider */
     .slider-wrap { display: flex; align-items: center; gap: 14px; }
@@ -232,17 +235,16 @@
         </div>
       </div>
 
-      <!-- 2. LÉPÉS: 1. KÉRDÉS -->
+      <!-- 2. LÉPÉS: 1. KÉRDÉS (char.svg-vel és dinamikus színnel) -->
       <div class="step-pane" id="step2">
         <h2 style="margin-top:0; margin-bottom: 16px;">1. Tipp</h2>
-        <!-- Ide jöhet majd a kép -->
         <div class="question-img-box">
-          <span>Kép helye (1. kérdés)</span>
+          <object id="charSvg" type="image/svg+xml" data="char.svg"></object>
         </div>
         <div class="form-group">
           <label id="q1Label" for="q1Slider">1. Kérdés (%)</label>
           <div class="slider-wrap">
-            <input type="range" id="q1Slider" min="0" max="100" value="50" oninput="document.getElementById('sliderVal').textContent = this.value + '%'">
+            <input type="range" id="q1Slider" min="0" max="100" value="50" oninput="updateSliderColor(this.value)">
             <span class="slider-val" id="sliderVal">50%</span>
           </div>
         </div>
@@ -257,7 +259,6 @@
       <!-- 3. LÉPÉS: 2. KÉRDÉS -->
       <div class="step-pane" id="step3">
         <h2 style="margin-top:0; margin-bottom: 16px;">2. Tipp</h2>
-        <!-- Ide jöhet majd a kép -->
         <div class="question-img-box">
           <span>Kép helye (2. kérdés)</span>
         </div>
@@ -285,7 +286,6 @@
       <!-- 4. LÉPÉS: 3. KÉRDÉS + BEKÜLDÉS -->
       <div class="step-pane" id="step4">
         <h2 style="margin-top:0; margin-bottom: 16px;">3. Tipp</h2>
-        <!-- Ide jöhet majd a kép -->
         <div class="question-img-box">
           <span>Kép helye (3. kérdés)</span>
         </div>
@@ -315,7 +315,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1006</div>
+<div class="version-tag">v1007</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -347,7 +347,7 @@
   function openModal() {
     showStep(1);
     document.getElementById("pollForm").reset();
-    document.getElementById("sliderVal").textContent = "50%";
+    updateSliderColor(50); // Alapértelmezett 50%-os szín
     modal.classList.add("active");
   }
 
@@ -374,6 +374,47 @@
 
   function prevStep(current) {
     showStep(current - 1);
+  }
+
+  // Színkeverő és SVG színező függvény a sliderhez (#BF998F -> #A26346)
+  function hexToRgb(hex) {
+    let bigint = parseInt(hex.replace("#", ""), 16);
+    return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+  }
+
+  function rgbToHex(r, g, b) {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
+
+  function updateSliderColor(val) {
+    document.getElementById('sliderVal').textContent = val + '%';
+    
+    // Kiszámoljuk az átmenetet 0 és 100% között
+    let t = val / 100;
+    let c1 = hexToRgb("#BF998F");
+    let c2 = hexToRgb("#A26346");
+    
+    let r = Math.round(c1[0] + (c2[0] - c1[0]) * t);
+    let g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
+    let b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
+    
+    let currentColor = rgbToHex(r, g, b);
+
+    // Megkeressük a char.svg-n belül a színezendő elemeket
+    try {
+      let svgObj = document.getElementById("charSvg");
+      if (svgObj && svgObj.contentDocument) {
+        let svgDoc = svgObj.contentDocument;
+        // Az összes olyan elem, aminek van fill tulajdonsága vagy a 'fill' nevű réteg/osztály
+        let fillElements = svgDoc.querySelectorAll('[fill], .fill, #fill');
+        fillElements.forEach(el => {
+          // Csak akkor színezzük, ha nem fehér vagy teljesen fekete háttér elem (vagy tetszőlegesen mindent)
+          el.style.fill = currentColor;
+        });
+      }
+    } catch (e) {
+      // Ha cross-origin korlát lenne lokális tesztnél, itt kezeljük
+    }
   }
 
   async function loadEntries() {

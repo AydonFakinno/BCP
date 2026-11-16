@@ -80,34 +80,46 @@
     }
     .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
     .entry-date { font-size: 0.8rem; color: var(--muted); }
+    
+    /* Kártya belső elrendezés: balra a 3 sor, jobbra a karakter teljes magasságban */
+    .entry-body {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .entry-rows {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+    }
     .entry-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 4px 0;
+      padding: 3px 0;
       font-size: 0.95rem;
       gap: 12px;
     }
     .entry-q { color: var(--muted); }
-    .entry-a {
-      font-weight: 600;
-      text-align: right;
+    .entry-a { font-weight: 600; text-align: right; }
+
+    .entry-char-side {
+      width: 68px;
       display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-    .entry-mini-char {
-      width: 28px;
-      height: 28px;
-      display: inline-flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      padding-left: 8px;
+      border-left: 1px solid rgba(51, 65, 85, 0.6);
     }
-    .entry-mini-char svg {
-      width: 100%;
-      height: 100%;
+    .entry-char-side svg {
+      max-width: 100%;
+      max-height: 76px;
+      width: auto;
+      height: auto;
       display: block;
     }
 
@@ -341,7 +353,7 @@
           <object id="charSvg" type="image/svg+xml" data="char.svg"></object>
         </div>
         <div class="form-group">
-          <div class="slider-value-display" id="sliderDisplayVal">50% BBMÁ</div>
+          <div class="slider-value-display" id="sliderDisplayVal">50% barna bőrű magyar állampolgár</div>
           <div class="slider-labels">
             <span>Tekla</span>
             <span>Zsolt</span>
@@ -447,7 +459,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1019</div>
+<div class="version-tag">v1020</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -537,7 +549,7 @@
     return rgbToHex(r, g, b);
   }
 
-  function buildColoredMiniChar(val) {
+  function buildColoredCardChar(val) {
     if (!charSvgRaw) return "";
     const color = getInterpolatedColor(val);
     const parser = new DOMParser();
@@ -548,11 +560,11 @@
     svgEl.querySelectorAll('[fill], .fill, #fill').forEach(el => {
       el.style.fill = color;
     });
-    return `<span class="entry-mini-char">${svgEl.outerHTML}</span>`;
+    return `<div class="entry-char-side">${svgEl.outerHTML}</div>`;
   }
 
   function updateSliderColor(val) {
-    document.getElementById('sliderDisplayVal').textContent = val + '% BBMÁ';
+    document.getElementById('sliderDisplayVal').textContent = val + '% barna bőrű magyar állampolgár';
     const currentColor = getInterpolatedColor(val);
 
     // Színezzük az összes char.svg-t (1., 2. és 3. kérdésnél is)
@@ -602,17 +614,22 @@
             <span class="entry-name">${escapeHtml(item.name)}</span>
             <span class="entry-date">${escapeHtml(item.date)}</span>
           </div>
-          <div class="entry-row">
-            <span class="entry-q">${CONFIG.q1Text}</span>
-            <span class="entry-a">${item.a1}% BBMÁ ${buildColoredMiniChar(item.a1)}</span>
-          </div>
-          <div class="entry-row">
-            <span class="entry-q">${CONFIG.q2Text}</span>
-            <span class="entry-a">${CONFIG.q2Options[item.a2] || item.a2}</span>
-          </div>
-          <div class="entry-row">
-            <span class="entry-q">${CONFIG.q3Text}</span>
-            <span class="entry-a">${CONFIG.q3Options[item.a3] || item.a3}</span>
+          <div class="entry-body">
+            <div class="entry-rows">
+              <div class="entry-row">
+                <span class="entry-q">${CONFIG.q1Text}</span>
+                <span class="entry-a">${item.a1}% BBMÁ</span>
+              </div>
+              <div class="entry-row">
+                <span class="entry-q">${CONFIG.q2Text}</span>
+                <span class="entry-a">${CONFIG.q2Options[item.a2] || item.a2}</span>
+              </div>
+              <div class="entry-row">
+                <span class="entry-q">${CONFIG.q3Text}</span>
+                <span class="entry-a">${CONFIG.q3Options[item.a3] || item.a3}</span>
+              </div>
+            </div>
+            ${buildColoredCardChar(item.a1)}
           </div>
         </div>
       `).join("");

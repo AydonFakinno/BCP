@@ -344,7 +344,7 @@
       <h1 id="pageTitle">Babaváró Tippmix</h1>
       <div class="subtitle" id="pageSubtitle">Ki mit tippel a nagy napra?</div>
     </div>
-    <button onclick="openModal()">+ Új válasz beküldése</button>
+    <button id="openModalBtn" onclick="openModal()">+ Új válasz beküldése</button>
   </header>
 
   <!-- Külön görgethető konténer a kártyáknak -->
@@ -484,7 +484,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1027</div>
+<div class="version-tag">v1028</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -560,7 +560,6 @@
   function nextStep(current) {
     if (current === 1) {
       const nameInput = document.getElementById("userName");
-      // Automatikusan levágjuk a space-eket a név elejéről és végéről
       nameInput.value = nameInput.value.trim();
       
       if (!nameInput.value) {
@@ -719,17 +718,31 @@
 
   async function loadEntries() {
     const listEl = document.getElementById("entriesList");
+    const newBtn = document.getElementById("openModalBtn");
+    
     try {
       await loadCharSvgTemplate();
       const res = await fetch(SCRIPT_URL);
       const data = await res.json();
 
-      if (!data.length) {
+      // Ellenőrizzük a backendtől kapott "locked" státuszt
+      if (data.locked) {
+        // HA LE VAN ZÁRVA (kitöltötték a 2. sort)
+        newBtn.style.display = "none"; // Elrejtjük az új válasz beküldése gombot
+        document.getElementById("pageSubtitle").textContent = "A tippmix lezárult! Az eredmények hamarosan érkeznek...";
+        
+        if (!data.entries.length) {
+          listEl.innerHTML = '<div class="status-msg">A játék véget ért, de még nincsenek megjeleníthető tippek.</div>';
+          return;
+        }
+      }
+
+      if (!data.entries.length) {
         listEl.innerHTML = '<div class="status-msg">Még nem érkezett válasz. Legyél te az első!</div>';
         return;
       }
 
-      listEl.innerHTML = data.map(item => `
+      listEl.innerHTML = data.entries.map(item => `
         <div class="entry-card">
           <div class="entry-header">
             <span class="entry-name">${escapeHtml(item.name)}</span>

@@ -234,8 +234,8 @@
 </div>
 
 <script>
-  // 1. IDE MÁSOLD BE A GOOGLE APPS SCRIPT URL-T:
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyu9pAE3K59FxG9ieZdBsmiDrMqle5Vm8GIInwCo_3l9X25KiPFNGqoxAM2vOX7FVKA/exec";
+  // 1. GOOGLE APPS SCRIPT URL:
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyu9pAE3K59FxG9ieZdBsmiDrMqle5Vm8GIlnwCo_3l9X25KiPFNGqoxAM2vOX7FVKA/exec";
 
   // 2. ITT TUDOD ÁTÍRNI A KÉRDÉSEKET ÉS A CÍMEKET:
   const CONFIG = {
@@ -326,6 +326,28 @@
     } finally {
       btn.disabled = false;
       btn.textContent = "Beküldés";
+    }
+  });
+
+  // Debug Reset: X billentyű
+  document.addEventListener("keydown", async (e) => {
+    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+
+    if (e.key.toLowerCase() === "x") {
+      if (!confirm("DEBUG: Tényleg törlöd az összes eddigi választ a táblázatból?")) return;
+
+      const listEl = document.getElementById("entriesList");
+      listEl.innerHTML = '<div class="status-msg">Táblázat ürítése...</div>';
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "reset" })
+        });
+        await loadEntries();
+      } catch (err) {
+        alert("Hiba a reset során!");
+      }
     }
   });
 

@@ -81,7 +81,6 @@
     .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
     .entry-date { font-size: 0.8rem; color: var(--muted); }
     
-    /* Kártya belső elrendezés: balra a 3 sor, jobbra a karakter teljes magasságban */
     .entry-body {
       display: flex;
       align-items: stretch;
@@ -459,7 +458,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1020</div>
+<div class="version-tag">v1021</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -492,7 +491,7 @@
   function openModal() {
     showStep(1);
     document.getElementById("pollForm").reset();
-    updateSliderColor(50);
+    updateSliderColor(50); // Azonnal frissíti a színt nyitáskor is mobilokon
     modal.classList.add("active");
   }
 
@@ -503,6 +502,10 @@
   function showStep(step) {
     document.querySelectorAll('.step-pane').forEach(el => el.classList.remove('active'));
     document.getElementById('step' + step).classList.add('active');
+    
+    // Biztosítjuk, hogy lépésváltáskor is lefusson a színezés a mobilobjectekre
+    const currentSliderVal = document.getElementById('q1Slider').value;
+    updateSliderColor(currentSliderVal);
   }
 
   function nextStep(current) {
@@ -567,16 +570,30 @@
     document.getElementById('sliderDisplayVal').textContent = val + '% barna bőrű magyar állampolgár';
     const currentColor = getInterpolatedColor(val);
 
-    // Színezzük az összes char.svg-t (1., 2. és 3. kérdésnél is)
+    // Kiszínezzük az összes objektként betöltött char.svg-t mobilokon és desktopon is
     ['charSvg', 'charSvgStep3', 'charSvgStep4'].forEach(id => {
       try {
         let svgObj = document.getElementById(id);
-        if (svgObj && svgObj.contentDocument) {
-          let svgDoc = svgObj.contentDocument;
-          let fillElements = svgDoc.querySelectorAll('[fill], .fill, #fill');
-          fillElements.forEach(el => {
-            el.style.fill = currentColor;
-          });
+        if (svgObj) {
+          // Ha már betöltődött a contentDocument
+          if (svgObj.contentDocument) {
+            let svgDoc = svgObj.contentDocument;
+            let fillElements = svgDoc.querySelectorAll('[fill], .fill, #fill');
+            fillElements.forEach(el => {
+              el.style.fill = currentColor;
+            });
+          }
+          // Biztonsági eseményfigyelő mobil böngészőkhöz, ha az object később töltődne be
+          svgObj.onload = function() {
+            try {
+              let svgDoc = svgObj.contentDocument;
+              if (svgDoc) {
+                svgDoc.querySelectorAll('[fill], .fill, #fill').forEach(el => {
+                  el.style.fill = currentColor;
+                });
+              }
+            } catch(ex) {}
+          };
         }
       } catch (e) {
         // CORS kezelés lokális teszthez

@@ -340,7 +340,7 @@
           <object id="charSvg" type="image/svg+xml" data="char.svg"></object>
         </div>
         <div class="form-group">
-          <div class="slider-value-display" id="sliderDisplayVal">50% barna bőrű magyar állampolgár</div>
+          <div class="slider-value-display" id="sliderDisplayVal">50% BBMÁ</div>
           <div class="slider-labels">
             <span>Tekla</span>
             <span>Zsolt</span>
@@ -431,7 +431,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1016</div>
+<div class="version-tag">v1017</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -513,7 +513,7 @@
   }
 
   function updateSliderColor(val) {
-    document.getElementById('sliderDisplayVal').textContent = val + '% barna bőrű magyar állampolgár';
+    document.getElementById('sliderDisplayVal').textContent = val + '% BBMÁ';
     
     let t = val / 100;
     let c1 = hexToRgb("#BF998F");
@@ -561,7 +561,7 @@
           </div>
           <div class="entry-row">
             <span class="entry-q">${CONFIG.q1Text}</span>
-            <span class="entry-a">${item.a1}% barna bőrű magyar állampolgár</span>
+            <span class="entry-a">${item.a1}% BBMÁ</span>
           </div>
           <div class="entry-row">
             <span class="entry-q">${CONFIG.q2Text}</span>

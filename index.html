@@ -145,7 +145,7 @@
       font-size: 1rem;
     }
 
-    /* SVG Képhely az 1. kérdéshez */
+    /* SVG Képhelyek */
     .question-img-box {
       width: 100%;
       height: 160px;
@@ -165,7 +165,38 @@
       object-fit: contain;
     }
 
-    /* Slider és Értékjelző (vékonyabb, szürke) */
+    /* Dupla képhely a 2. kérdéshez */
+    .dual-img-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .dual-img-box {
+      height: 130px;
+      background: rgba(56, 189, 248, 0.05);
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 8px;
+      gap: 6px;
+    }
+    .dual-img-box object {
+      max-width: 100%;
+      max-height: 90px;
+      object-fit: contain;
+    }
+    .dual-img-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* Slider és Értékjelző */
     .slider-value-display {
       font-size: 1rem;
       font-weight: 400;
@@ -173,7 +204,6 @@
       text-align: center;
       margin-bottom: 8px;
     }
-    /* Nevek a slider két oldalán (fehérek, vastagabbak) */
     .slider-labels {
       display: flex;
       justify-content: space-between;
@@ -280,22 +310,29 @@
         </div>
       </div>
 
-      <!-- 3. LÉPÉS: 2. KÉRDÉS -->
+      <!-- 3. LÉPÉS: 2. KÉRDÉS (Berci vs GTA VI képekkel) -->
       <div class="step-pane" id="step3">
-        <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Ki fog többet aludni az első hónapban?</span></div>
-        <div class="question-img-box">
-          <span>Kép helye (2. kérdés)</span>
+        <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jön ki előbb?</span></div>
+        <div class="dual-img-grid">
+          <div class="dual-img-box">
+            <object id="charSvgStep3" type="image/svg+xml" data="char.svg"></object>
+            <span class="dual-img-label">Berci</span>
+          </div>
+          <div class="dual-img-box">
+            <object type="image/svg+xml" data="logo.svg"></object>
+            <span class="dual-img-label">GTA VI</span>
+          </div>
         </div>
         <div class="form-group">
-          <label id="q2Label">Ki fog többet aludni az első hónapban?</label>
+          <label id="q2Label">Melyik jön ki előbb?</label>
           <div class="choice-grid">
             <label class="choice-option">
               <input type="radio" name="q2" value="1">
-              <span class="choice-box" id="q2Opt1">Opció 1</span>
+              <span class="choice-box" id="q2Opt1">Berci</span>
             </label>
             <label class="choice-option">
               <input type="radio" name="q2" value="2">
-              <span class="choice-box" id="q2Opt2">Opció 2</span>
+              <span class="choice-box" id="q2Opt2">GTA VI</span>
             </label>
           </div>
         </div>
@@ -339,7 +376,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1009</div>
+<div class="version-tag">v1010</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -352,8 +389,8 @@
     q1Prefix: "1. Kérdés:",
     q1Text: "Milyen színű lesz Berci?",
     q2Prefix: "2. Kérdés:",
-    q2Text: "Ki fog többet aludni az első hónapban?",
-    q2Options: { 1: "Anya", 2: "Apa" },
+    q2Text: "Melyik jön ki előbb?",
+    q2Options: { 1: "Berci", 2: "GTA VI" },
     q3Prefix: "3. Kérdés:",
     q3Text: "Mi lesz az első szó?",
     q3Options: { 1: "Anya / Apa", 2: "Valami inside joke" }
@@ -430,18 +467,21 @@
     
     let currentColor = rgbToHex(r, g, b);
 
-    try {
-      let svgObj = document.getElementById("charSvg");
-      if (svgObj && svgObj.contentDocument) {
-        let svgDoc = svgObj.contentDocument;
-        let fillElements = svgDoc.querySelectorAll('[fill], .fill, #fill');
-        fillElements.forEach(el => {
-          el.style.fill = currentColor;
-        });
+    // Színezzük mindkét char.svg-t (a slideres lapon és a 2. kérdésnél lévő Berci képet is)
+    ['charSvg', 'charSvgStep3'].forEach(id => {
+      try {
+        let svgObj = document.getElementById(id);
+        if (svgObj && svgObj.contentDocument) {
+          let svgDoc = svgObj.contentDocument;
+          let fillElements = svgDoc.querySelectorAll('[fill], .fill, #fill');
+          fillElements.forEach(el => {
+            el.style.fill = currentColor;
+          });
+        }
+      } catch (e) {
+        // CORS kezelés lokális teszthez
       }
-    } catch (e) {
-      // CORS kezelés lokális teszthez
-    }
+    });
   }
 
   async function loadEntries() {

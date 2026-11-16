@@ -483,7 +483,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1031</div>
+<div class="version-tag">v1032</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -727,7 +727,7 @@
       // Ha le van zárva, beillesztjük a hivatalos Eredmények kártyát legfőbben felülre
       if (data.locked && data.official) {
         newBtn.style.display = "none";
-        document.getElementById("pageSubtitle সংবাদদাতা" || "pageSubtitle").textContent = "A tippmix lezárult! Hivatalos eredmények fent.";
+        document.getElementById("pageSubtitle").textContent = "A tippmix lezárult! Hivatalos eredmények fent.";
         
         htmlContent += `
           <div class="entry-card official-card">

@@ -77,6 +77,7 @@
       margin-bottom: 12px;
       border-bottom: 1px solid var(--border);
       padding-bottom: 8px;
+px;
     }
     .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
     .entry-date { font-size: 0.8rem; color: var(--muted); }
@@ -194,20 +195,24 @@
       background: rgba(56, 189, 248, 0.1);
     }
     
-    /* Berci mérete marad */
+    /* Képek fix középre igazítva, kattintás áteresztéssel */
+    .img-container {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
     .choice-card object#charSvgStep3 {
       max-width: 100%;
       max-height: 80px;
       object-fit: contain;
-      pointer-events: none;
     }
-    /* GTA logó picit kisebb lett */
     .choice-card object.gta-logo-adjust {
       max-width: 100%;
-      max-height: 65px;
+      max-height: 75px; /* Visszaállítva 75px-re */
       object-fit: contain;
-      pointer-events: none;
-      transform: translateX(-4px);
     }
 
     .choice-card-footer {
@@ -219,10 +224,10 @@
       margin-top: 6px;
       font-weight: 600;
       font-size: 0.9rem;
+      pointer-events: none;
     }
     .choice-card-footer input[type="radio"] {
       accent-color: var(--accent);
-      cursor: pointer;
       width: 16px;
       height: 16px;
     }
@@ -350,9 +355,11 @@
           <div>
             <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option" style="display:none;">
             <label for="q2_opt1" class="choice-card">
-              <object id="charSvgStep3" type="image/svg+xml" data="char.svg"></object>
+              <div class="img-container">
+                <object id="charSvgStep3" type="image/svg+xml" data="char.svg"></object>
+              </div>
               <div class="choice-card-footer">
-                <input type="radio" name="q2_fake" onclick="document.getElementById('q2_opt1').checked = true;" tabindex="-1">
+                <input type="radio" name="q2_fake" tabindex="-1">
                 <span>Berci</span>
               </div>
             </label>
@@ -362,9 +369,11 @@
           <div>
             <input type="radio" name="q2" value="2" id="q2_opt2" class="choice-card-option" style="display:none;">
             <label for="q2_opt2" class="choice-card">
-              <object class="gta-logo-adjust" type="image/svg+xml" data="logo.svg"></object>
+              <div class="img-container">
+                <object class="gta-logo-adjust" type="image/svg+xml" data="logo.svg"></object>
+              </div>
               <div class="choice-card-footer">
-                <input type="radio" name="q2_fake" onclick="document.getElementById('q2_opt2').checked = true;" tabindex="-1">
+                <input type="radio" name="q2_fake" tabindex="-1">
                 <span>GTA VI</span>
               </div>
             </label>
@@ -411,7 +420,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1013</div>
+<div class="version-tag">v1014</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:

@@ -77,7 +77,6 @@
       margin-bottom: 12px;
       border-bottom: 1px solid var(--border);
       padding-bottom: 8px;
-px;
     }
     .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
     .entry-date { font-size: 0.8rem; color: var(--muted); }
@@ -186,16 +185,29 @@ px;
       align-items: center;
       justify-content: space-between;
       height: 170px;
+      position: relative;
     }
     .choice-card:hover {
       border-color: rgba(56, 189, 248, 0.5);
     }
-    input[type="radio"].choice-card-option:checked + .choice-card {
+    
+    /* Rádiógomb állapot kezelés */
+    .choice-card-option {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .choice-card-option:checked + .choice-card {
       border-color: var(--accent);
       background: rgba(56, 189, 248, 0.1);
     }
-    
-    /* Képek fix középre igazítva, kattintás áteresztéssel */
+    .choice-card-option:checked + .choice-card .custom-radio {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: inset 0 0 0 3px var(--bg);
+    }
+
+    /* Képek fix középre igazítva */
     .img-container {
       flex: 1;
       width: 100%;
@@ -209,9 +221,11 @@ px;
       max-height: 80px;
       object-fit: contain;
     }
+    /* GTA logó pontosan 95%-os méretre állítva és középre lőve */
     .choice-card object.gta-logo-adjust {
-      max-width: 100%;
-      max-height: 75px; /* Visszaállítva 75px-re */
+      max-width: 95%;
+      max-height: 95%;
+      width: 95%;
       object-fit: contain;
     }
 
@@ -226,10 +240,15 @@ px;
       font-size: 0.9rem;
       pointer-events: none;
     }
-    .choice-card-footer input[type="radio"] {
-      accent-color: var(--accent);
+    
+    /* Egyedi, szép vizuális rádiógomb jelölő */
+    .custom-radio {
       width: 16px;
       height: 16px;
+      border: 2px solid var(--muted);
+      border-radius: 50%;
+      background: var(--bg);
+      transition: 0.15s;
     }
 
     /* Slider és Értékjelző */
@@ -352,28 +371,28 @@ px;
         
         <div class="dual-card-grid">
           <!-- 1. Válasz: Berci -->
-          <div>
-            <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option" style="display:none;">
+          <div style="position: relative;">
+            <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option">
             <label for="q2_opt1" class="choice-card">
               <div class="img-container">
                 <object id="charSvgStep3" type="image/svg+xml" data="char.svg"></object>
               </div>
               <div class="choice-card-footer">
-                <input type="radio" name="q2_fake" tabindex="-1">
+                <div class="custom-radio"></div>
                 <span>Berci</span>
               </div>
             </label>
           </div>
 
           <!-- 2. Válasz: GTA VI -->
-          <div>
-            <input type="radio" name="q2" value="2" id="q2_opt2" class="choice-card-option" style="display:none;">
+          <div style="position: relative;">
+            <input type="radio" name="q2" value="2" id="q2_opt2" class="choice-card-option">
             <label for="q2_opt2" class="choice-card">
               <div class="img-container">
                 <object class="gta-logo-adjust" type="image/svg+xml" data="logo.svg"></object>
               </div>
               <div class="choice-card-footer">
-                <input type="radio" name="q2_fake" tabindex="-1">
+                <div class="custom-radio"></div>
                 <span>GTA VI</span>
               </div>
             </label>
@@ -420,7 +439,7 @@ px;
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1014</div>
+<div class="version-tag">v1015</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:

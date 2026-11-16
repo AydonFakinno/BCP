@@ -365,8 +365,8 @@
           <input type="text" id="userName" placeholder="Pl. Kovács János" onkeydown="handleNameKeydown(event)">
         </div>
         <div class="modal-actions">
-          <button type="button" class="btn-secondary" onclick="closeModal()">Mégse</button>
-          <button type="button" onclick="nextStep(1)">Tovább</button>
+          <button type="button" class="btn-secondary" tabindex="-1" onclick="closeModal()">Mégse</button>
+          <button type="button" tabindex="-1" onclick="nextStep(1)">Tovább</button>
         </div>
       </div>
 
@@ -387,9 +387,9 @@
           </div>
         </div>
         <div class="modal-actions">
-          <button type="button" class="btn-secondary" onclick="prevStep(2)">Vissza</button>
+          <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(2)">Vissza</button>
           <div class="modal-actions-right">
-            <button type="button" onclick="nextStep(2)">Tovább</button>
+            <button type="button" tabindex="-1" onclick="nextStep(2)">Tovább</button>
           </div>
         </div>
       </div>
@@ -401,8 +401,8 @@
         <div class="dual-card-grid">
           <!-- 1. Válasz: Berci -->
           <div style="position: relative;">
-            <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option">
-            <label for="q2_opt1" class="choice-card">
+            <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option" checked>
+            <label for="q2_opt1" class="choice-card" id="q2_label1" tabindex="0">
               <div class="img-container">
                 <object id="charSvgStep3" type="image/svg+xml" data="char.svg"></object>
               </div>
@@ -416,7 +416,7 @@
           <!-- 2. Válasz: GTA VI -->
           <div style="position: relative;">
             <input type="radio" name="q2" value="2" id="q2_opt2" class="choice-card-option">
-            <label for="q2_opt2" class="choice-card">
+            <label for="q2_opt2" class="choice-card" id="q2_label2" tabindex="0">
               <div class="img-container">
                 <object type="image/svg+xml" data="logo.svg"></object>
               </div>
@@ -429,9 +429,9 @@
         </div>
 
         <div class="modal-actions">
-          <button type="button" class="btn-secondary" onclick="prevStep(3)">Vissza</button>
+          <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(3)">Vissza</button>
           <div class="modal-actions-right">
-            <button type="button" onclick="nextStep(3)">Tovább</button>
+            <button type="button" tabindex="-1" onclick="nextStep(3)">Tovább</button>
           </div>
         </div>
       </div>
@@ -443,8 +443,8 @@
         <div class="dual-card-grid">
           <!-- 1. Válasz: Berci -->
           <div style="position: relative;">
-            <input type="radio" name="q3" value="1" id="q3_opt1" class="choice-card-option">
-            <label for="q3_opt1" class="choice-card">
+            <input type="radio" name="q3" value="1" id="q3_opt1" class="choice-card-option" checked>
+            <label for="q3_opt1" class="choice-card" id="q3_label1" tabindex="0">
               <div class="img-container">
                 <object id="charSvgStep4" type="image/svg+xml" data="char.svg"></object>
               </div>
@@ -458,7 +458,7 @@
           <!-- 2. Válasz: Zsolt -->
           <div style="position: relative;">
             <input type="radio" name="q3" value="2" id="q3_opt2" class="choice-card-option">
-            <label for="q3_opt2" class="choice-card">
+            <label for="q3_opt2" class="choice-card" id="q3_label2" tabindex="0">
               <div class="img-container">
                 <object type="image/svg+xml" data="zso.svg"></object>
               </div>
@@ -471,9 +471,9 @@
         </div>
 
         <div class="modal-actions">
-          <button type="button" class="btn-secondary" onclick="prevStep(4)">Vissza</button>
+          <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(4)">Vissza</button>
           <div class="modal-actions-right">
-            <button type="button" id="submitBtn" onclick="submitPoll()">Beküldés</button>
+            <button type="button" tabindex="-1" id="submitBtn" onclick="submitPoll()">Beküldés</button>
           </div>
         </div>
       </div>
@@ -483,7 +483,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1024</div>
+<div class="version-tag">v1025</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -516,9 +516,13 @@
   function openModal() {
     showStep(1);
     document.getElementById("pollForm").reset();
+    
+    // Alapértelmezett választások beállítása a rádiókhoz nyitáskor
+    document.getElementById("q2_opt1").checked = true;
+    document.getElementById("q3_opt1").checked = true;
+
     updateSliderColor(50);
     modal.classList.add("active");
-    setTimeout(() => document.getElementById("userName").focus(), 50);
   }
 
   function closeModal() {
@@ -537,10 +541,18 @@
     document.querySelectorAll('.step-pane').forEach(el => el.classList.remove('active'));
     document.getElementById('step' + step).classList.add('active');
     
-    // Ha az 1. lépésre (név) lépünk vissza, automatikusan fókuszálunk a textboxra
-    if (step === 1) {
-      setTimeout(() => document.getElementById("userName").focus(), 50);
-    }
+    // Intelligens fókusz lépésváltáskor
+    setTimeout(() => {
+      if (step === 1) {
+        document.getElementById("userName").focus();
+      } else if (step === 2) {
+        document.getElementById("q1Slider").focus();
+      } else if (step === 3) {
+        document.getElementById("q2_label1").focus();
+      } else if (step === 4) {
+        document.getElementById("q3_label1").focus();
+      }
+    }, 50);
 
     const currentSliderVal = document.getElementById('q1Slider').value;
     updateSliderColor(currentSliderVal);
@@ -585,7 +597,7 @@
     }
   }
 
-  // Globális billentyűzet figyelő (Escape, Backspace, Enter a kérdéseknél)
+  // Globális billentyűzet figyelő (Escape, Backspace, Enter, Nyilak a kártyákon)
   document.addEventListener("keydown", (e) => {
     if (!modal.classList.contains("active")) return;
 
@@ -595,18 +607,14 @@
 
     if (e.key === "Escape") {
       e.preventDefault();
-      closeModal(); // Escape-re azonnal kiugrik a listához
+      closeModal();
     } 
     else if (e.key === "Backspace") {
-      // Ha a név mezőben vagyunk és van benne szöveg, hagyjuk törölni
       if (isNameInputActive) return;
-      
-      // Ha nem a név mezőben vagyunk, vagy a név mező üres, a Backspace visszaléptet
       e.preventDefault();
       prevStep(current);
     } 
     else if (e.key === "Enter") {
-      // Ha nem a név mezőben vagyunk (mert azt külön kezeljük), az Enterrel továbblépünk
       if (!isNameInputActive) {
         e.preventDefault();
         if (current < 4) {
@@ -614,6 +622,23 @@
         } else {
           submitPoll();
         }
+      }
+    }
+    // Nyilak kezelése a 2. és 3. kérdésnél (kártyák közötti váltás)
+    else if ((current === 3 || current === 4) && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
+      e.preventDefault();
+      const groupName = current === 3 ? "q2" : "q3";
+      const opt1 = document.getElementById(`${groupName}_opt1`);
+      const opt2 = document.getElementById(`${groupName}_opt2`);
+      const label1 = document.getElementById(`${groupName}_label1`);
+      const label2 = document.getElementById(`${groupName}_label2`);
+
+      if (opt1.checked) {
+        opt2.checked = true;
+        label2.focus();
+      } else {
+        opt1.checked = true;
+        label1.focus();
       }
     }
   });

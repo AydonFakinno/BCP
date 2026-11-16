@@ -331,7 +331,6 @@
       <h1 id="pageTitle">Hivatalos Eredmények</h1>
       <div class="subtitle" id="pageSubtitle">Add meg a helyes válaszokat a lezáráshoz!</div>
     </div>
-    <!-- A fejléc gomb Dinamikusan változik -->
     <button id="headerActionBtn" onclick="openModal()">Válaszok megadása</button>
   </header>
 
@@ -449,7 +448,7 @@
   </div>
 </div>
 
-<div class="version-tag">ans-v1.3</div>
+<div class="version-tag">ans-v1.4</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -581,8 +580,7 @@
     let dd = String(d.getDate()).padStart(2, '0');
     let hh = String(d.getHours()).padStart(2, '0');
     let min = String(d.getMinutes()).padStart(2, '0');
-    let sec = String(d.getSeconds()).padStart(2, '0');
-    return `${yyyy}.${mm}.${dd} ${hh}:${min}:${sec}`;
+    return `${yyyy}.${mm}.${dd} ${hh}:${min}`;
   }
 
   async function renderLocalCard() {
@@ -598,7 +596,6 @@
       return;
     }
 
-    // Ha már megvannak az adatok, a fejléc gomb átvált "Szerkesztés"-re
     headerBtn.textContent = "Szerkesztés";
 
     container.innerHTML = `

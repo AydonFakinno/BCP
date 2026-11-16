@@ -145,7 +145,7 @@
       font-size: 1rem;
     }
 
-    /* SVG Képhelyek */
+    /* SVG Képhely */
     .question-img-box {
       width: 100%;
       height: 160px;
@@ -172,7 +172,6 @@
       gap: 12px;
       margin-bottom: 20px;
     }
-    .choice-card-option { display: none; }
     .choice-card {
       background: var(--bg);
       border: 2px solid var(--border);
@@ -185,24 +184,30 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      height: 180px;
+      height: 170px;
     }
     .choice-card:hover {
       border-color: rgba(56, 189, 248, 0.5);
     }
-    .choice-card-option:checked + .choice-card {
+    input[type="radio"].choice-card-option:checked + .choice-card {
       border-color: var(--accent);
       background: rgba(56, 189, 248, 0.1);
     }
-    .choice-card img, .choice-card object {
+    
+    /* Berci mérete marad */
+    .choice-card object#charSvgStep3 {
       max-width: 100%;
-      max-height: 100px;
+      max-height: 80px;
       object-fit: contain;
-      pointer-events: none; /* Ne zavarja a kattintást */
+      pointer-events: none;
     }
-    /* GTA logó picit balra igazítva, hogy optikailag középen legyen */
-    .gta-logo-adjust {
-      transform: translateX(-6px);
+    /* GTA logó picit kisebb lett */
+    .choice-card object.gta-logo-adjust {
+      max-width: 100%;
+      max-height: 65px;
+      object-fit: contain;
+      pointer-events: none;
+      transform: translateX(-4px);
     }
 
     .choice-card-footer {
@@ -211,7 +216,7 @@
       justify-content: center;
       gap: 8px;
       width: 100%;
-      margin-top: 8px;
+      margin-top: 6px;
       font-weight: 600;
       font-size: 0.9rem;
     }
@@ -342,24 +347,28 @@
         
         <div class="dual-card-grid">
           <!-- 1. Válasz: Berci -->
-          <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option">
-          <label for="q2_opt1" class="choice-card">
-            <object id="charSvgStep3" type="image/svg+xml" data="char.svg"></object>
-            <div class="choice-card-footer">
-              <input type="radio" name="q2_dummy1" tabindex="-1">
-              <span>Berci</span>
-            </div>
-          </label>
+          <div>
+            <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option" style="display:none;">
+            <label for="q2_opt1" class="choice-card">
+              <object id="charSvgStep3" type="image/svg+xml" data="char.svg"></object>
+              <div class="choice-card-footer">
+                <input type="radio" name="q2_fake" onclick="document.getElementById('q2_opt1').checked = true;" tabindex="-1">
+                <span>Berci</span>
+              </div>
+            </label>
+          </div>
 
           <!-- 2. Válasz: GTA VI -->
-          <input type="radio" name="q2" value="2" id="q2_opt2" class="choice-card-option">
-          <label for="q2_opt2" class="choice-card">
-            <object class="gta-logo-adjust" type="image/svg+xml" data="logo.svg"></object>
-            <div class="choice-card-footer">
-              <input type="radio" name="q2_dummy2" tabindex="-1">
-              <span>GTA VI</span>
-            </div>
-          </label>
+          <div>
+            <input type="radio" name="q2" value="2" id="q2_opt2" class="choice-card-option" style="display:none;">
+            <label for="q2_opt2" class="choice-card">
+              <object class="gta-logo-adjust" type="image/svg+xml" data="logo.svg"></object>
+              <div class="choice-card-footer">
+                <input type="radio" name="q2_fake" onclick="document.getElementById('q2_opt2').checked = true;" tabindex="-1">
+                <span>GTA VI</span>
+              </div>
+            </label>
+          </div>
         </div>
 
         <div class="modal-actions">
@@ -402,7 +411,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1011</div>
+<div class="version-tag">v1013</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:

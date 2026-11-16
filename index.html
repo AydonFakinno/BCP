@@ -151,18 +151,24 @@
       object-fit: contain;
     }
 
-    /* Slider */
+    /* Slider és Értékjelző */
+    .slider-value-display {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
     .slider-wrap { display: flex; align-items: center; gap: 14px; }
     input[type="range"] { flex: 1; accent-color: var(--accent); cursor: pointer; }
-    .slider-val {
-      background: var(--bg);
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-weight: 700;
-      min-width: 60px;
-      text-align: center;
-      border: 1px solid var(--border);
-    }
 
     /* 1/2 Választó gombok */
     .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -235,17 +241,20 @@
         </div>
       </div>
 
-      <!-- 2. LÉPÉS: 1. KÉRDÉS (char.svg-vel és dinamikus színnel) -->
+      <!-- 2. LÉPÉS: 1. KÉRDÉS -->
       <div class="step-pane" id="step2">
-        <h2 style="margin-top:0; margin-bottom: 16px;">1. Tipp</h2>
+        <h2 id="q1HeaderTitle" style="margin-top:0; margin-bottom: 16px; font-size: 1.2rem;">1. Kérdés</h2>
         <div class="question-img-box">
           <object id="charSvg" type="image/svg+xml" data="char.svg"></object>
         </div>
         <div class="form-group">
-          <label id="q1Label" for="q1Slider">1. Kérdés (%)</label>
+          <div class="slider-value-display" id="sliderDisplayVal">50% barna bőrű magyar állampolgár</div>
+          <div class="slider-labels">
+            <span>Tekla</span>
+            <span>Zsolt</span>
+          </div>
           <div class="slider-wrap">
             <input type="range" id="q1Slider" min="0" max="100" value="50" oninput="updateSliderColor(this.value)">
-            <span class="slider-val" id="sliderVal">50%</span>
           </div>
         </div>
         <div class="modal-actions">
@@ -258,12 +267,12 @@
 
       <!-- 3. LÉPÉS: 2. KÉRDÉS -->
       <div class="step-pane" id="step3">
-        <h2 style="margin-top:0; margin-bottom: 16px;">2. Tipp</h2>
+        <h2 id="q2HeaderTitle" style="margin-top:0; margin-bottom: 16px; font-size: 1.2rem;">2. Kérdés</h2>
         <div class="question-img-box">
           <span>Kép helye (2. kérdés)</span>
         </div>
         <div class="form-group">
-          <label id="q2Label">2. Kérdés</label>
+          <label id="q2Label">2. Kérdés leírása</label>
           <div class="choice-grid">
             <label class="choice-option">
               <input type="radio" name="q2" value="1">
@@ -285,12 +294,12 @@
 
       <!-- 4. LÉPÉS: 3. KÉRDÉS + BEKÜLDÉS -->
       <div class="step-pane" id="step4">
-        <h2 style="margin-top:0; margin-bottom: 16px;">3. Tipp</h2>
+        <h2 id="q3HeaderTitle" style="margin-top:0; margin-bottom: 16px; font-size: 1.2rem;">3. Kérdés</h2>
         <div class="question-img-box">
           <span>Kép helye (3. kérdés)</span>
         </div>
         <div class="form-group">
-          <label id="q3Label">3. Kérdés</label>
+          <label id="q3Label">3. Kérdés leírása</label>
           <div class="choice-grid">
             <label class="choice-option">
               <input type="radio" name="q3" value="1">
@@ -315,7 +324,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1007</div>
+<div class="version-tag">v1008</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -325,7 +334,7 @@
   const CONFIG = {
     title: "Babaváró Tippmix",
     subtitle: "Tippelj, és nézd meg mit mondtak a többiek!",
-    q1Text: "Mennyi esélyt adsz rá, hogy apuka elájul?",
+    q1Text: "1. Kérdés: Milyen színű lesz Berci?",
     q2Text: "Ki fog többet aludni az első hónapban?",
     q2Options: { 1: "Anya", 2: "Apa" },
     q3Text: "Mi lesz az első szó?",
@@ -334,7 +343,9 @@
 
   document.getElementById("pageTitle").textContent = CONFIG.title;
   document.getElementById("pageSubtitle").textContent = CONFIG.subtitle;
-  document.getElementById("q1Label").textContent = CONFIG.q1Text;
+  document.getElementById("q1HeaderTitle").textContent = CONFIG.q1Text;
+  document.getElementById("q2HeaderTitle").textContent = CONFIG.q2Text + " (2. Kérdés)";
+  document.getElementById("q3HeaderTitle").textContent = CONFIG.q3Text + " (3. Kérdés)";
   document.getElementById("q2Label").textContent = CONFIG.q2Text;
   document.getElementById("q2Opt1").textContent = CONFIG.q2Options[1];
   document.getElementById("q2Opt2").textContent = CONFIG.q2Options[2];
@@ -347,7 +358,7 @@
   function openModal() {
     showStep(1);
     document.getElementById("pollForm").reset();
-    updateSliderColor(50); // Alapértelmezett 50%-os szín
+    updateSliderColor(50);
     modal.classList.add("active");
   }
 
@@ -387,9 +398,8 @@
   }
 
   function updateSliderColor(val) {
-    document.getElementById('sliderVal').textContent = val + '%';
+    document.getElementById('sliderDisplayVal').textContent = val + '% barna bőrű magyar állampolgár';
     
-    // Kiszámoljuk az átmenetet 0 és 100% között
     let t = val / 100;
     let c1 = hexToRgb("#BF998F");
     let c2 = hexToRgb("#A26346");
@@ -400,20 +410,17 @@
     
     let currentColor = rgbToHex(r, g, b);
 
-    // Megkeressük a char.svg-n belül a színezendő elemeket
     try {
       let svgObj = document.getElementById("charSvg");
       if (svgObj && svgObj.contentDocument) {
         let svgDoc = svgObj.contentDocument;
-        // Az összes olyan elem, aminek van fill tulajdonsága vagy a 'fill' nevű réteg/osztály
         let fillElements = svgDoc.querySelectorAll('[fill], .fill, #fill');
         fillElements.forEach(el => {
-          // Csak akkor színezzük, ha nem fehér vagy teljesen fekete háttér elem (vagy tetszőlegesen mindent)
           el.style.fill = currentColor;
         });
       }
     } catch (e) {
-      // Ha cross-origin korlát lenne lokális tesztnél, itt kezeljük
+      // CORS kezelés lokális teszthez
     }
   }
 
@@ -436,7 +443,7 @@
           </div>
           <div class="entry-row">
             <span class="entry-q">${CONFIG.q1Text}</span>
-            <span class="entry-a">${item.a1}%</span>
+            <span class="entry-a">${item.a1}% barna bőrű magyar állampolgár</span>
           </div>
           <div class="entry-row">
             <span class="entry-q">${CONFIG.q2Text}</span>

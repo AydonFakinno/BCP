@@ -366,7 +366,7 @@
         </div>
         <div class="modal-actions">
           <button type="button" class="btn-secondary" onclick="closeModal()">Mégse</button>
-          <button type="button" onclick="nextStep(1)">Tovább &rarr;</button>
+          <button type="button" onclick="nextStep(1)">Tovább</button>
         </div>
       </div>
 
@@ -387,9 +387,9 @@
           </div>
         </div>
         <div class="modal-actions">
-          <button type="button" class="btn-secondary" onclick="prevStep(2)">&larr; Vissza</button>
+          <button type="button" class="btn-secondary" onclick="prevStep(2)">Vissza</button>
           <div class="modal-actions-right">
-            <button type="button" onclick="nextStep(2)">Tovább &rarr;</button>
+            <button type="button" onclick="nextStep(2)">Tovább</button>
           </div>
         </div>
       </div>
@@ -429,9 +429,9 @@
         </div>
 
         <div class="modal-actions">
-          <button type="button" class="btn-secondary" onclick="prevStep(3)">&larr; Vissza</button>
+          <button type="button" class="btn-secondary" onclick="prevStep(3)">Vissza</button>
           <div class="modal-actions-right">
-            <button type="button" onclick="nextStep(3)">Tovább &rarr;</button>
+            <button type="button" onclick="nextStep(3)">Tovább</button>
           </div>
         </div>
       </div>
@@ -471,7 +471,7 @@
         </div>
 
         <div class="modal-actions">
-          <button type="button" class="btn-secondary" onclick="prevStep(4)">&larr; Vissza</button>
+          <button type="button" class="btn-secondary" onclick="prevStep(4)">Vissza</button>
           <div class="modal-actions-right">
             <button type="button" id="submitBtn" onclick="submitPoll()">Beküldés</button>
           </div>
@@ -483,7 +483,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1023</div>
+<div class="version-tag">v1024</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -537,6 +537,11 @@
     document.querySelectorAll('.step-pane').forEach(el => el.classList.remove('active'));
     document.getElementById('step' + step).classList.add('active');
     
+    // Ha az 1. lépésre (név) lépünk vissza, automatikusan fókuszálunk a textboxra
+    if (step === 1) {
+      setTimeout(() => document.getElementById("userName").focus(), 50);
+    }
+
     const currentSliderVal = document.getElementById('q1Slider').value;
     updateSliderColor(currentSliderVal);
   }
@@ -556,7 +561,12 @@
         return;
       }
     }
-    showStep(current + 1);
+    
+    if (current < 4) {
+      showStep(current + 1);
+    } else {
+      submitPoll();
+    }
   }
 
   function prevStep(current) {
@@ -575,13 +585,36 @@
     }
   }
 
-  // Globális Escape billentyű figyelés a modalban
+  // Globális billentyűzet figyelő (Escape, Backspace, Enter a kérdéseknél)
   document.addEventListener("keydown", (e) => {
     if (!modal.classList.contains("active")) return;
+
+    const current = getCurrentStep();
+    const activeEl = document.activeElement;
+    const isNameInputActive = activeEl && activeEl.id === "userName";
+
     if (e.key === "Escape") {
       e.preventDefault();
-      const current = getCurrentStep();
+      closeModal(); // Escape-re azonnal kiugrik a listához
+    } 
+    else if (e.key === "Backspace") {
+      // Ha a név mezőben vagyunk és van benne szöveg, hagyjuk törölni
+      if (isNameInputActive) return;
+      
+      // Ha nem a név mezőben vagyunk, vagy a név mező üres, a Backspace visszaléptet
+      e.preventDefault();
       prevStep(current);
+    } 
+    else if (e.key === "Enter") {
+      // Ha nem a név mezőben vagyunk (mert azt külön kezeljük), az Enterrel továbblépünk
+      if (!isNameInputActive) {
+        e.preventDefault();
+        if (current < 4) {
+          nextStep(current);
+        } else {
+          submitPoll();
+        }
+      }
     }
   });
 

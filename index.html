@@ -90,7 +90,7 @@
     .entry-q { color: var(--muted); }
     .entry-a { font-weight: 600; text-align: right; }
 
-    /* Modal (Űrlap) */
+    /* Modal (Lépésenkénti űrlap) */
     .modal-backdrop {
       display: none;
       position: fixed;
@@ -115,6 +115,9 @@
       overflow-y: auto;
     }
 
+    .step-pane { display: none; }
+    .step-pane.active { display: block; }
+
     .form-group { margin-bottom: 20px; }
     label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
     
@@ -127,6 +130,23 @@
       color: var(--text);
       font-size: 1rem;
     }
+
+    /* Képhely a kérdésekhez */
+    .question-img-box {
+      width: 100%;
+      height: 140px;
+      background: rgba(56, 189, 248, 0.05);
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .question-img-box img { width: 100%; height: 100%; object-fit: cover; }
 
     /* Slider */
     .slider-wrap { display: flex; align-items: center; gap: 14px; }
@@ -161,7 +181,8 @@
       color: var(--accent);
     }
 
-    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+    .modal-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; }
+    .modal-actions-right { display: flex; gap: 10px; }
     .status-msg { text-align: center; color: var(--muted); padding: 40px 0; }
 
     /* Verziószám a sarokban */
@@ -193,62 +214,108 @@
   </div>
 </div>
 
-<!-- Beküldő ablak -->
+<!-- Többlépcsős Beküldő Modal -->
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">
-    <h2 style="margin-top:0">Tipp beküldése</h2>
     <form id="pollForm">
-      <div class="form-group">
-        <label for="userName">Neved / Beceneved</label>
-        <input type="text" id="userName" required placeholder="Pl. Kovács János">
-      </div>
-
-      <div class="form-group">
-        <label id="q1Label" for="q1Slider">1. Kérdés (%)</label>
-        <div class="slider-wrap">
-          <input type="range" id="q1Slider" min="0" max="100" value="50" oninput="document.getElementById('sliderVal').textContent = this.value + '%'">
-          <span class="slider-val" id="sliderVal">50%</span>
+      
+      <!-- 1. LÉPÉS: NÉV -->
+      <div class="step-pane active" id="step1">
+        <h2 style="margin-top:0; margin-bottom: 16px;">Ki vagy te?</h2>
+        <div class="form-group">
+          <label for="userName">Neved / Beceneved</label>
+          <input type="text" id="userName" placeholder="Pl. Kovács János">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeModal()">Mégse</button>
+          <button type="button" onclick="nextStep(1)">Tovább &rarr;</button>
         </div>
       </div>
 
-      <div class="form-group">
-        <label id="q2Label">2. Kérdés</label>
-        <div class="choice-grid">
-          <label class="choice-option">
-            <input type="radio" name="q2" value="1" required>
-            <span class="choice-box" id="q2Opt1">Opció 1</span>
-          </label>
-          <label class="choice-option">
-            <input type="radio" name="q2" value="2">
-            <span class="choice-box" id="q2Opt2">Opció 2</span>
-          </label>
+      <!-- 2. LÉPÉS: 1. KÉRDÉS -->
+      <div class="step-pane" id="step2">
+        <h2 style="margin-top:0; margin-bottom: 16px;">1. Tipp</h2>
+        <!-- Ide jöhet majd a kép -->
+        <div class="question-img-box">
+          <span>Kép helye (1. kérdés)</span>
+        </div>
+        <div class="form-group">
+          <label id="q1Label" for="q1Slider">1. Kérdés (%)</label>
+          <div class="slider-wrap">
+            <input type="range" id="q1Slider" min="0" max="100" value="50" oninput="document.getElementById('sliderVal').textContent = this.value + '%'">
+            <span class="slider-val" id="sliderVal">50%</span>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="prevStep(2)">&larr; Vissza</button>
+          <div class="modal-actions-right">
+            <button type="button" onclick="nextStep(2)">Tovább &rarr;</button>
+          </div>
         </div>
       </div>
 
-      <div class="form-group">
-        <label id="q3Label">3. Kérdés</label>
-        <div class="choice-grid">
-          <label class="choice-option">
-            <input type="radio" name="q3" value="1" required>
-            <span class="choice-box" id="q3Opt1">Opció 1</span>
-          </label>
-          <label class="choice-option">
-            <input type="radio" name="q3" value="2">
-            <span class="choice-box" id="q3Opt2">Opció 2</span>
-          </label>
+      <!-- 3. LÉPÉS: 2. KÉRDÉS -->
+      <div class="step-pane" id="step3">
+        <h2 style="margin-top:0; margin-bottom: 16px;">2. Tipp</h2>
+        <!-- Ide jöhet majd a kép -->
+        <div class="question-img-box">
+          <span>Kép helye (2. kérdés)</span>
+        </div>
+        <div class="form-group">
+          <label id="q2Label">2. Kérdés</label>
+          <div class="choice-grid">
+            <label class="choice-option">
+              <input type="radio" name="q2" value="1">
+              <span class="choice-box" id="q2Opt1">Opció 1</span>
+            </label>
+            <label class="choice-option">
+              <input type="radio" name="q2" value="2">
+              <span class="choice-box" id="q2Opt2">Opció 2</span>
+            </label>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="prevStep(3)">&larr; Vissza</button>
+          <div class="modal-actions-right">
+            <button type="button" onclick="nextStep(3)">Tovább &rarr;</button>
+          </div>
         </div>
       </div>
 
-      <div class="modal-actions">
-        <button type="button" class="btn-secondary" onclick="closeModal()">Mégse</button>
-        <button type="submit" id="submitBtn">Beküldés</button>
+      <!-- 4. LÉPÉS: 3. KÉRDÉS + BEKÜLDÉS -->
+      <div class="step-pane" id="step4">
+        <h2 style="margin-top:0; margin-bottom: 16px;">3. Tipp</h2>
+        <!-- Ide jöhet majd a kép -->
+        <div class="question-img-box">
+          <span>Kép helye (3. kérdés)</span>
+        </div>
+        <div class="form-group">
+          <label id="q3Label">3. Kérdés</label>
+          <div class="choice-grid">
+            <label class="choice-option">
+              <input type="radio" name="q3" value="1">
+              <span class="choice-box" id="q3Opt1">Opció 1</span>
+            </label>
+            <label class="choice-option">
+              <input type="radio" name="q3" value="2">
+              <span class="choice-box" id="q3Opt2">Opció 2</span>
+            </label>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="prevStep(4)">&larr; Vissza</button>
+          <div class="modal-actions-right">
+            <button type="submit" id="submitBtn">Beküldés</button>
+          </div>
+        </div>
       </div>
+
     </form>
   </div>
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1005</div>
+<div class="version-tag">v1006</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -276,8 +343,38 @@
   document.getElementById("q3Opt2").textContent = CONFIG.q3Options[2];
 
   const modal = document.getElementById("modalBackdrop");
-  function openModal() { modal.classList.add("active"); }
-  function closeModal() { modal.classList.remove("active"); }
+  
+  function openModal() {
+    showStep(1);
+    document.getElementById("pollForm").reset();
+    document.getElementById("sliderVal").textContent = "50%";
+    modal.classList.add("active");
+  }
+
+  function closeModal() {
+    modal.classList.remove("active");
+  }
+
+  function showStep(step) {
+    document.querySelectorAll('.step-pane').forEach(el => el.classList.remove('active'));
+    document.getElementById('step' + step).classList.add('active');
+  }
+
+  function nextStep(current) {
+    if (current === 1) {
+      const nameInput = document.getElementById("userName");
+      if (!nameInput.value.trim()) {
+        alert("Kérlek add meg a neved!");
+        nameInput.focus();
+        return;
+      }
+    }
+    showStep(current + 1);
+  }
+
+  function prevStep(current) {
+    showStep(current - 1);
+  }
 
   async function loadEntries() {
     const listEl = document.getElementById("entriesList");
@@ -317,6 +414,19 @@
 
   document.getElementById("pollForm").addEventListener("submit", async (e) => {
     e.preventDefault();
+    
+    const q2Checked = document.querySelector('input[name="q2"]:checked');
+    const q3Checked = document.querySelector('input[name="q3"]:checked');
+
+    if (!q2Checked) {
+      alert("Kérlek válassz a 2. kérdésnél!");
+      return;
+    }
+    if (!q3Checked) {
+      alert("Kérlek válassz a 3. kérdésnél!");
+      return;
+    }
+
     const btn = document.getElementById("submitBtn");
     btn.disabled = true;
     btn.textContent = "Küldés...";
@@ -324,8 +434,8 @@
     const payload = {
       name: document.getElementById("userName").value.trim(),
       a1: Number(document.getElementById("q1Slider").value),
-      a2: Number(document.querySelector('input[name="q2"]:checked').value),
-      a3: Number(document.querySelector('input[name="q3"]:checked').value)
+      a2: Number(q2Checked.value),
+      a3: Number(q3Checked.value)
     };
 
     try {
@@ -334,8 +444,6 @@
         body: JSON.stringify(payload)
       });
 
-      document.getElementById("pollForm").reset();
-      document.getElementById("sliderVal").textContent = "50%";
       closeModal();
       await loadEntries();
     } catch (err) {

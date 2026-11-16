@@ -8,11 +8,14 @@
     :root {
       --bg: #0f172a;
       --card: #1e293b;
+      --card-official: #1e1b4b; /* Mélyebb, exkluzívabb háttér a hivatalos kártyának */
       --text: #f8fafc;
       --muted: #94a3b8;
       --accent: #38bdf8;
+      --accent-official: #facc15; /* Sárga szín a hivatalos kártya nevének */
       --accent-hover: #0284c7;
       --border: #334155;
+      --border-official: #ca8a04; /* Aranyosabb keret */
     }
 
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
@@ -40,10 +43,9 @@
     header {
       position: sticky;
       top: 0;
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(8px);
-      padding: 15px 0 20px 0;
-      margin-bottom: 10px;
+      padding: 15px 0 15px 0;
       z-index: 10;
       display: flex;
       justify-content: space-between;
@@ -94,6 +96,18 @@
       border-radius: 14px;
       padding: 16px 20px;
     }
+
+    /* Hivatalos Eredmények kártya egyedi stílusa */
+    .official-card {
+      background: var(--card-official);
+      border: 2px solid var(--border-official);
+      box-shadow: 0 4px 20px rgba(202, 138, 4, 0.15);
+      margin-bottom: 4px;
+    }
+    .official-card .entry-name {
+      color: var(--accent-official) !important;
+    }
+
     .entry-header {
       display: flex;
       justify-content: space-between;
@@ -105,7 +119,6 @@
     .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
     .entry-date { font-size: 0.8rem; color: var(--muted); }
     
-    /* Kártya belső elrendezés: balra a karakter, jobbra a 3 sor */
     .entry-body {
       display: flex;
       align-items: stretch;
@@ -188,7 +201,6 @@
       font-size: 1rem;
     }
 
-    /* Címsor stílusok (Kérdések) */
     .question-title {
       font-size: 1.15rem;
       font-weight: 700;
@@ -202,7 +214,6 @@
       font-size: 1rem;
     }
 
-    /* SVG Képhely */
     .question-img-box {
       width: 100%;
       height: 160px;
@@ -222,7 +233,6 @@
       object-fit: contain;
     }
 
-    /* Kattintható Kártya Grid a 2. és 3. kérdéshez */
     .dual-card-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -248,7 +258,6 @@
       border-color: rgba(56, 189, 248, 0.5);
     }
     
-    /* Rádiógomb állapot kezelés */
     .choice-card-option {
       position: absolute;
       opacity: 0;
@@ -264,7 +273,6 @@
       box-shadow: inset 0 0 0 3px var(--bg);
     }
 
-    /* Képek fix középre igazítva */
     .img-container {
       flex: 1;
       width: 100%;
@@ -300,7 +308,6 @@
       transition: 0.15s;
     }
 
-    /* Slider és Értékjelző */
     .slider-value-display {
       font-size: 1rem;
       font-weight: 400;
@@ -323,7 +330,6 @@
     .modal-actions-right { display: flex; gap: 10px; }
     .status-msg { text-align: center; color: var(--muted); padding: 40px 0; }
 
-    /* Verziószám a sarokban */
     .version-tag {
       position: fixed;
       bottom: 10px;
@@ -395,12 +401,10 @@
         </div>
       </div>
 
-      <!-- 3. LÉPÉS: 2. KÉRDÉS (Kattintható kártyák Berci vs GTA VI) -->
+      <!-- 3. LÉPÉS: 2. KÉRDÉS -->
       <div class="step-pane" id="step3">
         <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jön ki előbb?</span></div>
-        
         <div class="dual-card-grid">
-          <!-- 1. Válasz: Berci -->
           <div style="position: relative;">
             <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option" checked>
             <label for="q2_opt1" class="choice-card" id="q2_label1" tabindex="0">
@@ -414,7 +418,6 @@
             </label>
           </div>
 
-          <!-- 2. Válasz: GTA VI -->
           <div style="position: relative;">
             <input type="radio" name="q2" value="2" id="q2_opt2" class="choice-card-option">
             <label for="q2_opt2" class="choice-card" id="q2_label2" tabindex="0">
@@ -437,12 +440,10 @@
         </div>
       </div>
 
-      <!-- 4. LÉPÉS: 3. KÉRDÉS + BEKÜLDÉS (Kattintható kártyák Berci vs Zsolt) -->
+      <!-- 4. LÉPÉS: 3. KÉRDÉS + BEKÜLDÉS -->
       <div class="step-pane" id="step4">
         <div class="question-title" id="q3HeaderTitle">3. Kérdés: <span class="sub-text">Kinek nagyobb a pénisze?</span></div>
-        
         <div class="dual-card-grid">
-          <!-- 1. Válasz: Berci -->
           <div style="position: relative;">
             <input type="radio" name="q3" value="1" id="q3_opt1" class="choice-card-option" checked>
             <label for="q3_opt1" class="choice-card" id="q3_label1" tabindex="0">
@@ -456,7 +457,6 @@
             </label>
           </div>
 
-          <!-- 2. Válasz: Zsolt -->
           <div style="position: relative;">
             <input type="radio" name="q3" value="2" id="q3_opt2" class="choice-card-option">
             <label for="q3_opt2" class="choice-card" id="q3_label2" tabindex="0">
@@ -483,14 +483,11 @@
   </div>
 </div>
 
-<!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1030</div>
+<div class="version-tag">v1031</div>
 
 <script>
-  // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
 
-  // 2. ITT TUDOD ÁTÍRNI A KÉRDÉSEKET ÉS A CÍMEKET:
   const CONFIG = {
     title: "Babaváró Tippmix",
     subtitle: "Tippelj, és nézd meg mit mondtak a többiek!",
@@ -517,10 +514,8 @@
   function openModal() {
     showStep(1);
     document.getElementById("pollForm").reset();
-    
     document.getElementById("q2_opt1").checked = true;
     document.getElementById("q3_opt1").checked = true;
-
     updateSliderColor(50);
     modal.classList.add("active");
   }
@@ -542,15 +537,10 @@
     document.getElementById('step' + step).classList.add('active');
     
     setTimeout(() => {
-      if (step === 1) {
-        document.getElementById("userName").focus();
-      } else if (step === 2) {
-        document.getElementById("q1Slider").focus();
-      } else if (step === 3) {
-        document.getElementById("q2_label1").focus();
-      } else if (step === 4) {
-        document.getElementById("q3_label1").focus();
-      }
+      if (step === 1) document.getElementById("userName").focus();
+      else if (step === 2) document.getElementById("q1Slider").focus();
+      else if (step === 3) document.getElementById("q2_label1").focus();
+      else if (step === 4) document.getElementById("q3_label1").focus();
     }, 50);
 
     const currentSliderVal = document.getElementById('q1Slider').value;
@@ -561,7 +551,6 @@
     if (current === 1) {
       const nameInput = document.getElementById("userName");
       nameInput.value = nameInput.value.trim();
-      
       if (!nameInput.value) {
         alert("Kérlek add meg a neved!");
         nameInput.focus();
@@ -575,19 +564,13 @@
       }
     }
     
-    if (current < 4) {
-      showStep(current + 1);
-    } else {
-      submitPoll();
-    }
+    if (current < 4) showStep(current + 1);
+    else submitPoll();
   }
 
   function prevStep(current) {
-    if (current <= 1) {
-      closeModal();
-    } else {
-      showStep(current - 1);
-    }
+    if (current <= 1) closeModal();
+    else showStep(current - 1);
   }
 
   function handleNameKeydown(e) {
@@ -599,7 +582,6 @@
 
   document.addEventListener("keydown", (e) => {
     if (!modal.classList.contains("active")) return;
-
     const current = getCurrentStep();
     const activeEl = document.activeElement;
     const isNameInputActive = activeEl && activeEl.id === "userName";
@@ -607,23 +589,17 @@
     if (e.key === "Escape") {
       e.preventDefault();
       closeModal();
-    } 
-    else if (e.key === "Backspace") {
+    } else if (e.key === "Backspace") {
       if (isNameInputActive) return;
       e.preventDefault();
       prevStep(current);
-    } 
-    else if (e.key === "Enter") {
+    } else if (e.key === "Enter") {
       if (!isNameInputActive) {
         e.preventDefault();
-        if (current < 4) {
-          nextStep(current);
-        } else {
-          submitPoll();
-        }
+        if (current < 4) nextStep(current);
+        else submitPoll();
       }
-    }
-    else if ((current === 3 || current === 4) && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
+    } else if ((current === 3 || current === 4) && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
       e.preventDefault();
       const groupName = current === 3 ? "q2" : "q3";
       const opt1 = document.getElementById(`${groupName}_opt1`);
@@ -654,15 +630,13 @@
     let t = Math.max(0, Math.min(100, Number(val) || 0)) / 100;
     let c1 = hexToRgb("#BF998F");
     let c2 = hexToRgb("#A26346");
-    
     let r = Math.round(c1[0] + (c2[0] - c1[0]) * t);
     let g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
     let b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
-    
     return rgbToHex(r, g, b);
   }
 
-  function buildColoredCardChar(val) {
+  function buildColoredCardChar(val, customId = "") {
     if (!charSvgRaw) return "";
     const color = getInterpolatedColor(val);
     const parser = new DOMParser();
@@ -673,7 +647,8 @@
     svgEl.querySelectorAll('[fill], .fill, #fill').forEach(el => {
       el.style.fill = color;
     });
-    return `<div class="entry-char-side">${svgEl.outerHTML}</div>`;
+    const idAttr = customId ? ` id="${customId}"` : "";
+    return `<div class="entry-char-side"${idAttr}>${svgEl.outerHTML}</div>`;
   }
 
   function updateSliderColor(val) {
@@ -716,7 +691,6 @@
     } catch (e) {}
   }
 
-  // Dátum formázó segédfüggvény YYYY.MM.DD HH:MM formátumra
   function formatDateString(rawDate) {
     if (!rawDate) return "";
     try {
@@ -731,7 +705,6 @@
       }
     } catch (e) {}
     
-    // Ha nem sikerül Dátumként értelmezni, de szövegként benne van (pl. 2026-11-16 23:38:00)
     let clean = String(rawDate).replace('T', ' ').split('.')[0];
     let parts = clean.split(':');
     if (parts.length >= 2) {
@@ -749,22 +722,50 @@
       const res = await fetch(SCRIPT_URL);
       const data = await res.json();
 
-      if (data.locked) {
+      let htmlContent = "";
+
+      // Ha le van zárva, beillesztjük a hivatalos Eredmények kártyát legfőbben felülre
+      if (data.locked && data.official) {
+        newBtn.style.display = "none";
+        document.getElementById("pageSubtitle সংবাদদাতা" || "pageSubtitle").textContent = "A tippmix lezárult! Hivatalos eredmények fent.";
+        
+        htmlContent += `
+          <div class="entry-card official-card">
+            <div class="entry-header">
+              <span class="entry-name">Eredmények</span>
+              <span class="entry-date">${formatDateString(data.official.date)}</span>
+            </div>
+            <div class="entry-body">
+              ${buildColoredCardChar(data.official.a1, "official-char")}
+              <div class="entry-rows">
+                <div class="entry-row">
+                  <span class="entry-q">${CONFIG.q1Text}</span>
+                  <span class="entry-a">${data.official.a1}% BBMÁ</span>
+                </div>
+                <div class="entry-row">
+                  <span class="entry-q">${CONFIG.q2Text}</span>
+                  <span class="entry-a">${CONFIG.q2Options[data.official.a2] || data.official.a2}</span>
+                </div>
+                <div class="entry-row">
+                  <span class="entry-q">${CONFIG.q3Text}</span>
+                  <span class="entry-a">${CONFIG.q3Options[data.official.a3] || data.official.a3}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (data.locked) {
         newBtn.style.display = "none";
         document.getElementById("pageSubtitle").textContent = "A tippmix lezárult! Az eredmények hamarosan érkeznek...";
-        
-        if (!data.entries.length) {
-          listEl.innerHTML = '<div class="status-msg">A játék véget ért, de még nincsenek megjeleníthető tippek.</div>';
-          return;
-        }
       }
 
-      if (!data.entries.length) {
+      if (!data.entries.length && !data.official) {
         listEl.innerHTML = '<div class="status-msg">Még nem érkezett válasz. Legyél te az első!</div>';
         return;
       }
 
-      listEl.innerHTML = data.entries.map(item => `
+      // Haverok listájának renderelése a hivatalos kártya alá
+      const entriesHtml = data.entries.map(item => `
         <div class="entry-card">
           <div class="entry-header">
             <span class="entry-name">${escapeHtml(item.name)}</span>
@@ -789,6 +790,8 @@
           </div>
         </div>
       `).join("");
+
+      listEl.innerHTML = htmlContent + entriesHtml;
     } catch (err) {
       listEl.innerHTML = '<div class="status-msg">Hiba a betöltéskor. Ellenőrizd a SCRIPT_URL beállítást!</div>';
     }
@@ -796,7 +799,6 @@
 
   async function submitPoll() {
     const q3Checked = document.querySelector('input[name="q3"]:checked');
-
     if (!q3Checked) {
       alert("Kérlek válassz egy opciót!");
       return;
@@ -829,7 +831,6 @@
     }
   }
 
-  // Debug Reset: X billentyű
   document.addEventListener("keydown", async (e) => {
     if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
 

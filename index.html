@@ -484,7 +484,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1026</div>
+<div class="version-tag">v1027</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -560,7 +560,10 @@
   function nextStep(current) {
     if (current === 1) {
       const nameInput = document.getElementById("userName");
-      if (!nameInput.value.trim()) {
+      // Automatikusan levágjuk a space-eket a név elejéről és végéről
+      nameInput.value = nameInput.value.trim();
+      
+      if (!nameInput.value) {
         alert("Kérlek add meg a neved!");
         nameInput.focus();
         return;
@@ -798,8 +801,8 @@
     if (e.key.toLowerCase() === "x") {
       if (!confirm("DEBUG: Tényleg törlöd az összes eddigi választ a táblázatból?")) return;
 
-      TheListEl = document.getElementById("entriesList");
-      TheListEl.innerHTML = '<div class="status-msg">Táblázat ürítése...</div>';
+      const listEl = document.getElementById("entriesList");
+      listEl.innerHTML = '<div class="status-msg">Táblázat ürítése...</div>';
 
       try {
         await fetch(SCRIPT_URL, {

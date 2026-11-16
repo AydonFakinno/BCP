@@ -165,7 +165,7 @@
       object-fit: contain;
     }
 
-    /* Kattintható Kártya Grid a 2. kérdéshez */
+    /* Kattintható Kártya Grid a 2. és 3. kérdéshez */
     .dual-card-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -261,26 +261,6 @@
     }
     .slider-wrap { display: flex; align-items: center; gap: 14px; }
     input[type="range"] { flex: 1; accent-color: var(--accent); cursor: pointer; }
-
-    /* 1/2 Választó gombok a 3. kérdéshez */
-    .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .choice-option input { display: none; }
-    .choice-box {
-      display: block;
-      text-align: center;
-      padding: 12px 10px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: 0.15s;
-    }
-    .choice-option input:checked + .choice-box {
-      border-color: var(--accent);
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--accent);
-    }
 
     .modal-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; }
     .modal-actions-right { display: flex; gap: 10px; }
@@ -399,25 +379,40 @@
         </div>
       </div>
 
-      <!-- 4. LÉPÉS: 3. KÉRDÉS + BEKÜLDÉS -->
+      <!-- 4. LÉPÉS: 3. KÉRDÉS + BEKÜLDÉS (Kattintható kártyák Berci vs Zsolt) -->
       <div class="step-pane" id="step4">
         <div class="question-title" id="q3HeaderTitle">3. Kérdés: <span class="sub-text">Mi lesz az első szó?</span></div>
-        <div class="question-img-box">
-          <span>Kép helye (3. kérdés)</span>
-        </div>
-        <div class="form-group">
-          <label id="q3Label">Mi lesz az első szó?</label>
-          <div class="choice-grid">
-            <label class="choice-option">
-              <input type="radio" name="q3" value="1">
-              <span class="choice-box" id="q3Opt1">Opció 1</span>
+        
+        <div class="dual-card-grid">
+          <!-- 1. Válasz: Berci -->
+          <div style="position: relative;">
+            <input type="radio" name="q3" value="1" id="q3_opt1" class="choice-card-option">
+            <label for="q3_opt1" class="choice-card">
+              <div class="img-container">
+                <object id="charSvgStep4" type="image/svg+xml" data="char.svg"></object>
+              </div>
+              <div class="choice-card-footer">
+                <div class="custom-radio"></div>
+                <span>Berci</span>
+              </div>
             </label>
-            <label class="choice-option">
-              <input type="radio" name="q3" value="2">
-              <span class="choice-box" id="q3Opt2">Opció 2</span>
+          </div>
+
+          <!-- 2. Válasz: Zsolt -->
+          <div style="position: relative;">
+            <input type="radio" name="q3" value="2" id="q3_opt2" class="choice-card-option">
+            <label for="q3_opt2" class="choice-card">
+              <div class="img-container">
+                <object type="image/svg+xml" data="zso.svg"></object>
+              </div>
+              <div class="choice-card-footer">
+                <div class="custom-radio"></div>
+                <span>Zsolt</span>
+              </div>
             </label>
           </div>
         </div>
+
         <div class="modal-actions">
           <button type="button" class="btn-secondary" onclick="prevStep(4)">&larr; Vissza</button>
           <div class="modal-actions-right">
@@ -431,7 +426,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1017</div>
+<div class="version-tag">v1018</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -448,7 +443,7 @@
     q2Options: { 1: "Berci", 2: "GTA VI" },
     q3Prefix: "3. Kérdés:",
     q3Text: "Mi lesz az első szó?",
-    q3Options: { 1: "Anya / Apa", 2: "Valami inside joke" }
+    q3Options: { 1: "Berci", 2: "Zsolt" }
   };
 
   document.getElementById("pageTitle").textContent = CONFIG.title;
@@ -457,10 +452,6 @@
   document.getElementById("q1HeaderTitle").innerHTML = `${CONFIG.q1Prefix} <span class="sub-text">${CONFIG.q1Text}</span>`;
   document.getElementById("q2HeaderTitle").innerHTML = `${CONFIG.q2Prefix} <span class="sub-text">${CONFIG.q2Text}</span>`;
   document.getElementById("q3HeaderTitle").innerHTML = `${CONFIG.q3Prefix} <span class="sub-text">${CONFIG.q3Text}</span>`;
-
-  document.getElementById("q3Label").textContent = CONFIG.q3Text;
-  document.getElementById("q3Opt1").textContent = CONFIG.q3Options[1];
-  document.getElementById("q3Opt2").textContent = CONFIG.q3Options[2];
 
   const modal = document.getElementById("modalBackdrop");
   
@@ -525,8 +516,8 @@
     
     let currentColor = rgbToHex(r, g, b);
 
-    // Színezzük mindkét char.svg-t
-    ['charSvg', 'charSvgStep3'].forEach(id => {
+    // Színezzük az összes char.svg-t (1., 2. és 3. kérdésnél is)
+    ['charSvg', 'charSvgStep3', 'charSvgStep4'].forEach(id => {
       try {
         let svgObj = document.getElementById(id);
         if (svgObj && svgObj.contentDocument) {
@@ -584,7 +575,7 @@
     const q3Checked = document.querySelector('input[name="q3"]:checked');
 
     if (!q3Checked) {
-      alert("Kérlek válassz a 3. kérdésnél!");
+      alert("Kérlek válassz egy opciót!");
       return;
     }
 

@@ -1,1156 +1,341 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Berci Tipszmiksz</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            height: 100vh;
-            width: 100vw;
-            background-color: #121214;
-            color: #f4f4f5;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Header Section */
-        .top-section {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 25vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 0 1rem;
-            text-align: center;
-            z-index: 10;
-        }
-
-        .page-title {
-            font-size: 5rem;
-            font-weight: 700;
-            color: #ffffff;
-            letter-spacing: -1px;
-            line-height: 1;
-        }
-
-        .device-badge {
-            margin-top: 0.5rem;
-            font-size: 0.85rem;
-            color: #71717a;
-            background-color: #1c1c21;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            border: 1px solid #2e2e36;
-            letter-spacing: 0.2px;
-        }
-
-        /* Interactive Main View */
-        .interactive-section {
-            position: relative;
-            height: 100vh;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 1.5rem;
-            margin-top: 5vh;
-        }
-
-        /* View Containers (Fade Transitions) */
-        .default-view, .card, .picker-container, .choice-container-step, .results-view {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-            position: absolute;
-        }
-
-        .default-view.fade-in, .card.fade-in, .picker-container.fade-in, .choice-container-step.fade-in, .results-view.fade-in {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .default-view {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.25rem;
-            width: 100%;
-            max-width: 640px;
-            z-index: 2;
-            position: relative;
-        }
-
-        /* Timed Submission Feedback Banner */
-        .success-banner {
-            background-color: rgba(34, 197, 94, 0.15);
-            border: 1px solid #22c55e;
-            color: #4ade80;
-            padding: 0.6rem 1.25rem;
-            border-radius: 9999px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-align: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-            width: 100%;
-        }
-
-        .success-banner.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Buttons */
-        .btn-group {
-            display: flex;
-            gap: 0.75rem;
-            width: 100%;
-            justify-content: center;
-        }
-
-        .claim-btn, .master-btn, .submit-btn, .next-btn, .reset-btn, .confirm-name-btn {
-            font-size: 0.95rem;
-            font-weight: 600;
-            padding: 0.85rem 1.75rem;
-            border: none;
-            border-radius: 9999px;
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .claim-btn, .submit-btn, .next-btn, .confirm-name-btn {
-            background-color: #6366f1;
-            color: #ffffff;
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
-        }
-
-        .claim-btn:hover, .submit-btn:hover, .next-btn:hover, .confirm-name-btn:hover {
-            background-color: #4f46e5;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
-        }
-
-        .master-btn {
-            background-color: #a855f7;
-            color: #ffffff;
-            box-shadow: 0 4px 14px rgba(168, 85, 247, 0.4);
-        }
-
-        .master-btn:hover {
-            background-color: #9333ea;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
-        }
-
-        .reset-btn {
-            background-color: #27272a;
-            color: #a1a1aa;
-            border: 1px solid #3f3f46;
-            width: 100%;
-        }
-
-        .reset-btn:hover {
-            background-color: #3f3f46;
-            color: #ffffff;
-        }
-
-        /* Scrollable Picked Colors List */
-        .list-container {
-            width: 100%;
-            background-color: #1c1c21;
-            border-radius: 20px;
-            border: 1px solid #2e2e36;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        }
-
-        .list-title {
-            font-size: 0.95rem;
-            color: #a1a1aa;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-        }
-
-        .color-list {
-            list-style: none;
-            max-height: 320px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            padding-right: 0.25rem;
-        }
-
-        .color-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .color-list::-webkit-scrollbar-thumb {
-            background-color: #3f3f46;
-            border-radius: 4px;
-        }
-
-        .color-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #2a2a32;
-            padding: 1rem 1.25rem;
-            border-radius: 16px;
-            border: 1px solid #3f3f46;
-            width: 100%;
-            gap: 1rem;
-        }
-
-        .user-name-group {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            min-width: 0;
-            flex: 1;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: #f4f4f5;
-            font-size: 1.2rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-            width: 100%;
-        }
-
-        .color-info {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .hex-code {
-            font-weight: 600;
-            font-family: monospace;
-            font-size: 1.1rem;
-            color: #a1a1aa;
-            min-width: 95px;
-            text-align: right;
-            flex-shrink: 0;
-        }
-
-        .score-match {
-            font-weight: 600;
-            font-family: monospace;
-            font-size: 1.2rem;
-            min-width: 130px;
-            text-align: right;
-            flex-shrink: 0;
-        }
-
-        .choice-badge {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: #c084fc;
-            background-color: rgba(168, 85, 247, 0.15);
-            border: 1px solid #a855f7;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            flex-shrink: 0;
-        }
-
-        /* Larger Miniature SVG Thumbnail Box */
-        .swatch-svg {
-            width: 64px;
-            height: 64px;
-            background-color: transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            padding: 0;
-            flex-shrink: 0;
-        }
-
-        .swatch-svg svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Free Text Name Input Card */
-        .card {
-            background-color: #1c1c21;
-            padding: 2.5rem 2rem;
-            border-radius: 24px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-            border: 1px solid #2e2e36;
-            text-align: center;
-            width: 100%;
-            max-width: 360px;
-            z-index: 3;
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-        }
-
-        h2 {
-            font-size: 1.1rem;
-            font-weight: 500;
-            color: #a1a1aa;
-        }
-
-        input.name-input {
-            width: 100%;
-            padding: 0.85rem 1.25rem;
-            font-size: 1rem;
-            color: #ffffff;
-            background-color: #2a2a32;
-            border: 1px solid #3f3f46;
-            border-radius: 9999px;
-            outline: none;
-            text-align: center;
-        }
-
-        input.name-input::placeholder {
-            color: #52525b;
-        }
-
-        /* Color Selection & Choice Screen Containers */
-        .picker-container, .choice-container-step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-            width: 100%;
-            max-width: 800px;
-        }
-
-        .mode-indicator {
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.4rem 1rem;
-            border-radius: 9999px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .mode-indicator.player {
-            background-color: rgba(99, 102, 241, 0.15);
-            color: #818cf8;
-            border: 1px solid #6366f1;
-        }
-
-        .mode-indicator.master {
-            background-color: rgba(168, 85, 247, 0.15);
-            color: #c084fc;
-            border: 1px solid #a855f7;
-        }
-
-        /* Centered Picker Layout Stack */
-        .picker-content-stack {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-            width: 100%;
-        }
-
-        .slider-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            width: 100%;
-            max-width: 320px;
-        }
-
-        /* Skin Tone Slider Container */
-        .slider-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            align-items: center;
-        }
-
-        input[type=range].skin-slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 14px;
-            border-radius: 9999px;
-            background: linear-gradient(to right, #BF998F, #B07E6A, #A26346);
-            outline: none;
-            border: 2px solid #2e2e36;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        }
-
-        input[type=range].skin-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: #ffffff;
-            cursor: pointer;
-            border: 3px solid #6366f1;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-            transition: transform 0.1s ease;
-        }
-
-        input[type=range].skin-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.15);
-        }
-
-        .slider-labels {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            font-size: 0.8rem;
-            color: #a1a1aa;
-            font-weight: 500;
-        }
-
-        /* Vector SVG Preview Box */
-        .color-preview {
-            width: 160px;
-            height: 160px;
-            background-color: transparent;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            padding: 0;
-        }
-
-        .color-preview svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Side by Side Choice Grid */
-        .choice-options-grid {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            align-items: center;
-            margin: 1rem 0;
-        }
-
-        .choice-card {
-            background-color: #1c1c21;
-            border: 2px solid #2e2e36;
-            border-radius: 20px;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            cursor: pointer;
-            width: 180px;
-            transition: all 0.2s ease;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        }
-
-        .choice-card:hover {
-            border-color: #6366f1;
-            transform: translateY(-2px);
-        }
-
-        .choice-card.selected {
-            border-color: #6366f1;
-            background-color: rgba(99, 102, 241, 0.1);
-        }
-
-        .choice-card input[type="radio"] {
-            accent-color: #6366f1;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .choice-svg-box {
-            width: 90px;
-            height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .choice-svg-box svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .choice-label {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #f4f4f5;
-        }
-
-        .label {
-            font-size: 0.9rem;
-            color: #a1a1aa;
-            font-weight: 500;
-        }
-
-        .submit-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        /* Results Leaderboard View */
-        .results-view {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.25rem;
-            width: 100%;
-            max-width: 640px;
-            z-index: 5;
-        }
-
-        .master-card {
-            display: inline-flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 2rem;
-            background-color: #2a2a32;
-            padding: 1rem 1.25rem;
-            border-radius: 16px;
-            border: 1px solid #a855f7;
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
-            width: auto;
-            max-width: 100%;
-        }
-
-        .pos-badge {
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 0.2rem 0;
-            border-radius: 4px;
-            text-transform: uppercase;
-            display: inline-block;
-            width: 42px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .pos-1 {
-            background-color: #eab308;
-            color: #000000;
-        }
-
-        .pos-2 {
-            background-color: #94a3b8;
-            color: #000000;
-        }
-
-        .pos-3 {
-            background-color: #b45309;
-            color: #ffffff;
-        }
-
-        .pos-rest {
-            background-color: #71717a;
-            color: #f4f4f5;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Babaváró Tippmix</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --border: #334155;
+    }
+
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container { width: 100%; max-width: 650px; }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    h1 { margin: 0; font-size: 1.6rem; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-top: 4px; }
+
+    button {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover { background: var(--accent-hover); color: #fff; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: var(--border); color: var(--text); }
+
+    /* Lista kártyák */
+    .list { display: flex; flex-direction: column; gap: 14px; }
+    .entry-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+    }
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
+    .entry-date { font-size: 0.8rem; color: var(--muted); }
+    .entry-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 0.95rem;
+      gap: 12px;
+    }
+    .entry-q { color: var(--muted); }
+    .entry-a { font-weight: 600; text-align: right; }
+
+    /* Modal (Űrlap) */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      z-index: 100;
+    }
+    .modal-backdrop.active { display: flex; }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .form-group { margin-bottom: 20px; }
+    label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    /* Slider */
+    .slider-wrap { display: flex; align-items: center; gap: 14px; }
+    input[type="range"] { flex: 1; accent-color: var(--accent); cursor: pointer; }
+    .slider-val {
+      background: var(--bg);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      min-width: 60px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    /* 1/2 Választó gombok */
+    .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .choice-option input { display: none; }
+    .choice-box {
+      display: block;
+      text-align: center;
+      padding: 12px 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.15s;
+    }
+    .choice-option input:checked + .choice-box {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+    }
+
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+    .status-msg { text-align: center; color: var(--muted); padding: 40px 0; }
+  </style>
 </head>
 <body>
 
-    <!-- Header Section -->
-    <header class="top-section">
-        <h1 class="page-title">Berci Tipszmiksz</h1>
-        <div class="device-badge" id="deviceBadge">Eszköz észlelése...</div>
-    </header>
+<div class="container">
+  <header>
+    <div>
+      <h1 id="pageTitle">Babaváró Tippmix</h1>
+      <div class="subtitle" id="pageSubtitle">Ki mit tippel a nagy napra?</div>
+    </div>
+    <button onclick="openModal()">+ Új válasz beküldése</button>
+  </header>
 
-    <!-- Interactive Workspace -->
-    <main class="interactive-section">
+  <div id="entriesList" class="list">
+    <div class="status-msg">Válaszok betöltése...</div>
+  </div>
+</div>
 
-        <!-- Default Main View -->
-        <div class="default-view fade-in" id="defaultView">
-            <div class="success-banner" id="successBanner">Tipp beküldve!</div>
-            
-            <div class="list-container">
-                <div class="list-title">Beküldött tippek</div>
-                <ul class="color-list" id="colorList">
-                    <!-- Dynamic entries render here -->
-                </ul>
-            </div>
+<!-- Beküldő ablak -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <h2 style="margin-top:0">Tipp beküldése</h2>
+    <form id="pollForm">
+      <div class="form-group">
+        <label for="userName">Neved / Beceneved</label>
+        <input type="text" id="userName" required placeholder="Pl. Kovács János">
+      </div>
 
-            <div class="btn-group">
-                <button class="claim-btn" id="startClaimBtn">Tipp Beküldése</button>
-                <button class="master-btn" id="enterMasterBtn">Valós Eredmény Megadása</button>
-            </div>
+      <div class="form-group">
+        <label id="q1Label" for="q1Slider">1. Kérdés (%)</label>
+        <div class="slider-wrap">
+          <input type="range" id="q1Slider" min="0" max="100" value="50" oninput="document.getElementById('sliderVal').textContent = this.value + '%'">
+          <span class="slider-val" id="sliderVal">50%</span>
         </div>
+      </div>
 
-        <!-- Free Text Name Input Card -->
-        <div class="card" id="nameCard">
-            <h2>Add meg a neved!</h2>
-            <input type="text" class="name-input" id="nameInput" autocomplete="off" autofocus>
-            <button class="confirm-name-btn" id="confirmNameBtn">Tovább</button>
+      <div class="form-group">
+        <label id="q2Label">2. Kérdés</label>
+        <div class="choice-grid">
+          <label class="choice-option">
+            <input type="radio" name="q2" value="1" required>
+            <span class="choice-box" id="q2Opt1">Opció 1</span>
+          </label>
+          <label class="choice-option">
+            <input type="radio" name="q2" value="2">
+            <span class="choice-box" id="q2Opt2">Opció 2</span>
+          </label>
         </div>
+      </div>
 
-        <!-- Step 1: Interactive Skin Tone Slider UI -->
-        <div class="picker-container" id="pickerContainer">
-            <div class="mode-indicator player" id="modeIndicator">Szerinted milyen színű lesz Berci?</div>
-            
-            <div class="picker-content-stack">
-                <div class="color-preview" id="colorPreviewBox">
-                    <!-- Injected char.svg loads here -->
-                </div>
-                <span class="label" id="hexLabel">50% barna bőrű magyar állampolgár</span>
-
-                <div class="slider-wrapper">
-                    <div class="slider-container">
-                        <input type="range" min="0" max="100" value="50" class="skin-slider" id="skinSlider">
-                        <div class="slider-labels">
-                            <span>Tekla</span>
-                            <span>Zsolt</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="submit-wrapper">
-                <button class="next-btn" id="nextToChoiceBtn">Tovább</button>
-            </div>
+      <div class="form-group">
+        <label id="q3Label">3. Kérdés</label>
+        <div class="choice-grid">
+          <label class="choice-option">
+            <input type="radio" name="q3" value="1" required>
+            <span class="choice-box" id="q3Opt1">Opció 1</span>
+          </label>
+          <label class="choice-option">
+            <input type="radio" name="q3" value="2">
+            <span class="choice-box" id="q3Opt2">Opció 2</span>
+          </label>
         </div>
+      </div>
 
-        <!-- Step 2: Second Question Choice UI (Logo vs Char) -->
-        <div class="choice-container-step" id="choiceContainerStep">
-            <div class="mode-indicator player" id="choiceModeIndicator">Szerinted melyik jön ki előbb?</div>
-            
-            <div class="choice-options-grid">
-                <label class="choice-card" id="cardLogoOpt">
-                    <input type="radio" name="eventChoice" value="GTA VI" id="radioLogo" checked>
-                    <div class="choice-svg-box" id="logoPreviewBox">
-                        <!-- logo.svg loads here -->
-                    </div>
-                    <span class="choice-label">GTA VI</span>
-                </label>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" onclick="closeModal()">Mégse</button>
+        <button type="submit" id="submitBtn">Beküldés</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-                <label class="choice-card" id="cardCharOpt">
-                    <input type="radio" name="eventChoice" value="Berci" id="radioChar">
-                    <div class="choice-svg-box" id="charPreviewSmallBox">
-                        <!-- char.svg loads here -->
-                    </div>
-                    <span class="choice-label">Berci</span>
-                </label>
-            </div>
-            
-            <div class="submit-wrapper">
-                <button class="submit-btn" id="submitFinalTipBtn">Tipp Beküldése</button>
-                <button class="master-btn" id="checkResultsBtn" style="display: none;">Eredmények Ellenőrzése</button>
-            </div>
+<script>
+  // 1. IDE MÁSOLD BE A GOOGLE APPS SCRIPT URL-T:
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyu9pAE3K59FxG9ieZdBsmiDrMqle5Vm8GIInwCo_3l9X25KiPFNGqoxAM2vOX7FVKA/exec";
+
+  // 2. ITT TUDOD ÁTÍRNI A KÉRDÉSEKET ÉS A CÍMEKET:
+  const CONFIG = {
+    title: "Babaváró Tippmix",
+    subtitle: "Tippelj, és nézd meg mit mondtak a többiek!",
+    q1Text: "Mennyi esélyt adsz rá, hogy apuka elájul?",
+    q2Text: "Ki fog többet aludni az első hónapban?",
+    q2Options: { 1: "Anya", 2: "Apa" },
+    q3Text: "Mi lesz az első szó?",
+    q3Options: { 1: "Anya / Apa", 2: "Valami inside joke" }
+  };
+
+  document.getElementById("pageTitle").textContent = CONFIG.title;
+  document.getElementById("pageSubtitle").textContent = CONFIG.subtitle;
+  document.getElementById("q1Label").textContent = CONFIG.q1Text;
+  document.getElementById("q2Label").textContent = CONFIG.q2Text;
+  document.getElementById("q2Opt1").textContent = CONFIG.q2Options[1];
+  document.getElementById("q2Opt2").textContent = CONFIG.q2Options[2];
+  document.getElementById("q3Label").textContent = CONFIG.q3Text;
+  document.getElementById("q3Opt1").textContent = CONFIG.q3Options[1];
+  document.getElementById("q3Opt2").textContent = CONFIG.q3Options[2];
+
+  const modal = document.getElementById("modalBackdrop");
+  function openModal() { modal.classList.add("active"); }
+  function closeModal() { modal.classList.remove("active"); }
+
+  async function loadEntries() {
+    const listEl = document.getElementById("entriesList");
+    try {
+      const res = await fetch(SCRIPT_URL);
+      const data = await res.json();
+
+      if (!data.length) {
+        listEl.innerHTML = '<div class="status-msg">Még nem érkezett válasz. Legyél te az első!</div>';
+        return;
+      }
+
+      listEl.innerHTML = data.map(item => `
+        <div class="entry-card">
+          <div class="entry-header">
+            <span class="entry-name">${escapeHtml(item.name)}</span>
+            <span class="entry-date">${escapeHtml(item.date)}</span>
+          </div>
+          <div class="entry-row">
+            <span class="entry-q">${CONFIG.q1Text}</span>
+            <span class="entry-a">${item.a1}%</span>
+          </div>
+          <div class="entry-row">
+            <span class="entry-q">${CONFIG.q2Text}</span>
+            <span class="entry-a">${CONFIG.q2Options[item.a2] || item.a2}</span>
+          </div>
+          <div class="entry-row">
+            <span class="entry-q">${CONFIG.q3Text}</span>
+            <span class="entry-a">${CONFIG.q3Options[item.a3] || item.a3}</span>
+          </div>
         </div>
-
-        <!-- Results Leaderboard View -->
-        <div class="results-view" id="resultsView">
-            <div class="master-card" id="masterCardSummary">
-                <span class="user-name" style="color: #c084fc; font-size: 1.2rem;">Valós Eredmény</span>
-                <div class="color-info" id="masterColorInfo">
-                    <!-- Master info renders here -->
-                </div>
-            </div>
-
-            <div class="list-container">
-                <div class="list-title">Eredménytábla</div>
-                <ul class="color-list" id="leaderboardList">
-                    <!-- Ranked results dynamically rendered here -->
-                </ul>
-            </div>
-
-            <button class="reset-btn" id="resetGameBtn">Új Játék</button>
-        </div>
-    </main>
-
-    <script>
-        const defaultView = document.getElementById('defaultView');
-        const startClaimBtn = document.getElementById('startClaimBtn');
-        const enterMasterBtn = document.getElementById('enterMasterBtn');
-        const nameInput = document.getElementById('nameInput');
-        const nameCard = document.getElementById('nameCard');
-        const confirmNameBtn = document.getElementById('confirmNameBtn');
-        
-        const pickerContainer = document.getElementById('pickerContainer');
-        const modeIndicator = document.getElementById('modeIndicator');
-        const skinSlider = document.getElementById('skinSlider');
-        const colorPreviewBox = document.getElementById('colorPreviewBox');
-        const hexLabel = document.getElementById('hexLabel');
-        const nextToChoiceBtn = document.getElementById('nextToChoiceBtn');
-
-        const choiceContainerStep = document.getElementById('choiceContainerStep');
-        const choiceModeIndicator = document.getElementById('choiceModeIndicator');
-        const logoPreviewBox = document.getElementById('logoPreviewBox');
-        const charPreviewSmallBox = document.getElementById('charPreviewSmallBox');
-        const radioLogo = document.getElementById('radioLogo');
-        const radioChar = document.getElementById('radioChar');
-        const cardLogoOpt = document.getElementById('cardLogoOpt');
-        const cardCharOpt = document.getElementById('cardCharOpt');
-        const submitFinalTipBtn = document.getElementById('submitFinalTipBtn');
-        const checkResultsBtn = document.getElementById('checkResultsBtn');
-
-        const colorList = document.getElementById('colorList');
-        const successBanner = document.getElementById('successBanner');
-        
-        const resultsView = document.getElementById('resultsView');
-        const masterColorInfo = document.getElementById('masterColorInfo');
-        const leaderboardList = document.getElementById('leaderboardList');
-        const resetGameBtn = document.getElementById('resetGameBtn');
-        const deviceBadge = document.getElementById('deviceBadge');
-
-        let savedEntries = JSON.parse(localStorage.getItem('savedEntries') || '[]');
-        let currentPickedHex = '#B07E6A';
-        let currentSliderVal = 50;
-        let currentChoice = 'GTA VI';
-
-        let masterColorHex = '#B07E6A';
-        let masterSliderVal = 50;
-        let masterChoice = 'GTA VI';
-
-        let isMasterMode = false;
-        let selectedPlayerName = '';
-        let svgFillPath = null;
-        let svgRawText = '';
-        let logoRawText = '';
-
-        // Fetch and load external SVGs dynamically using your exact working setup
-        Promise.all([
-            fetch('char.svg').then(res => res.text()),
-            fetch('logo.svg').then(res => res.text())
-        ]).then(([charText, logoText]) => {
-            svgRawText = charText;
-            logoRawText = logoText;
-
-            // Load main picker preview
-            colorPreviewBox.innerHTML = charText;
-            const embeddedSvg = colorPreviewBox.querySelector('svg');
-            if (embeddedSvg) {
-                embeddedSvg.style.width = '100%';
-                embeddedSvg.style.height = '100%';
-            }
-            svgFillPath = colorPreviewBox.querySelector('#fill') || colorPreviewBox.querySelector('path');
-            if (svgFillPath) {
-                svgFillPath.style.fill = currentPickedHex;
-            }
-
-            // Load small picker preview for Step 2 choice card
-            charPreviewSmallBox.innerHTML = charText;
-            const smallSvg = charPreviewSmallBox.querySelector('svg');
-            if (smallSvg) {
-                smallSvg.style.width = '100%';
-                smallSvg.style.height = '100%';
-            }
-
-            // Load logo preview for Step 2 choice card
-            logoPreviewBox.innerHTML = logoText;
-            const logoSvg = logoPreviewBox.querySelector('svg');
-            if (logoSvg) {
-                logoSvg.style.width = '100%';
-                logoSvg.style.height = '100%';
-            }
-
-            renderEntries();
-        }).catch(err => console.error("Hiba az SVG fájlok betöltésekor:", err));
-
-        function getMiniSvgHtml(hex) {
-            if (!svgRawText) return `<div class="swatch-svg" style="background-color: ${hex};"></div>`;
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(svgRawText, 'image/svg+xml');
-            const pathElem = doc.querySelector('#fill') || doc.querySelector('path');
-            if (pathElem) {
-                pathElem.style.fill = hex;
-            }
-            const svgElem = doc.querySelector('svg');
-            if (svgElem) {
-                return `<div class="swatch-svg">${svgElem.outerHTML}</div>`;
-            }
-            return `<div class="swatch-svg" style="background-color: ${hex};"></div>`;
-        }
-
-        function getLogoSvgHtml() {
-            if (!logoRawText) return `<div class="swatch-svg"></div>`;
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(logoRawText, 'image/svg+xml');
-            const svgElem = doc.querySelector('svg');
-            if (svgElem) {
-                return `<div class="swatch-svg">${svgElem.outerHTML}</div>`;
-            }
-            return `<div class="swatch-svg"></div>`;
-        }
-
-        function renderEntries() {
-            colorList.innerHTML = '';
-            if (savedEntries.length === 0) {
-                const li = document.createElement('li');
-                li.style.textAlign = 'center';
-                li.style.color = '#71717a';
-                li.style.padding = '1rem';
-                li.textContent = 'Nincs beküldve tipp.';
-                colorList.appendChild(li);
-                return;
-            }
-            savedEntries.forEach(entry => {
-                const li = document.createElement('li');
-                li.className = 'color-item';
-                
-                const choiceThumbnail = entry.choice === 'GTA VI' ? getLogoSvgHtml() : getMiniSvgHtml(entry.hex);
-
-                li.innerHTML = `
-                    <div class="user-name-group">
-                        <span class="user-name" title="${entry.name}">${entry.name}</span>
-                    </div>
-                    <div class="color-info">
-                        ${choiceThumbnail}
-                        <span class="choice-badge">${entry.choice || 'GTA VI'}</span>
-                        ${getMiniSvgHtml(entry.hex)}
-                        <span class="hex-code">${entry.sliderVal !== undefined ? entry.sliderVal : 50}% BBMÁ</span>
-                    </div>
-                `;
-                colorList.appendChild(li);
-            });
-        }
-
-        function updateDeviceStatus() {
-            const isTouch = window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
-            const deviceType = isTouch ? 'Mobil / Érintőképernyős eszköz' : 'Asztali gép / PC';
-            const orientation = window.innerWidth > window.innerHeight ? 'Fekvő' : 'Álló';
-
-            deviceBadge.textContent = `${deviceType} • ${orientation}`;
-        }
-        
-        window.addEventListener('DOMContentLoaded', () => {
-            updateDeviceStatus();
-            renderEntries();
-        });
-        window.addEventListener('resize', updateDeviceStatus);
-
-        function openNamePrompt() {
-            isMasterMode = false;
-            successBanner.classList.remove('show');
-            defaultView.classList.remove('fade-in');
-
-            nameInput.value = '';
-            setTimeout(() => {
-                nameCard.classList.add('fade-in');
-                
-                const onTransitionEnd = (e) => {
-                    if (e.propertyName === 'opacity') {
-                        nameInput.focus();
-                        nameCard.removeEventListener('transitionend', onTransitionEnd);
-                    }
-                };
-                nameCard.addEventListener('transitionend', onTransitionEnd);
-                nameInput.focus();
-            }, 300);
-        }
-
-        startClaimBtn.addEventListener('click', openNamePrompt);
-
-        confirmNameBtn.addEventListener('click', () => {
-            const enteredName = nameInput.value.trim();
-            if (!enteredName) {
-                alert("Kérlek, add meg a neved!");
-                return;
-            }
-
-            selectedPlayerName = enteredName;
-            nameCard.classList.remove('fade-in');
-
-            modeIndicator.textContent = `Szerinted milyen színű lesz Berci?`;
-            modeIndicator.className = "mode-indicator player";
-            nextToChoiceBtn.style.display = "block";
-
-            const existing = savedEntries.find(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());
-            const targetVal = existing && existing.sliderVal !== undefined ? existing.sliderVal : 50;
-
-            setTimeout(() => {
-                setSliderToValue(targetVal);
-                pickerContainer.classList.add('fade-in');
-            }, 300);
-        });
-
-        nameInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                confirmNameBtn.click();
-            }
-        });
-
-        enterMasterBtn.addEventListener('click', () => {
-            isMasterMode = true;
-            defaultView.classList.remove('fade-in');
-            
-            modeIndicator.textContent = "Milyen színű lett Berci?";
-            modeIndicator.className = "mode-indicator master";
-
-            setTimeout(() => {
-                resetPicker();
-                pickerContainer.classList.add('fade-in');
-            }, 300);
-        });
-
-        function resetPicker() {
-            setSliderToValue(50);
-        }
-
-        // Custom endpoints mapped smoothly from Tekla (#BF998F) to Zsolt (#A26346)
-        const skinPaletteStops = [
-            { pos: 0, hex: "#BF998F" },   // Tekla
-            { pos: 50, hex: "#B07E6A" },  // Midpoint
-            { pos: 100, hex: "#A26346" }  // Zsolt
-        ];
-
-        function hexToRgb(hex) {
-            const cleanHex = hex.replace('#', '');
-            return {
-                r: parseInt(cleanHex.substring(0, 2), 16),
-                g: parseInt(cleanHex.substring(2, 4), 16),
-                b: parseInt(cleanHex.substring(4, 6), 16)
-            };
-        }
-
-        function rgbToHex(r, g, b) {
-            return "#" + [r, g, b].map(x => {
-                const hex = Math.round(Math.max(0, Math.min(255, x))).toString(16);
-                return hex.length === 1 ? "0" + hex : hex;
-            }).join('').toUpperCase();
-        }
-
-        function getColorFromSlider(val) {
-            const p = val / 100;
-            let lower = skinPaletteStops[0];
-            let upper = skinPaletteStops[skinPaletteStops.length - 1];
-
-            for (let i = 0; i < skinPaletteStops.length - 1; i++) {
-                if (p >= skinPaletteStops[i].pos / 100 && p <= skinPaletteStops[i+1].pos / 100) {
-                    lower = skinPaletteStops[i];
-                    upper = skinPaletteStops[i+1];
-                    break;
-                }
-            }
-
-            const range = (upper.pos - lower.pos) / 100;
-            const localP = range === 0 ? 0 : (p - (lower.pos / 100)) / range;
-
-            const rgb1 = hexToRgb(lower.hex);
-            const rgb2 = hexToRgb(upper.hex);
-
-            const r = rgb1.r + (rgb2.r - rgb1.r) * localP;
-            const g = rgb1.g + (rgb2.g - rgb1.g) * localP;
-            const b = rgb1.b + (rgb2.b - rgb1.b) * localP;
-
-            return rgbToHex(r, g, b);
-        }
-
-        function setSliderToValue(val) {
-            currentSliderVal = val;
-            skinSlider.value = val;
-            currentPickedHex = getColorFromSlider(val);
-            hexLabel.textContent = `${val}% barna bőrű magyar állampolgár`;
-
-            if (svgFillPath) {
-                svgFillPath.style.fill = currentPickedHex;
-            }
-
-            // Also update small preview in choice step
-            const smallFillPath = charPreviewSmallBox.querySelector('#fill') || charPreviewSmallBox.querySelector('path');
-            if (smallFillPath) {
-                smallFillPath.style.fill = currentPickedHex;
-            }
-        }
-
-        skinSlider.addEventListener('input', (e) => {
-            const val = parseInt(e.target.value);
-            setSliderToValue(val);
-        });
-
-        // Transition from Color Picker to Choice Step
-        nextToChoiceBtn.addEventListener('click', () => {
-            pickerContainer.classList.remove('fade-in');
-
-            if (isMasterMode) {
-                choiceModeIndicator.textContent = "Valódi eredmény: Melyik jött ki előbb?";
-                choiceModeIndicator.className = "mode-indicator master";
-                submitFinalTipBtn.style.display = "none";
-                checkResultsBtn.style.display = "block";
-            } else {
-                choiceModeIndicator.textContent = "Szerinted melyik jön ki előbb?";
-                choiceModeIndicator.className = "mode-indicator player";
-                submitFinalTipBtn.style.display = "block";
-                checkResultsBtn.style.display = "none";
-            }
-
-            radioLogo.checked = true;
-            updateChoiceCards('GTA VI');
-
-            setTimeout(() => {
-                choiceContainerStep.classList.add('fade-in');
-            }, 300);
-        });
-
-        function updateChoiceCards(selectedVal) {
-            currentChoice = selectedVal;
-            if (selectedVal === 'GTA VI') {
-                cardLogoOpt.classList.add('selected');
-                cardCharOpt.classList.remove('selected');
-                radioLogo.checked = true;
-            } else {
-                cardCharOpt.classList.add('selected');
-                cardLogoOpt.classList.remove('selected');
-                radioChar.checked = true;
-            }
-        }
-
-        cardLogoOpt.addEventListener('click', () => updateChoiceCards('GTA VI'));
-        cardCharOpt.addEventListener('click', () => updateChoiceCards('Berci'));
-
-        submitFinalTipBtn.addEventListener('click', () => {
-            const existingIndex = savedEntries.findIndex(e => e.name.toLowerCase() === selectedPlayerName.toLowerCase());
-            
-            if (existingIndex >= 0) {
-                savedEntries[existingIndex].hex = currentPickedHex;
-                savedEntries[existingIndex].sliderVal = currentSliderVal;
-                savedEntries[existingIndex].choice = currentChoice;
-                savedEntries[existingIndex].name = selectedPlayerName;
-            } else {
-                savedEntries.push({ name: selectedPlayerName, hex: currentPickedHex, sliderVal: currentSliderVal, choice: currentChoice });
-            }
-
-            localStorage.setItem('savedEntries', JSON.stringify(savedEntries));
-            renderEntries();
-
-            choiceContainerStep.classList.remove('fade-in');
-
-            setTimeout(() => {
-                resetPicker();
-                defaultView.classList.add('fade-in');
-
-                successBanner.classList.add('show');
-                setTimeout(() => {
-                    successBanner.classList.remove('show');
-                }, 3000);
-            }, 400);
-        });
-
-        function calculateSliderMatch(sliderVal, targetSliderVal) {
-            const diff = Math.abs(sliderVal - targetSliderVal);
-            const accuracy = Math.max(0, 100 - diff);
-            return accuracy.toFixed(1);
-        }
-
-        function getMatchColor(score) {
-            const s = Math.max(0, Math.min(100, score)) / 100;
-            let r, g, b;
-            if (s < 0.5) {
-                const t = s * 2;
-                r = 239;
-                g = Math.round(68 + (200 - 68) * t);
-                b = 68;
-            } else {
-                const t = (s - 0.5) * 2;
-                r = Math.round(239 - (239 - 74) * t);
-                g = 222;
-                b = Math.round(68 + (128 - 68) * t);
-            }
-            return `rgb(${r}, ${g}, ${b})`;
-        }
-
-        checkResultsBtn.addEventListener('click', () => {
-            masterColorHex = currentPickedHex;
-            masterSliderVal = currentSliderVal;
-            masterChoice = currentChoice;
-
-            const masterThumbnail = masterChoice === 'GTA VI' ? getLogoSvgHtml() : getMiniSvgHtml(masterColorHex);
-
-            masterColorInfo.innerHTML = `
-                ${masterThumbnail}
-                <span class="choice-badge">${masterChoice}</span>
-                ${getMiniSvgHtml(masterColorHex)}
-                <span class="hex-code" id="masterHexCode">${masterSliderVal}% BBMÁ</span>
-            `;
-
-            const entries = savedEntries.map(e => {
-                const entrySliderVal = e.sliderVal !== undefined ? e.sliderVal : 50;
-                return {
-                    name: e.name,
-                    hex: e.hex,
-                    sliderVal: entrySliderVal,
-                    choice: e.choice || 'GTA VI',
-                    matchScore: parseFloat(calculateSliderMatch(entrySliderVal, masterSliderVal))
-                };
-            });
-
-            entries.sort((a, b) => b.matchScore - a.matchScore);
-
-            leaderboardList.innerHTML = '';
-            entries.forEach((entry, index) => {
-                const rankNum = index + 1;
-                const li = document.createElement('li');
-                li.className = 'color-item';
-                
-                let posClass = 'pos-rest';
-                if (rankNum === 1) posClass = 'pos-1';
-                else if (rankNum === 2) posClass = 'pos-2';
-                else if (rankNum === 3) posClass = 'pos-3';
-
-                const posBadge = `<span class="pos-badge ${posClass}">#${rankNum}</span>`;
-                const matchColorStyle = `color: ${getMatchColor(entry.matchScore)};`;
-                const entryThumbnail = entry.choice === 'GTA VI' ? getLogoSvgHtml() : getMiniSvgHtml(entry.hex);
-
-                li.innerHTML = `
-                    <div class="user-name-group">
-                        ${posBadge}
-                        <span class="user-name" title="${entry.name}">${entry.name}</span>
-                    </div>
-                    <div class="color-info">
-                        ${entryThumbnail}
-                        <span class="choice-badge">${entry.choice}</span>
-                        ${getMiniSvgHtml(entry.hex)}
-                        <span class="hex-code">${entry.sliderVal}% BBMÁ</span>
-                        <span class="score-match" style="${matchColorStyle}">${entry.matchScore}% egyezés</span>
-                    </div>
-                `;
-                leaderboardList.appendChild(li);
-            });
-
-            choiceContainerStep.classList.remove('fade-in');
-
-            setTimeout(() => {
-                resultsView.classList.add('fade-in');
-            }, 400);
-        });
-
-        resetGameBtn.addEventListener('click', () => {
-            localStorage.removeItem('savedEntries');
-            savedEntries = [];
-            renderEntries();
-            
-            resultsView.classList.remove('fade-in');
-            setTimeout(() => {
-                defaultView.classList.add('fade-in');
-            }, 400);
-        });
-    </script>
+      `).join("");
+    } catch (err) {
+      listEl.innerHTML = '<div class="status-msg">Hiba a betöltéskor. Ellenőrizd a SCRIPT_URL beállítást!</div>';
+    }
+  }
+
+  document.getElementById("pollForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "Küldés...";
+
+    const payload = {
+      name: document.getElementById("userName").value.trim(),
+      a1: Number(document.getElementById("q1Slider").value),
+      a2: Number(document.querySelector('input[name="q2"]:checked').value),
+      a3: Number(document.querySelector('input[name="q3"]:checked').value)
+    };
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+
+      document.getElementById("pollForm").reset();
+      document.getElementById("sliderVal").textContent = "50%";
+      closeModal();
+      await loadEntries();
+    } catch (err) {
+      alert("Hiba történt a mentés közben, próbáld újra!");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Beküldés";
+    }
+  });
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, m => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[m]));
+  }
+
+  loadEntries();
+</script>
 </body>
 </html>

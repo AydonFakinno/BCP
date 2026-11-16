@@ -131,6 +131,20 @@
       font-size: 1rem;
     }
 
+    /* Címsor stílusok (Kérdések) */
+    .question-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+    .question-title .sub-text {
+      font-weight: 400;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
     /* SVG Képhely az 1. kérdéshez */
     .question-img-box {
       width: 100%;
@@ -151,21 +165,22 @@
       object-fit: contain;
     }
 
-    /* Slider és Értékjelző */
+    /* Slider és Értékjelző (vékonyabb, szürke) */
     .slider-value-display {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--accent);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--muted);
       text-align: center;
       margin-bottom: 8px;
     }
+    /* Nevek a slider két oldalán (fehérek, vastagabbak) */
     .slider-labels {
       display: flex;
       justify-content: space-between;
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-bottom: 4px;
-      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 6px;
+      font-weight: 700;
     }
     .slider-wrap { display: flex; align-items: center; gap: 14px; }
     input[type="range"] { flex: 1; accent-color: var(--accent); cursor: pointer; }
@@ -243,7 +258,7 @@
 
       <!-- 2. LÉPÉS: 1. KÉRDÉS -->
       <div class="step-pane" id="step2">
-        <h2 id="q1HeaderTitle" style="margin-top:0; margin-bottom: 16px; font-size: 1.2rem;">1. Kérdés</h2>
+        <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lesz Berci?</span></div>
         <div class="question-img-box">
           <object id="charSvg" type="image/svg+xml" data="char.svg"></object>
         </div>
@@ -267,12 +282,12 @@
 
       <!-- 3. LÉPÉS: 2. KÉRDÉS -->
       <div class="step-pane" id="step3">
-        <h2 id="q2HeaderTitle" style="margin-top:0; margin-bottom: 16px; font-size: 1.2rem;">2. Kérdés</h2>
+        <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Ki fog többet aludni az első hónapban?</span></div>
         <div class="question-img-box">
           <span>Kép helye (2. kérdés)</span>
         </div>
         <div class="form-group">
-          <label id="q2Label">2. Kérdés leírása</label>
+          <label id="q2Label">Ki fog többet aludni az első hónapban?</label>
           <div class="choice-grid">
             <label class="choice-option">
               <input type="radio" name="q2" value="1">
@@ -294,12 +309,12 @@
 
       <!-- 4. LÉPÉS: 3. KÉRDÉS + BEKÜLDÉS -->
       <div class="step-pane" id="step4">
-        <h2 id="q3HeaderTitle" style="margin-top:0; margin-bottom: 16px; font-size: 1.2rem;">3. Kérdés</h2>
+        <div class="question-title" id="q3HeaderTitle">3. Kérdés: <span class="sub-text">Mi lesz az első szó?</span></div>
         <div class="question-img-box">
           <span>Kép helye (3. kérdés)</span>
         </div>
         <div class="form-group">
-          <label id="q3Label">3. Kérdés leírása</label>
+          <label id="q3Label">Mi lesz az első szó?</label>
           <div class="choice-grid">
             <label class="choice-option">
               <input type="radio" name="q3" value="1">
@@ -324,7 +339,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1008</div>
+<div class="version-tag">v1009</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -334,18 +349,23 @@
   const CONFIG = {
     title: "Babaváró Tippmix",
     subtitle: "Tippelj, és nézd meg mit mondtak a többiek!",
-    q1Text: "1. Kérdés: Milyen színű lesz Berci?",
+    q1Prefix: "1. Kérdés:",
+    q1Text: "Milyen színű lesz Berci?",
+    q2Prefix: "2. Kérdés:",
     q2Text: "Ki fog többet aludni az első hónapban?",
     q2Options: { 1: "Anya", 2: "Apa" },
+    q3Prefix: "3. Kérdés:",
     q3Text: "Mi lesz az első szó?",
     q3Options: { 1: "Anya / Apa", 2: "Valami inside joke" }
   };
 
   document.getElementById("pageTitle").textContent = CONFIG.title;
   document.getElementById("pageSubtitle").textContent = CONFIG.subtitle;
-  document.getElementById("q1HeaderTitle").textContent = CONFIG.q1Text;
-  document.getElementById("q2HeaderTitle").textContent = CONFIG.q2Text + " (2. Kérdés)";
-  document.getElementById("q3HeaderTitle").textContent = CONFIG.q3Text + " (3. Kérdés)";
+  
+  document.getElementById("q1HeaderTitle").innerHTML = `${CONFIG.q1Prefix} <span class="sub-text">${CONFIG.q1Text}</span>`;
+  document.getElementById("q2HeaderTitle").innerHTML = `${CONFIG.q2Prefix} <span class="sub-text">${CONFIG.q2Text}</span>`;
+  document.getElementById("q3HeaderTitle").innerHTML = `${CONFIG.q3Prefix} <span class="sub-text">${CONFIG.q3Text}</span>`;
+
   document.getElementById("q2Label").textContent = CONFIG.q2Text;
   document.getElementById("q2Opt1").textContent = CONFIG.q2Options[1];
   document.getElementById("q2Opt2").textContent = CONFIG.q2Options[2];

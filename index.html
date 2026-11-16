@@ -105,6 +105,7 @@
     .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
     .entry-date { font-size: 0.8rem; color: var(--muted); }
     
+    /* Kártya belső elrendezés: balra a karakter, jobbra a 3 sor */
     .entry-body {
       display: flex;
       align-items: stretch;
@@ -135,8 +136,8 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      padding-left: 8px;
-      border-left: 1px solid rgba(51, 65, 85, 0.6);
+      padding-right: 8px;
+      border-right: 1px solid rgba(51, 65, 85, 0.6);
     }
     .entry-char-side svg {
       max-width: 100%;
@@ -438,7 +439,7 @@
 
       <!-- 4. LÉPÉS: 3. KÉRDÉS + BEKÜLDÉS (Kattintható kártyák Berci vs Zsolt) -->
       <div class="step-pane" id="step4">
-        <div class="question-title" id="q3HeaderTitle">3. Kérdés: <span class="sub-text">Mi lesz az első szó?</span></div>
+        <div class="question-title" id="q3HeaderTitle">3. Kérdés: <span class="sub-text">Kinek nagyobb a pénisze?</span></div>
         
         <div class="dual-card-grid">
           <!-- 1. Válasz: Berci -->
@@ -483,7 +484,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1025</div>
+<div class="version-tag">v1026</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -499,7 +500,7 @@
     q2Text: "Melyik jön ki előbb?",
     q2Options: { 1: "Berci", 2: "GTA VI" },
     q3Prefix: "3. Kérdés:",
-    q3Text: "Mi lesz az első szó?",
+    q3Text: "Kinek nagyobb a pénisze?",
     q3Options: { 1: "Berci", 2: "Zsolt" }
   };
 
@@ -517,7 +518,6 @@
     showStep(1);
     document.getElementById("pollForm").reset();
     
-    // Alapértelmezett választások beállítása a rádiókhoz nyitáskor
     document.getElementById("q2_opt1").checked = true;
     document.getElementById("q3_opt1").checked = true;
 
@@ -541,7 +541,6 @@
     document.querySelectorAll('.step-pane').forEach(el => el.classList.remove('active'));
     document.getElementById('step' + step).classList.add('active');
     
-    // Intelligens fókusz lépésváltáskor
     setTimeout(() => {
       if (step === 1) {
         document.getElementById("userName").focus();
@@ -589,7 +588,6 @@
     }
   }
 
-  // Enter leütés kezelése a név mezőben
   function handleNameKeydown(e) {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -597,7 +595,6 @@
     }
   }
 
-  // Globális billentyűzet figyelő (Escape, Backspace, Enter, Nyilak a kártyákon)
   document.addEventListener("keydown", (e) => {
     if (!modal.classList.contains("active")) return;
 
@@ -624,7 +621,6 @@
         }
       }
     }
-    // Nyilak kezelése a 2. és 3. kérdésnél (kártyák közötti váltás)
     else if ((current === 3 || current === 4) && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
       e.preventDefault();
       const groupName = current === 3 ? "q2" : "q3";
@@ -643,7 +639,6 @@
     }
   });
 
-  // Színkeverő és SVG színező függvény a sliderhez (#BF998F -> #A26346)
   function hexToRgb(hex) {
     let bigint = parseInt(hex.replace("#", ""), 16);
     return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
@@ -738,6 +733,7 @@
             <span class="entry-date">${escapeHtml(item.date)}</span>
           </div>
           <div class="entry-body">
+            ${buildColoredCardChar(item.a1)}
             <div class="entry-rows">
               <div class="entry-row">
                 <span class="entry-q">${CONFIG.q1Text}</span>
@@ -752,7 +748,6 @@
                 <span class="entry-a">${CONFIG.q3Options[item.a3] || item.a3}</span>
               </div>
             </div>
-            ${buildColoredCardChar(item.a1)}
           </div>
         </div>
       `).join("");
@@ -803,8 +798,8 @@
     if (e.key.toLowerCase() === "x") {
       if (!confirm("DEBUG: Tényleg törlöd az összes eddigi választ a táblázatból?")) return;
 
-      const listEl = document.getElementById("entriesList");
-      listEl.innerHTML = '<div class="status-msg">Táblázat ürítése...</div>';
+      TheListEl = document.getElementById("entriesList");
+      TheListEl.innerHTML = '<div class="status-msg">Táblázat ürítése...</div>';
 
       try {
         await fetch(SCRIPT_URL, {

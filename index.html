@@ -355,14 +355,14 @@
 <!-- Többlépcsős Beküldő Modal -->
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">
-    <form id="pollForm">
+    <form id="pollForm" onsubmit="return false;">
       
       <!-- 1. LÉPÉS: NÉV -->
       <div class="step-pane active" id="step1">
         <h2 style="margin-top:0; margin-bottom: 16px;">Ki vagy te?</h2>
         <div class="form-group">
           <label for="userName">Neved / Beceneved</label>
-          <input type="text" id="userName" placeholder="Pl. Kovács János">
+          <input type="text" id="userName" placeholder="Pl. Kovács János" onkeydown="handleNameKeydown(event)">
         </div>
         <div class="modal-actions">
           <button type="button" class="btn-secondary" onclick="closeModal()">Mégse</button>
@@ -473,7 +473,7 @@
         <div class="modal-actions">
           <button type="button" class="btn-secondary" onclick="prevStep(4)">&larr; Vissza</button>
           <div class="modal-actions-right">
-            <button type="submit" id="submitBtn">Beküldés</button>
+            <button type="button" id="submitBtn" onclick="submitPoll()">Beküldés</button>
           </div>
         </div>
       </div>
@@ -483,7 +483,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1022</div>
+<div class="version-tag">v1023</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -518,10 +518,19 @@
     document.getElementById("pollForm").reset();
     updateSliderColor(50);
     modal.classList.add("active");
+    setTimeout(() => document.getElementById("userName").focus(), 50);
   }
 
   function closeModal() {
     modal.classList.remove("active");
+  }
+
+  function getCurrentStep() {
+    const panes = document.querySelectorAll('.step-pane');
+    for (let i = 0; i < panes.length; i++) {
+      if (panes[i].classList.contains('active')) return i + 1;
+    }
+    return 1;
   }
 
   function showStep(step) {
@@ -551,8 +560,30 @@
   }
 
   function prevStep(current) {
-    showStep(current - 1);
+    if (current <= 1) {
+      closeModal();
+    } else {
+      showStep(current - 1);
+    }
   }
+
+  // Enter leütés kezelése a név mezőben
+  function handleNameKeydown(e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      nextStep(1);
+    }
+  }
+
+  // Globális Escape billentyű figyelés a modalban
+  document.addEventListener("keydown", (e) => {
+    if (!modal.classList.contains("active")) return;
+    if (e.key === "Escape") {
+      e.preventDefault();
+      const current = getCurrentStep();
+      prevStep(current);
+    }
+  });
 
   // Színkeverő és SVG színező függvény a sliderhez (#BF998F -> #A26346)
   function hexToRgb(hex) {
@@ -672,9 +703,7 @@
     }
   }
 
-  document.getElementById("pollForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    
+  async function submitPoll() {
     const q3Checked = document.querySelector('input[name="q3"]:checked');
 
     if (!q3Checked) {
@@ -707,7 +736,7 @@
       btn.disabled = false;
       btn.textContent = "Beküldés";
     }
-  });
+  }
 
   // Debug Reset: X billentyű
   document.addEventListener("keydown", async (e) => {

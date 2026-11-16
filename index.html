@@ -216,16 +216,9 @@
       justify-content: center;
       pointer-events: none;
     }
-    .choice-card object#charSvgStep3 {
+    .choice-card object {
       max-width: 100%;
       max-height: 80px;
-      object-fit: contain;
-    }
-    /* GTA logó pontosan 95%-os méretre állítva és középre lőve */
-    .choice-card object.gta-logo-adjust {
-      max-width: 95%;
-      max-height: 95%;
-      width: 95%;
       object-fit: contain;
     }
 
@@ -241,7 +234,6 @@
       pointer-events: none;
     }
     
-    /* Egyedi, szép vizuális rádiógomb jelölő */
     .custom-radio {
       width: 16px;
       height: 16px;
@@ -389,7 +381,7 @@
             <input type="radio" name="q2" value="2" id="q2_opt2" class="choice-card-option">
             <label for="q2_opt2" class="choice-card">
               <div class="img-container">
-                <object class="gta-logo-adjust" type="image/svg+xml" data="logo.svg"></object>
+                <object type="image/svg+xml" data="logo.svg"></object>
               </div>
               <div class="choice-card-footer">
                 <div class="custom-radio"></div>
@@ -439,7 +431,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1015</div>
+<div class="version-tag">v1016</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:

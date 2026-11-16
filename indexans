@@ -1,1 +1,792 @@
 
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Babaváró Tippmix - Hivatalos Eredmények</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --border: #334155;
+      --success: #22c55e;
+      --success-hover: #16a34a;
+    }
+
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 650px;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    /* Fixen ragadó fejléc */
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(8px);
+      padding: 15px 0 20px 0;
+      margin-bottom: 10px;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+    }
+
+    h1 { margin: 0; font-size: 1.6rem; }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-top: 4px; }
+
+    button {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    button:hover { background: var(--accent-hover); color: #fff; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: var(--border); color: var(--text); }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+    .btn-success:hover { background: var(--success-hover); }
+
+    /* Tartalom terület */
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 30px;
+      padding-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .entry-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+    }
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
+    
+    .btn-text {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 4px 8px;
+    }
+    .btn-text:hover { text-decoration: underline; background: none; color: var(--accent-hover); }
+
+    /* Kártya belső elrendezés: balra a karakter, jobbra a 3 sor */
+    .entry-body {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .entry-rows {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+    }
+    .entry-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 3px 0;
+      font-size: 0.95rem;
+      gap: 12px;
+    }
+    .entry-q { color: var(--muted); }
+    .entry-a { font-weight: 600; text-align: right; }
+
+    .entry-char-side {
+      width: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding-right: 8px;
+      border-right: 1px solid rgba(51, 65, 85, 0.6);
+    }
+    .entry-char-side svg {
+      max-width: 100%;
+      max-height: 76px;
+      width: auto;
+      height: auto;
+      display: block;
+    }
+
+    /* Modal (Lépésenkénti űrlap) */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      z-index: 100;
+    }
+    .modal-backdrop.active { display: flex; }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .step-pane { display: none; }
+    .step-pane.active { display: block; }
+
+    .form-group { margin-bottom: 20px; }
+    
+    /* Címsor stílusok (Kérdések) */
+    .question-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+    .question-title .sub-text {
+      font-weight: 400;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    /* SVG Képhely */
+    .question-img-box {
+      width: 100%;
+      height: 160px;
+      background: rgba(56, 189, 248, 0.05);
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      overflow: hidden;
+      padding: 10px;
+    }
+    .question-img-box object {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    /* Kattintható Kártya Grid a 2. és 3. kérdéshez */
+    .dual-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .choice-card {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 170px;
+      position: relative;
+    }
+    .choice-card:hover {
+      border-color: rgba(56, 189, 248, 0.5);
+    }
+    
+    .choice-card-option {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .choice-card-option:checked + .choice-card {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+    }
+    .choice-card-option:checked + .choice-card .custom-radio {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: inset 0 0 0 3px var(--bg);
+    }
+
+    .img-container {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .choice-card object {
+      max-width: 100%;
+      max-height: 80px;
+      object-fit: contain;
+    }
+
+    .choice-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+    
+    .custom-radio {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--muted);
+      border-radius: 50%;
+      background: var(--bg);
+      transition: 0.15s;
+    }
+
+    /* Slider és Értékjelző */
+    .slider-value-display {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .slider-wrap { display: flex; align-items: center; gap: 14px; }
+    input[type="range"] { flex: 1; accent-color: var(--accent); cursor: pointer; }
+
+    .modal-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; }
+    .modal-actions-right { display: flex; gap: 10px; }
+    .status-msg { text-align: center; color: var(--muted); padding: 40px 0; }
+
+    .version-tag {
+      position: fixed;
+      bottom: 10px;
+      right: 15px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      opacity: 0.5;
+      pointer-events: none;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div>
+      <h1 id="pageTitle">Hivatalos Eredmények</h1>
+      <div class="subtitle" id="pageSubtitle">Add meg a helyes válaszokat a lezáráshoz!</div>
+    </div>
+    <button id="mainActionBtn" class="btn-success" onclick="handleMainBtnClick()">Válasz megadása</button>
+  </header>
+
+  <!-- Helyi kártya nézet konténer -->
+  <div id="cardContainer" class="content-area">
+    <div class="status-msg">Státusz ellenőrzése...</div>
+  </div>
+</div>
+
+<!-- Többlépcsős Szerkesztő Modal -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <form id="pollForm" onsubmit="return false;">
+      
+      <!-- 1. LÉPÉS: 1. KÉRDÉS -->
+      <div class="step-pane active" id="step1">
+        <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lett Berci?</span></div>
+        <div class="question-img-box">
+          <object id="charSvg" type="image/svg+xml" data="char.svg"></object>
+        </div>
+        <div class="form-group">
+          <div class="slider-value-display" id="sliderDisplayVal">50% barna bőrű magyar állampolgár</div>
+          <div class="slider-labels">
+            <span>Tekla</span>
+            <span>Zsolt</span>
+          </div>
+          <div class="slider-wrap">
+            <input type="range" id="q1Slider" min="0" max="100" value="50" oninput="updateSliderColor(this.value)">
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" tabindex="-1" onclick="closeModal()">Mégse</button>
+          <div class="modal-actions-right">
+            <button type="button" tabindex="-1" onclick="nextStep(1)">Tovább</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. LÉPÉS: 2. KÉRDÉS (Berci vs GTA VI) -->
+      <div class="step-pane" id="step2">
+        <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jött ki előbb?</span></div>
+        
+        <div class="dual-card-grid">
+          <div style="position: relative;">
+            <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option" checked>
+            <label for="q2_opt1" class="choice-card" id="q2_label1" tabindex="0">
+              <div class="img-container">
+                <object id="charSvgStep2" type="image/svg+xml" data="char.svg"></object>
+              </div>
+              <div class="choice-card-footer">
+                <div class="custom-radio"></div>
+                <span>Berci</span>
+              </div>
+            </label>
+          </div>
+
+          <div style="position: relative;">
+            <input type="radio" name="q2" value="2" id="q2_opt2" class="choice-card-option">
+            <label for="q2_opt2" class="choice-card" id="q2_label2" tabindex="0">
+              <div class="img-container">
+                <object type="image/svg+xml" data="logo.svg"></object>
+              </div>
+              <div class="choice-card-footer">
+                <div class="custom-radio"></div>
+                <span>GTA VI</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(2)">Vissza</button>
+          <div class="modal-actions-right">
+            <button type="button" tabindex="-1" onclick="nextStep(2)">Tovább</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. LÉPÉS: 3. KÉRDÉS + MENTÉS BÖNGÉSZŐBE -->
+      <div class="step-pane" id="step3">
+        <div class="question-title" id="q3HeaderTitle">3. Kérdés: <span class="sub-text">Kinek nagyobb a pénisze?</span></div>
+        
+        <div class="dual-card-grid">
+          <div style="position: relative;">
+            <input type="radio" name="q3" value="1" id="q3_opt1" class="choice-card-option" checked>
+            <label for="q3_opt1" class="choice-card" id="q3_label1" tabindex="0">
+              <div class="img-container">
+                <object id="charSvgStep3" type="image/svg+xml" data="char.svg"></object>
+              </div>
+              <div class="choice-card-footer">
+                <div class="custom-radio"></div>
+                <span>Berci</span>
+              </div>
+            </label>
+          </div>
+
+          <div style="position: relative;">
+            <input type="radio" name="q3" value="2" id="q3_opt2" class="choice-card-option">
+            <label for="q3_opt2" class="choice-card" id="q3_label2" tabindex="0">
+              <div class="img-container">
+                <object type="image/svg+xml" data="zso.svg"></object>
+              </div>
+              <div class="choice-card-footer">
+                <div class="custom-radio"></div>
+                <span>Zsolt</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(3)">Vissza</button>
+          <div class="modal-actions-right">
+            <button type="button" tabindex="-1" class="btn-success" onclick="saveLocalAnswers()">Mentés ideiglenesen</button>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<div class="version-tag">ans-v1.1</div>
+
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
+
+  const CONFIG = {
+    q1Prefix: "1. Kérdés:",
+    q1Text: "Milyen színű lett Berci?",
+    q2Prefix: "2. Kérdés:",
+    q2Text: "Melyik jött ki előbb?",
+    q2Options: { 1: "Berci", 2: "GTA VI" },
+    q3Prefix: "3. Kérdés:",
+    q3Text: "Kinek nagyobb a pénisze?",
+    q3Options: { 1: "Berci", 2: "Zsolt" }
+  };
+
+  document.getElementById("q1HeaderTitle").innerHTML = `${CONFIG.q1Prefix} <span class="sub-text">${CONFIG.q1Text}</span>`;
+  document.getElementById("q2HeaderTitle").innerHTML = `${CONFIG.q2Prefix} <span class="sub-text">${CONFIG.q2Text}</span>`;
+  document.getElementById("q3HeaderTitle").innerHTML = `${CONFIG.q3Prefix} <span class="sub-text">${CONFIG.q3Text}</span>`;
+
+  const modal = document.getElementById("modalBackdrop");
+  let charSvgRaw = null;
+  let currentAnswers = null;
+
+  // Betöltéskor ellenőrizzük, hogy le van-e már zárva (kitöltve a 2. sor)
+  async function checkLockStatus() {
+    const container = document.getElementById("cardContainer");
+    try {
+      const res = await fetch(SCRIPT_URL);
+      const data = await res.json();
+
+      if (data.locked) {
+        // Ha már kitöltötték a 2. sort, átirányítjuk a főoldalra, hogy ne lehessen csalni
+        alert("A hivatalos válaszok már rögzítve vannak! Átirányítás a főoldalra...");
+        window.location.href = "./";
+        return;
+      }
+
+      // Ha még nincs kitöltve, akkor üres az üzenet
+      container.innerHTML = '<div class="status-msg">Még nincsenek megadva válaszok. Kattints a „Válasz megadása” gombra!</div>';
+    } catch (err) {
+      container.innerHTML = '<div class="status-msg">Hiba a státusz ellenőrzésekor. Ellenőrizd a SCRIPT_URL-t!</div>';
+    }
+  }
+
+  function openModal() {
+    if (currentAnswers) {
+      document.getElementById("q1Slider").value = currentAnswers.a1;
+      document.querySelector(`input[name="q2"][value="${currentAnswers.a2}"]`).checked = true;
+      document.querySelector(`input[name="q3"][value="${currentAnswers.a3}"]`).checked = true;
+    } else {
+      document.getElementById("q1Slider").value = 50;
+      document.getElementById("q2_opt1").checked = true;
+      document.getElementById("q3_opt1").checked = true;
+    }
+    showStep(1);
+    updateSliderColor(document.getElementById("q1Slider").value);
+    modal.classList.add("active");
+  }
+
+  function closeModal() {
+    modal.classList.remove("active");
+  }
+
+  function getCurrentStep() {
+    const panes = document.querySelectorAll('.step-pane');
+    for (let i = 0; i < panes.length; i++) {
+      if (panes[i].classList.contains('active')) return i + 1;
+    }
+    return 1;
+  }
+
+  function showStep(step) {
+    document.querySelectorAll('.step-pane').forEach(el => el.classList.remove('active'));
+    document.getElementById('step' + step).classList.add('active');
+    
+    setTimeout(() => {
+      if (step === 1) {
+        document.getElementById("q1Slider").focus();
+      } else if (step === 2) {
+        document.getElementById("q2_label1").focus();
+      } else if (step === 3) {
+        document.getElementById("q3_label1").focus();
+      }
+    }, 50);
+
+    updateSliderColor(document.getElementById('q1Slider').value);
+  }
+
+  function nextStep(current) {
+    if (current === 2) {
+      const q2Checked = document.querySelector('input[name="q2"]:checked');
+      if (!q2Checked) {
+        alert("Kérlek válassz egy opciót!");
+        return;
+      }
+    }
+    if (current < 3) {
+      showStep(current + 1);
+    }
+  }
+
+  function prevStep(current) {
+    if (current <= 1) {
+      closeModal();
+    } else {
+      showStep(current - 1);
+    }
+  }
+
+  function saveLocalAnswers() {
+    const q3Checked = document.querySelector('input[name="q3"]:checked');
+    if (!q3Checked) {
+      alert("Kérlek válassz egy opciót!");
+      return;
+    }
+
+    currentAnswers = {
+      a1: Number(document.getElementById("q1Slider").value),
+      a2: Number(document.querySelector('input[name="q2"]:checked').value),
+      a3: Number(q3Checked.value)
+    };
+
+    closeModal();
+    renderLocalCard();
+  }
+
+  async function renderLocalCard() {
+    await loadCharSvgTemplate();
+    const container = document.getElementById("cardContainer");
+    const mainBtn = document.getElementById("mainActionBtn");
+
+    mainBtn.textContent = "Véglegesítés";
+    mainBtn.className = "";
+
+    container.innerHTML = `
+      <div class="entry-card">
+        <div class="entry-header">
+          <button class="btn-text" onclick="openModal()">Szerkesztés</button>
+          <span class="entry-name">Answers (Hivatalos)</span>
+        </div>
+        <div class="entry-body">
+          ${buildColoredCardChar(currentAnswers.a1)}
+          <div class="entry-rows">
+            <div class="entry-row">
+              <span class="entry-q">${CONFIG.q1Text}</span>
+              <span class="entry-a">${currentAnswers.a1}% BBMÁ</span>
+            </div>
+            <div class="entry-row">
+              <span class="entry-q">${CONFIG.q2Text}</span>
+              <span class="entry-a">${CONFIG.q2Options[currentAnswers.a2] || currentAnswers.a2}</span>
+            </div>
+            <div class="entry-row">
+              <span class="entry-q">${CONFIG.q3Text}</span>
+              <span class="entry-a">${CONFIG.q3Options[currentAnswers.a3] || currentAnswers.a3}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function handleMainBtnClick() {
+    if (!currentAnswers) {
+      openModal();
+    } else {
+      finalizeAnswers();
+    }
+  }
+
+  async function finalizeAnswers() {
+    if (!confirm("Biztosan véglegesíted a válaszokat? Ezzel lezárod a tippelést a többi játékos számára is!")) {
+      return;
+    }
+
+    const mainBtn = document.getElementById("mainActionBtn");
+    mainBtn.disabled = true;
+    mainBtn.textContent = "Véglegesítés...";
+
+    const payload = {
+      name: "Answers",
+      a1: currentAnswers.a1,
+      a2: currentAnswers.a2,
+      a3: currentAnswers.a3
+    };
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+
+      alert("Sikeres véglegesítés! A játék lezárult.");
+      window.location.href = "./"; // Átirányítás a főoldalra
+    } catch (err) {
+      alert("Hiba történt a véglegesítés során, próbáld újra!");
+      mainBtn.disabled = false;
+      mainBtn.textContent = "Véglegesítés";
+    }
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (!modal.classList.contains("active")) return;
+    const current = getCurrentStep();
+
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closeModal();
+    } 
+    else if (e.key === "Backspace") {
+      e.preventDefault();
+      prevStep(current);
+    } 
+    else if (e.key === "Enter") {
+      e.preventDefault();
+      if (current < 3) {
+        nextStep(current);
+      } else {
+        saveLocalAnswers();
+      }
+    }
+    else if ((current === 2 || current === 3) && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
+      e.preventDefault();
+      const groupName = current === 2 ? "q2" : "q3";
+      const opt1 = document.getElementById(`${groupName}_opt1`);
+      const opt2 = document.getElementById(`${groupName}_opt2`);
+      const label1 = document.getElementById(`${groupName}_label1`);
+      const label2 = document.getElementById(`${groupName}_label2`);
+
+      if (opt1.checked) {
+        opt2.checked = true;
+        label2.focus();
+      } else {
+        opt1.checked = true;
+        label1.focus();
+      }
+    }
+  });
+
+  function hexToRgb(hex) {
+    let bigint = parseInt(hex.replace("#", ""), 16);
+    return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
+  }
+
+  function rgbToHex(r, g, b) {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+  }
+
+  function getInterpolatedColor(val) {
+    let t = Math.max(0, Math.min(100, Number(val) || 0)) / 100;
+    let c1 = hexToRgb("#BF998F");
+    let c2 = hexToRgb("#A26346");
+    
+    let r = Math.round(c1[0] + (c2[0] - c1[0]) * t);
+    let g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
+    let b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
+    
+    return rgbToHex(r, g, b);
+  }
+
+  function buildColoredCardChar(val) {
+    if (!charSvgRaw) return "";
+    const color = getInterpolatedColor(val);
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(charSvgRaw, "image/svg+xml");
+    const svgEl = doc.querySelector("svg");
+    if (!svgEl) return "";
+
+    svgEl.querySelectorAll('[fill], .fill, #fill').forEach(el => {
+      el.style.fill = color;
+    });
+    return `<div class="entry-char-side">${svgEl.outerHTML}</div>`;
+  }
+
+  function updateSliderColor(val) {
+    document.getElementById('sliderDisplayVal').textContent = val + '% barna bőrű magyar állampolgár';
+    const currentColor = getInterpolatedColor(val);
+
+    ['charSvg', 'charSvgStep2', 'charSvgStep3'].forEach(id => {
+      try {
+        let svgObj = document.getElementById(id);
+        if (svgObj) {
+          if (svgObj.contentDocument) {
+            let svgDoc = svgObj.contentDocument;
+            let fillElements = svgDoc.querySelectorAll('[fill], .fill, #fill');
+            fillElements.forEach(el => {
+              el.style.fill = currentColor;
+            });
+          }
+          svgObj.onload = function() {
+            try {
+              let svgDoc = svgObj.contentDocument;
+              if (svgDoc) {
+                svgDoc.querySelectorAll('[fill], .fill, #fill').forEach(el => {
+                  el.style.fill = currentColor;
+                });
+              }
+            } catch(ex) {}
+          };
+        }
+      } catch (e) {}
+    });
+  }
+
+  async function loadCharSvgTemplate() {
+    if (charSvgRaw) return;
+    try {
+      const res = await fetch("char.svg");
+      if (res.ok) {
+        charSvgRaw = await res.text();
+      }
+    } catch (e) {}
+  }
+
+  // Induláskor ellenőrizzük a lock státuszt
+  checkLockStatus();
+</script>
+</body>
+</html>

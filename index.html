@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Babaváró Tippmix</title>
+  <title>Babaváró Tippmix - Hivatalos Eredmények</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -13,6 +13,8 @@
       --accent: #38bdf8;
       --accent-hover: #0284c7;
       --border: #334155;
+      --success: #22c55e;
+      --success-hover: #16a34a;
     }
 
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
@@ -36,7 +38,6 @@
       padding: 20px;
     }
 
-    /* Fixen ragadó fejléc */
     header {
       position: sticky;
       top: 0;
@@ -77,8 +78,17 @@
     }
     .btn-secondary:hover { background: var(--border); color: var(--text); }
 
-    /* Külön görgethető kártya lista */
-    .entries-scroll-area {
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+      width: 100%;
+      padding: 14px;
+      font-size: 1.05rem;
+      margin-top: 14px;
+    }
+    .btn-success:hover { background: var(--success-hover); }
+
+    .content-area {
       flex: 1;
       overflow-y: auto;
       padding-bottom: 30px;
@@ -104,8 +114,7 @@
     }
     .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
     .entry-date { font-size: 0.8rem; color: var(--muted); }
-    
-    /* Kártya belső elrendezés: balra a karakter, jobbra a 3 sor */
+
     .entry-body {
       display: flex;
       align-items: stretch;
@@ -147,7 +156,6 @@
       display: block;
     }
 
-    /* Modal (Lépésenkénti űrlap) */
     .modal-backdrop {
       display: none;
       position: fixed;
@@ -174,21 +182,8 @@
 
     .step-pane { display: none; }
     .step-pane.active { display: block; }
-
     .form-group { margin-bottom: 20px; }
-    label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
-    
-    input[type="text"] {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--text);
-      font-size: 1rem;
-    }
 
-    /* Címsor stílusok (Kérdések) */
     .question-title {
       font-size: 1.15rem;
       font-weight: 700;
@@ -202,7 +197,6 @@
       font-size: 1rem;
     }
 
-    /* SVG Képhely */
     .question-img-box {
       width: 100%;
       height: 160px;
@@ -222,7 +216,6 @@
       object-fit: contain;
     }
 
-    /* Kattintható Kártya Grid a 2. és 3. kérdéshez */
     .dual-card-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -244,11 +237,8 @@
       height: 170px;
       position: relative;
     }
-    .choice-card:hover {
-      border-color: rgba(56, 189, 248, 0.5);
-    }
+    .choice-card:hover { border-color: rgba(56, 189, 248, 0.5); }
     
-    /* Rádiógomb állapot kezelés */
     .choice-card-option {
       position: absolute;
       opacity: 0;
@@ -264,7 +254,6 @@
       box-shadow: inset 0 0 0 3px var(--bg);
     }
 
-    /* Képek fix középre igazítva */
     .img-container {
       flex: 1;
       width: 100%;
@@ -300,7 +289,6 @@
       transition: 0.15s;
     }
 
-    /* Slider és Értékjelző */
     .slider-value-display {
       font-size: 1rem;
       font-weight: 400;
@@ -323,7 +311,6 @@
     .modal-actions-right { display: flex; gap: 10px; }
     .status-msg { text-align: center; color: var(--muted); padding: 40px 0; }
 
-    /* Verziószám a sarokban */
     .version-tag {
       position: fixed;
       bottom: 10px;
@@ -332,7 +319,6 @@
       color: var(--muted);
       opacity: 0.5;
       pointer-events: none;
-      letter-spacing: 0.5px;
     }
   </style>
 </head>
@@ -341,39 +327,23 @@
 <div class="container">
   <header>
     <div>
-      <h1 id="pageTitle">Babaváró Tippmix</h1>
-      <div class="subtitle" id="pageSubtitle">Ki mit tippel a nagy napra?</div>
+      <h1 id="pageTitle">Hivatalos Eredmények</h1>
+      <div class="subtitle" id="pageSubtitle">Add meg a helyes válaszokat a lezáráshoz!</div>
     </div>
-    <button id="openModalBtn" onclick="openModal()">+ Új válasz beküldése</button>
+    <button id="headerActionBtn" onclick="openModal()">Válaszok megadása</button>
   </header>
 
-  <!-- Külön görgethető konténer a kártyáknak -->
-  <div id="entriesList" class="entries-scroll-area">
-    <div class="status-msg">Válaszok betöltése...</div>
+  <div id="cardContainer" class="content-area">
+    <div class="status-msg">Státusz ellenőrzése...</div>
   </div>
 </div>
 
-<!-- Többlépcsős Beküldő Modal -->
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">
     <form id="pollForm" onsubmit="return false;">
       
-      <!-- 1. LÉPÉS: NÉV -->
       <div class="step-pane active" id="step1">
-        <h2 style="margin-top:0; margin-bottom: 16px;">Ki vagy te?</h2>
-        <div class="form-group">
-          <label for="userName">Neved / Beceneved</label>
-          <input type="text" id="userName" placeholder="Pl. Kovács János" onkeydown="handleNameKeydown(event)">
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="btn-secondary" tabindex="-1" onclick="closeModal()">Mégse</button>
-          <button type="button" tabindex="-1" onclick="nextStep(1)">Tovább</button>
-        </div>
-      </div>
-
-      <!-- 2. LÉPÉS: 1. KÉRDÉS -->
-      <div class="step-pane" id="step2">
-        <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lesz Berci?</span></div>
+        <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lett Berci?</span></div>
         <div class="question-img-box">
           <object id="charSvg" type="image/svg+xml" data="char.svg"></object>
         </div>
@@ -388,24 +358,22 @@
           </div>
         </div>
         <div class="modal-actions">
-          <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(2)">Vissza</button>
+          <button type="button" class="btn-secondary" tabindex="-1" onclick="closeModal()">Mégse</button>
           <div class="modal-actions-right">
-            <button type="button" tabindex="-1" onclick="nextStep(2)">Tovább</button>
+            <button type="button" tabindex="-1" onclick="nextStep(1)">Tovább</button>
           </div>
         </div>
       </div>
 
-      <!-- 3. LÉPÉS: 2. KÉRDÉS (Kattintható kártyák Berci vs GTA VI) -->
-      <div class="step-pane" id="step3">
-        <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jön ki előbb?</span></div>
+      <div class="step-pane" id="step2">
+        <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jött ki előbb?</span></div>
         
         <div class="dual-card-grid">
-          <!-- 1. Válasz: Berci -->
           <div style="position: relative;">
             <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option" checked>
             <label for="q2_opt1" class="choice-card" id="q2_label1" tabindex="0">
               <div class="img-container">
-                <object id="charSvgStep3" type="image/svg+xml" data="char.svg"></object>
+                <object id="charSvgStep2" type="image/svg+xml" data="char.svg"></object>
               </div>
               <div class="choice-card-footer">
                 <div class="custom-radio"></div>
@@ -414,7 +382,6 @@
             </label>
           </div>
 
-          <!-- 2. Válasz: GTA VI -->
           <div style="position: relative;">
             <input type="radio" name="q2" value="2" id="q2_opt2" class="choice-card-option">
             <label for="q2_opt2" class="choice-card" id="q2_label2" tabindex="0">
@@ -430,24 +397,22 @@
         </div>
 
         <div class="modal-actions">
-          <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(3)">Vissza</button>
+          <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(2)">Vissza</button>
           <div class="modal-actions-right">
-            <button type="button" tabindex="-1" onclick="nextStep(3)">Tovább</button>
+            <button type="button" tabindex="-1" onclick="nextStep(2)">Tovább</button>
           </div>
         </div>
       </div>
 
-      <!-- 4. LÉPÉS: 3. KÉRDÉS + BEKÜLDÉS (Kattintható kártyák Berci vs Zsolt) -->
-      <div class="step-pane" id="step4">
+      <div class="step-pane" id="step3">
         <div class="question-title" id="q3HeaderTitle">3. Kérdés: <span class="sub-text">Kinek nagyobb a pénisze?</span></div>
         
         <div class="dual-card-grid">
-          <!-- 1. Válasz: Berci -->
           <div style="position: relative;">
             <input type="radio" name="q3" value="1" id="q3_opt1" class="choice-card-option" checked>
             <label for="q3_opt1" class="choice-card" id="q3_label1" tabindex="0">
               <div class="img-container">
-                <object id="charSvgStep4" type="image/svg+xml" data="char.svg"></object>
+                <object id="charSvgStep3" type="image/svg+xml" data="char.svg"></object>
               </div>
               <div class="choice-card-footer">
                 <div class="custom-radio"></div>
@@ -456,7 +421,6 @@
             </label>
           </div>
 
-          <!-- 2. Válasz: Zsolt -->
           <div style="position: relative;">
             <input type="radio" name="q3" value="2" id="q3_opt2" class="choice-card-option">
             <label for="q3_opt2" class="choice-card" id="q3_label2" tabindex="0">
@@ -472,9 +436,9 @@
         </div>
 
         <div class="modal-actions">
-          <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(4)">Vissza</button>
+          <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(3)">Vissza</button>
           <div class="modal-actions-right">
-            <button type="button" tabindex="-1" id="submitBtn" onclick="submitPoll()">Beküldés</button>
+            <button type="button" tabindex="-1" class="btn-success" onclick="saveLocalAnswers()">Mentés</button>
           </div>
         </div>
       </div>
@@ -483,45 +447,60 @@
   </div>
 </div>
 
-<!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1030</div>
+<div class="version-tag">ans-v1.5</div>
 
 <script>
-  // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
 
-  // 2. ITT TUDOD ÁTÍRNI A KÉRDÉSEKET ÉS A CÍMEKET:
   const CONFIG = {
-    title: "Babaváró Tippmix",
-    subtitle: "Tippelj, és nézd meg mit mondtak a többiek!",
     q1Prefix: "1. Kérdés:",
-    q1Text: "Milyen színű lesz Berci?",
+    q1Text: "Milyen színű lett Berci?",
     q2Prefix: "2. Kérdés:",
-    q2Text: "Melyik jön ki előbb?",
+    q2Text: "Melyik jött ki előbb?",
     q2Options: { 1: "Berci", 2: "GTA VI" },
     q3Prefix: "3. Kérdés:",
     q3Text: "Kinek nagyobb a pénisze?",
     q3Options: { 1: "Berci", 2: "Zsolt" }
   };
 
-  document.getElementById("pageTitle").textContent = CONFIG.title;
-  document.getElementById("pageSubtitle").textContent = CONFIG.subtitle;
-  
   document.getElementById("q1HeaderTitle").innerHTML = `${CONFIG.q1Prefix} <span class="sub-text">${CONFIG.q1Text}</span>`;
   document.getElementById("q2HeaderTitle").innerHTML = `${CONFIG.q2Prefix} <span class="sub-text">${CONFIG.q2Text}</span>`;
   document.getElementById("q3HeaderTitle").innerHTML = `${CONFIG.q3Prefix} <span class="sub-text">${CONFIG.q3Text}</span>`;
 
   const modal = document.getElementById("modalBackdrop");
   let charSvgRaw = null;
-  
-  function openModal() {
-    showStep(1);
-    document.getElementById("pollForm").reset();
-    
-    document.getElementById("q2_opt1").checked = true;
-    document.getElementById("q3_opt1").checked = true;
+  let currentAnswers = null;
 
-    updateSliderColor(50);
+  async function checkLockStatus() {
+    const container = document.getElementById("cardContainer");
+    try {
+      const res = await fetch(SCRIPT_URL);
+      const data = await res.json();
+
+      if (data.locked) {
+        alert("A hivatalos válaszok már rögzítve vannak! Átirányítás a főoldalra...");
+        window.location.href = "./";
+        return;
+      }
+
+      renderLocalCard();
+    } catch (err) {
+      container.innerHTML = '<div class="status-msg">Hiba a státusz ellenőrzésekor. Ellenőrizd a SCRIPT_URL-t!</div>';
+    }
+  }
+
+  function openModal() {
+    if (currentAnswers) {
+      document.getElementById("q1Slider").value = currentAnswers.a1;
+      document.querySelector(`input[name="q2"][value="${currentAnswers.a2}"]`).checked = true;
+      document.querySelector(`input[name="q3"][value="${currentAnswers.a3}"]`).checked = true;
+    } else {
+      document.getElementById("q1Slider").value = 50;
+      document.getElementById("q2_opt1").checked = true;
+      document.getElementById("q3_opt1").checked = true;
+    }
+    showStep(1);
+    updateSliderColor(document.getElementById("q1Slider").value);
     modal.classList.add("active");
   }
 
@@ -543,42 +522,27 @@
     
     setTimeout(() => {
       if (step === 1) {
-        document.getElementById("userName").focus();
-      } else if (step === 2) {
         document.getElementById("q1Slider").focus();
-      } else if (step === 3) {
+      } else if (step === 2) {
         document.getElementById("q2_label1").focus();
-      } else if (step === 4) {
+      } else if (step === 3) {
         document.getElementById("q3_label1").focus();
       }
     }, 50);
 
-    const currentSliderVal = document.getElementById('q1Slider').value;
-    updateSliderColor(currentSliderVal);
+    updateSliderColor(document.getElementById('q1Slider').value);
   }
 
   function nextStep(current) {
-    if (current === 1) {
-      const nameInput = document.getElementById("userName");
-      nameInput.value = nameInput.value.trim();
-      
-      if (!nameInput.value) {
-        alert("Kérlek add meg a neved!");
-        nameInput.focus();
-        return;
-      }
-    } else if (current === 3) {
+    if (current === 2) {
       const q2Checked = document.querySelector('input[name="q2"]:checked');
       if (!q2Checked) {
         alert("Kérlek válassz egy opciót!");
         return;
       }
     }
-    
-    if (current < 4) {
+    if (current < 3) {
       showStep(current + 1);
-    } else {
-      submitPoll();
     }
   }
 
@@ -590,42 +554,131 @@
     }
   }
 
-  function handleNameKeydown(e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      nextStep(1);
+  function saveLocalAnswers() {
+    const q3Checked = document.querySelector('input[name="q3"]:checked');
+    if (!q3Checked) {
+      alert("Kérlek válassz egy opciót!");
+      return;
+    }
+
+    currentAnswers = {
+      a1: Number(document.getElementById("q1Slider").value),
+      a2: Number(document.querySelector('input[name="q2"]:checked').value),
+      a3: Number(q3Checked.value),
+      dateStr: getFormattedNow()
+    };
+
+    closeModal();
+    renderLocalCard();
+  }
+
+  function getFormattedNow() {
+    let d = new Date();
+    let yyyy = d.getFullYear();
+    let mm = String(d.getMonth() + 1).padStart(2, '0');
+    let dd = String(d.getDate()).padStart(2, '0');
+    let hh = String(d.getHours()).padStart(2, '0');
+    let min = String(d.getMinutes()).padStart(2, '0');
+    return `${yyyy}.${mm}.${dd} ${hh}:${min}`;
+  }
+
+  async function renderLocalCard() {
+    await loadCharSvgTemplate();
+    const container = document.getElementById("cardContainer");
+    const headerBtn = document.getElementById("headerActionBtn");
+
+    if (!currentAnswers) {
+      headerBtn.textContent = "Válaszok megadása";
+      container.innerHTML = `
+        <div class="status-msg">Még nincsenek megadva válaszok. Kattints fent a „Válaszok megadása” gombra!</div>
+      `;
+      return;
+    }
+
+    headerBtn.textContent = "Szerkesztés";
+
+    container.innerHTML = `
+      <div class="entry-card">
+        <div class="entry-header">
+          <span class="entry-name">Eredmények</span>
+          <span class="entry-date">${currentAnswers.dateStr}</span>
+        </div>
+        <div class="entry-body">
+          ${buildColoredCardChar(currentAnswers.a1)}
+          <div class="entry-rows">
+            <div class="entry-row">
+              <span class="entry-q">${CONFIG.q1Text}</span>
+              <span class="entry-a">${currentAnswers.a1}% BBMÁ</span>
+            </div>
+            <div class="entry-row">
+              <span class="entry-q">${CONFIG.q2Text}</span>
+              <span class="entry-a">${CONFIG.q2Options[currentAnswers.a2] || currentAnswers.a2}</span>
+            </div>
+            <div class="entry-row">
+              <span class="entry-q">${CONFIG.q3Text}</span>
+              <span class="entry-a">${CONFIG.q3Options[currentAnswers.a3] || currentAnswers.a3}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-success" id="submitBtn" onclick="finalizeAnswers()">Véglegesítés</button>
+    `;
+  }
+
+  async function finalizeAnswers() {
+    if (!confirm("Biztosan véglegesíted a válaszokat? Ezzel lezárod a tippelést a többi játékos számára is!")) {
+      return;
+    }
+
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;
+    btn.textContent = "Véglegesítés...";
+
+    const payload = {
+      name: "Answers",
+      a1: currentAnswers.a1,
+      a2: currentAnswers.a2,
+      a3: currentAnswers.a3
+    };
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+
+      alert("Sikeres véglegesítés! A játék lezárult.");
+      window.location.href = "./";
+    } catch (err) {
+      alert("Hiba történt a véglegesítés során, próbáld újra!");
+      btn.disabled = false;
+      btn.textContent = "Véglegesítés";
     }
   }
 
   document.addEventListener("keydown", (e) => {
     if (!modal.classList.contains("active")) return;
-
     const current = getCurrentStep();
-    const activeEl = document.activeElement;
-    const isNameInputActive = activeEl && activeEl.id === "userName";
 
     if (e.key === "Escape") {
       e.preventDefault();
       closeModal();
     } 
     else if (e.key === "Backspace") {
-      if (isNameInputActive) return;
       e.preventDefault();
       prevStep(current);
     } 
     else if (e.key === "Enter") {
-      if (!isNameInputActive) {
-        e.preventDefault();
-        if (current < 4) {
-          nextStep(current);
-        } else {
-          submitPoll();
-        }
+      e.preventDefault();
+      if (current < 3) {
+        nextStep(current);
+      } else {
+        saveLocalAnswers();
       }
     }
-    else if ((current === 3 || current === 4) && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
+    else if ((current === 2 || current === 3) && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
       e.preventDefault();
-      const groupName = current === 3 ? "q2" : "q3";
+      const groupName = current === 2 ? "q2" : "q3";
       const opt1 = document.getElementById(`${groupName}_opt1`);
       const opt2 = document.getElementById(`${groupName}_opt2`);
       const label1 = document.getElementById(`${groupName}_label1`);
@@ -680,7 +733,7 @@
     document.getElementById('sliderDisplayVal').textContent = val + '% barna bőrű magyar állampolgár';
     const currentColor = getInterpolatedColor(val);
 
-    ['charSvg', 'charSvgStep3', 'charSvgStep4'].forEach(id => {
+    ['charSvg', 'charSvgStep2', 'charSvgStep3'].forEach(id => {
       try {
         let svgObj = document.getElementById(id);
         if (svgObj) {
@@ -716,148 +769,7 @@
     } catch (e) {}
   }
 
-  // Dátum formázó segédfüggvény YYYY.MM.DD HH:MM formátumra
-  function formatDateString(rawDate) {
-    if (!rawDate) return "";
-    try {
-      let d = new Date(rawDate);
-      if (!isNaN(d.getTime())) {
-        let yyyy = d.getFullYear();
-        let mm = String(d.getMonth() + 1).padStart(2, '0');
-        let dd = String(d.getDate()).padStart(2, '0');
-        let hh = String(d.getHours()).padStart(2, '0');
-        let min = String(d.getMinutes()).padStart(2, '0');
-        return `${yyyy}.${mm}.${dd} ${hh}:${min}`;
-      }
-    } catch (e) {}
-    
-    // Ha nem sikerül Dátumként értelmezni, de szövegként benne van (pl. 2026-11-16 23:38:00)
-    let clean = String(rawDate).replace('T', ' ').split('.')[0];
-    let parts = clean.split(':');
-    if (parts.length >= 2) {
-      return clean.substring(0, 16).replace(/-/g, '.');
-    }
-    return rawDate;
-  }
-
-  async function loadEntries() {
-    const listEl = document.getElementById("entriesList");
-    const newBtn = document.getElementById("openModalBtn");
-    
-    try {
-      await loadCharSvgTemplate();
-      const res = await fetch(SCRIPT_URL);
-      const data = await res.json();
-
-      if (data.locked) {
-        newBtn.style.display = "none";
-        document.getElementById("pageSubtitle").textContent = "A tippmix lezárult! Az eredmények hamarosan érkeznek...";
-        
-        if (!data.entries.length) {
-          listEl.innerHTML = '<div class="status-msg">A játék véget ért, de még nincsenek megjeleníthető tippek.</div>';
-          return;
-        }
-      }
-
-      if (!data.entries.length) {
-        listEl.innerHTML = '<div class="status-msg">Még nem érkezett válasz. Legyél te az első!</div>';
-        return;
-      }
-
-      listEl.innerHTML = data.entries.map(item => `
-        <div class="entry-card">
-          <div class="entry-header">
-            <span class="entry-name">${escapeHtml(item.name)}</span>
-            <span class="entry-date">${formatDateString(item.date)}</span>
-          </div>
-          <div class="entry-body">
-            ${buildColoredCardChar(item.a1)}
-            <div class="entry-rows">
-              <div class="entry-row">
-                <span class="entry-q">${CONFIG.q1Text}</span>
-                <span class="entry-a">${item.a1}% BBMÁ</span>
-              </div>
-              <div class="entry-row">
-                <span class="entry-q">${CONFIG.q2Text}</span>
-                <span class="entry-a">${CONFIG.q2Options[item.a2] || item.a2}</span>
-              </div>
-              <div class="entry-row">
-                <span class="entry-q">${CONFIG.q3Text}</span>
-                <span class="entry-a">${CONFIG.q3Options[item.a3] || item.a3}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      `).join("");
-    } catch (err) {
-      listEl.innerHTML = '<div class="status-msg">Hiba a betöltéskor. Ellenőrizd a SCRIPT_URL beállítást!</div>';
-    }
-  }
-
-  async function submitPoll() {
-    const q3Checked = document.querySelector('input[name="q3"]:checked');
-
-    if (!q3Checked) {
-      alert("Kérlek válassz egy opciót!");
-      return;
-    }
-
-    const btn = document.getElementById("submitBtn");
-    btn.disabled = true;
-    btn.textContent = "Küldés...";
-
-    const payload = {
-      name: document.getElementById("userName").value.trim(),
-      a1: Number(document.getElementById("q1Slider").value),
-      a2: Number(document.querySelector('input[name="q2"]:checked').value),
-      a3: Number(q3Checked.value)
-    };
-
-    try {
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-
-      closeModal();
-      await loadEntries();
-    } catch (err) {
-      alert("Hiba történt a mentés közben, próbáld újra!");
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Beküldés";
-    }
-  }
-
-  // Debug Reset: X billentyű
-  document.addEventListener("keydown", async (e) => {
-    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
-
-    if (e.key.toLowerCase() === "x") {
-      if (!confirm("DEBUG: Tényleg törlöd az összes eddigi választ a táblázatból?")) return;
-
-      const listEl = document.getElementById("entriesList");
-      listEl.innerHTML = '<div class="status-msg">Táblázat ürítése...</div>';
-
-      try {
-        await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify({ action: "reset" })
-        });
-        await loadEntries();
-      } catch (err) {
-        alert("Hiba a reset során!");
-      }
-    }
-  });
-
-  function escapeHtml(str) {
-    return String(str).replace(/[&<>"']/g, m => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[m]));
-  }
-
-  loadEntries();
+  checkLockStatus();
 </script>
 </body>
 </html>

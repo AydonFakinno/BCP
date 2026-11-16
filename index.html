@@ -484,7 +484,7 @@
 </div>
 
 <!-- Diszkrét verziószám a jobb alsó sarokban -->
-<div class="version-tag">v1028</div>
+<div class="version-tag">v1029</div>
 
 <script>
   // 1. BEÉPÍTETT GOOGLE APPS SCRIPT URL:
@@ -725,10 +725,8 @@
       const res = await fetch(SCRIPT_URL);
       const data = await res.json();
 
-      // Ellenőrizzük a backendtől kapott "locked" státuszt
       if (data.locked) {
-        // HA LE VAN ZÁRVA (kitöltötték a 2. sort)
-        newBtn.style.display = "none"; // Elrejtjük az új válasz beküldése gombot
+        newBtn.style.display = "none";
         document.getElementById("pageSubtitle").textContent = "A tippmix lezárult! Az eredmények hamarosan érkeznek...";
         
         if (!data.entries.length) {

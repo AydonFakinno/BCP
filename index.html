@@ -35,7 +35,7 @@
       max-width: 580px;
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      min-height: 100vh;
       padding: 12px;
     }
 
@@ -47,34 +47,48 @@
       padding: 12px 0 8px 0;
       z-index: 10;
       border-bottom: 1px solid rgba(51, 65, 85, 0.4);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      text-align: center; /* Cím középre igazítása */
     }
 
     header {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
+      gap: 10px;
+      margin-bottom: 4px;
     }
 
-    h1 { margin: 0; font-size: 1.5rem; }
+    h1 { 
+      margin: 0; 
+      font-size: 2rem; /* Nagyobb cím */
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
 
-    header button {
+    /* Beküldés gomb a lista alján - teljes szélességű */
+    .bottom-action-area {
+      margin-top: 20px;
+      margin-bottom: 30px;
+      width: 100%;
+    }
+
+    .bottom-action-area button {
       background: var(--accent);
       color: #0f172a;
       border: none;
-      padding: 10px 16px;
-      border-radius: 10px;
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 1.05rem;
       cursor: pointer;
       transition: 0.2s;
       display: none;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
     }
-    header button:hover { background: var(--accent-hover); color: #fff; }
-    header button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .bottom-action-area button:hover { background: var(--accent-hover); color: #fff; }
+    .bottom-action-area button:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
 
     .modal button {
       background: var(--accent);
@@ -101,9 +115,6 @@
 
     .entries-scroll-area {
       flex: 1;
-      overflow-y: auto;
-      padding-bottom: 30px;
-      padding-top: 4px;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -260,9 +271,10 @@
       display: block;
     }
 
-    /* Mobilos finomhangolás, hogy garantáltan minden beférjen */
+    /* Mobilos finomhangolás */
     @media (max-width: 480px) {
       .container { padding: 8px; }
+      h1 { font-size: 1.7rem; }
       .entry-card { padding: 10px 10px; }
       .entry-row { font-size: 0.76rem; gap: 6px; }
       .entry-char-side { width: 40px; padding-right: 4px; }
@@ -447,14 +459,18 @@
 <div class="container">
   <div class="sticky-header-area">
     <header>
-      <div><h1 id="pageTitle">Berci Tipszmiksz</h1></div>
-      <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
+      <h1 id="pageTitle">Berci Tipszmiksz</h1>
     </header>
     <div id="officialCardContainer"></div>
   </div>
 
   <div id="entriesList" class="entries-scroll-area">
     <div class="spinner"></div>
+  </div>
+
+  <!-- Beküldés gomb a lista alján, teljes szélességben -->
+  <div class="bottom-action-area">
+    <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
   </div>
 </div>
 
@@ -552,7 +568,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.88</div>
+<div class="version-tag">v1.90</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";

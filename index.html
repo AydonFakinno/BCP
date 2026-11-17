@@ -31,17 +31,16 @@
       min-height: 100vh;
     }
 
-    /* Lezárt állapotban (nincs gomb) egy kulturált, szellős 48px padding marad alul */
+    /* Mobilos alapértelmezett elrendezés (egyetlen oszlop) */
     .container {
       width: 100%;
       max-width: 580px;
       display: flex;
       flex-direction: column;
       padding: 12px;
-      padding-bottom: 48px; 
+      padding-bottom: 16px; 
     }
 
-    /* Ha van gomb, akkor pontosan akkora helyet hagyunk, amímagasságot a gomb elfoglal */
     .container.has-button {
       padding-bottom: 85px;
     }
@@ -74,7 +73,7 @@
       padding-top: 4px;
     }
 
-    /* Fix alsó sáv (gomb + verziószám) */
+    /* Fix alsó sáv mobilon */
     .bottom-action-area {
       position: fixed;
       bottom: 0;
@@ -123,6 +122,80 @@
       text-align: center;
     }
 
+
+    /* --- PC / TABLET MÓD (900px szélesség felett) --- */
+    @media (min-width: 900px) {
+      body {
+        align-items: center;
+        justify-content: flex-start;
+        padding: 24px;
+      }
+
+      .container {
+        max-width: 1100px;
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        gap: 24px;
+        align-items: start;
+        padding: 0 !important;
+      }
+
+      /* Bal oldali oszlop: fixen ragad fenn */
+      .sticky-header-area {
+        position: sticky;
+        top: 24px;
+        background: transparent;
+        border-bottom: none;
+        margin-bottom: 0;
+        padding: 0;
+      }
+
+      header {
+        justify-content: flex-start;
+        margin-bottom: 16px;
+      }
+
+      h1 { font-size: 2rem; }
+
+      /* Jobb oldali oszlop: a lista önállóan scrollosodik, ha hosszú */
+      .entries-scroll-area {
+        max-height: calc(100vh - 48px);
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+
+      /* Mobilos alsó sáv eltüntetése PC-n, helyette a bal oldali sávba tesszük a gombot */
+      .bottom-action-area {
+        position: static;
+        background: transparent;
+        backdrop-filter: none;
+        border-top: none;
+        padding: 0;
+        margin-top: 16px;
+        justify-content: flex-start;
+      }
+
+      .bottom-action-area-inner {
+        max-width: 100%;
+      }
+
+      .bottom-action-area button {
+        border-radius: 12px;
+        font-size: 1.05rem;
+        padding: 14px;
+      }
+
+      .entry-card {
+        transition: transform 0.15s ease, border-color 0.15s ease;
+      }
+      .entry-card:hover {
+        border-color: rgba(56, 189, 248, 0.6);
+        transform: translateY(-2px);
+      }
+    }
+
+
+    /* Modál és többi komponens stílusa */
     .modal button {
       background: var(--accent);
       color: #0f172a;
@@ -476,18 +549,18 @@
       <div><h1 id="pageTitle">Berci Tipszmiksz</h1></div>
     </header>
     <div id="officialCardContainer"></div>
+    
+    <!-- Gomb és verziószám PC-n a bal oszlopba építve -->
+    <div class="bottom-action-area" id="bottomActionArea">
+      <div class="bottom-action-area-inner">
+        <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
+        <div class="version-tag">v2.08</div>
+      </div>
+    </div>
   </div>
 
   <div id="entriesList" class="entries-scroll-area">
     <div class="spinner"></div>
-  </div>
-</div>
-
-<!-- Fix alsó sáv (gomb + verziószám) -->
-<div class="bottom-action-area">
-  <div class="bottom-action-area-inner">
-    <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
-    <div class="version-tag">v2.07</div>
   </div>
 </div>
 

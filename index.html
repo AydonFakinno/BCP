@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Babaváró Tipszmiksz</title>
+  <title>Berci Tipszmiksz</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -134,8 +134,11 @@
       box-shadow: 0 4px 20px rgba(202, 138, 4, 0.15);
       margin-top: 5px;
     }
+    /* Nagyobb, hangsúlyosabb Eredmény felirat a hivatalos kártyán */
     .official-card .entry-name {
       color: var(--accent-official) !important;
+      font-size: 1.3rem !important;
+      font-weight: 800 !important;
     }
 
     .entry-header {
@@ -460,7 +463,7 @@
   <div class="sticky-header-area">
     <header>
       <div>
-        <h1 id="pageTitle">Babaváró Tipszmiksz</h1>
+        <h1 id="pageTitle">Berci Tipszmiksz</h1>
       </div>
       <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
     </header>
@@ -586,13 +589,13 @@
   </div>
 </div>
 
-<div class="version-tag">v1.64</div>
+<div class="version-tag">v1.65</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
 
   const CONFIG = {
-    title: "Babaváró Tipszmiksz",
+    title: "Berci Tipszmiksz",
     subtitle: "",
     q1Prefix: "1. Kérdés:",
     q1Text: "Milyen színű lesz Berci?",

@@ -534,7 +534,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.77</div>
+<div class="version-tag">v1.79</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -562,14 +562,32 @@
   let existingNames = [];
   let isSubmitting = false;
   
-  function openModal() {
-    isSubmitting = false;
-    showStep(1);
-    document.getElementById("pollForm").reset();
-    document.getElementById("q2_opt1").checked = true;
-    document.getElementById("q3_opt1").checked = true;
-    updateSliderColor(50);
-    modal.classList.add("active");
+  async function openModal() {
+    if (isSubmitting) return;
+    isSubmitting = true;
+
+    try {
+      const res = await fetch(SCRIPT_URL);
+      const data = await res.json();
+
+      if (data.locked) {
+        isSubmitting = false;
+        await loadEntries();
+        return;
+      }
+
+      isSubmitting = false;
+      showStep(1);
+      document.getElementById("pollForm").reset();
+      document.getElementById("q2_opt1").checked = true;
+      document.getElementById("q3_opt1").checked = true;
+      updateSliderColor(50);
+      modal.classList.add("active");
+    } catch (e) {
+      isSubmitting = false;
+      showStep(1);
+      modal.classList.add("active");
+    }
   }
 
   function closeModal() {
@@ -864,20 +882,9 @@
     isSubmitting = true;
     const btn = document.getElementById("submitBtn");
     btn.disabled = true;
-    btn.textContent = "Ellenőrzés...";
+    btn.textContent = "Küldés...";
 
     try {
-      // Biztonsági ellenőrzés beküldés előtt
-      const checkRes = await fetch(SCRIPT_URL);
-      const checkData = await checkRes.json();
-
-      if (checkData.locked) {
-        closeModal();
-        await loadEntries();
-        return;
-      }
-
-      btn.textContent = "Küldés...";
       const payload = {
         name: document.getElementById("userName").value.trim(),
         a1: Number(document.getElementById("q1Slider").value),

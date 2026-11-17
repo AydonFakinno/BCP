@@ -597,7 +597,7 @@
 <div class="bottom-action-area" id="bottomActionArea">
   <div class="bottom-action-area-inner">
     <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
-    <div class="version-tag">v2.21</div>
+    <div class="version-tag">v2.23</div>
   </div>
 </div>
 
@@ -776,12 +776,6 @@
         return;
       }
 
-      if (existingNames.some(n => n.toLowerCase() === trimmedName.toLowerCase())) {
-        alert("Már van beküldve válasz ezzel a névvel.");
-        nameInput.focus();
-        return;
-      }
-
       isSubmitting = true;
       const nextBtn = document.getElementById("step1NextBtn");
       let originalText = nextBtn.textContent;
@@ -792,13 +786,25 @@
         const res = await fetch(SCRIPT_URL);
         const data = await res.json();
 
+        // Frissítjük a kártyalista tömböt és magát a nézetet is, hogy az újak is benne legyenek
+        existingNames = (data.entries && Array.isArray(data.entries)) ? data.entries.map(item => item.name) : [];
+        await renderEntriesData(data);
+
         if (data.locked) {
           closeModal();
-          await loadEntries();
           isSubmitting = false;
           nextBtn.textContent = originalText;
           nextBtn.disabled = false;
           alert("A játék már lezárult.");
+          return;
+        }
+
+        if (existingNames.some(n => n.toLowerCase() === trimmedName.toLowerCase())) {
+          isSubmitting = false;
+          nextBtn.textContent = originalText;
+          nextBtn.disabled = false;
+          alert("Már van beküldve válasz ezzel a névvel.");
+          nameInput.focus();
           return;
         }
       } catch (e) {}
@@ -935,12 +941,114 @@
     return { total: score1 + score2 + score3, score1, score2, score3 };
   }
 
-  async function loadEntries() {
+  async function renderEntriesData(data) {
     const listEl = document.getElementById("entriesList");
     const newBtn = document.getElementById("openModalBtn");
     const officialContainer = document.getElementById("officialCardContainer");
     const containerEl = document.getElementById("mainContainer");
-    
+
+    if (data.locked && data.official) {
+      newBtn.style.display = "none";
+      containerEl.classList.remove("has-button");
+      officialContainer.innerHTML = `
+        <div class="entry-card official-card">
+          <div class="entry-header">
+            <div class="entry-header-left"><span class="entry-name">Eredmény</span></div>
+            <div class="entry-header-right"><span class="entry-date">${formatDateString(data.official.date)}</span></div>
+          </div>
+          <div class="entry-body">
+            ${buildColoredCardChar(data.official.a1, "official-char")}
+            <div class="entry-rows">
+              <div class="entry-row"><span class="entry-a">Berci ${data.official.a1}% barna bőrű magyar állampolgár.</span></div>
+              <div class="entry-row"><span class="entry-a">Berci ${Number(data.official.a2) === 1 ? 'előbb' : 'később'} jött ki, mint a GTA VI.</span></div>
+              <div class="entry-row"><span class="entry-a">Bercinek ${Number(data.official.a3) === 1 ? 'nagyobb' : 'kisebb'} pénisze van, mint Zsoltinak.</span></div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      data.entries.forEach(item => {
+        item.scores = calculateScores(item, data.official);
+      });
+
+      data.entries.sort((a, b) => {
+        if (b.scores.total !== a.scores.total) {
+          return b.scores.total - a.scores.total;
+        }
+        return new Date(a.date) - new Date(b.date);
+      });
+
+      let r = 0;
+      let t = 120;
+      data.entries.forEach((item) => {
+        if (item.scores.total < t) {
+          r = r + 1;
+          t = item.scores.total;
+        }
+        item.rank = r;
+      });
+
+    } else {
+      const shouldShowBtn = !data.locked;
+      newBtn.style.display = shouldShowBtn ? "block" : "none";
+      if (shouldShowBtn) {
+        containerEl.classList.add("has-button");
+      } else {
+        containerEl.classList.remove("has-button");
+      }
+      officialContainer.innerHTML = "";
+
+      data.entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+
+    if (!data.entries.length && (!data.locked || !data.official)) {
+      listEl.innerHTML = '<div class="status-msg">Nincs beküldve válasz.</div>';
+      return;
+    }
+
+    const entriesHtml = data.entries.map((item) => {
+      let rankClass = (data.locked && data.official) ? (item.rank === 1 ? "rank-1" : item.rank === 2 ? "rank-2" : item.rank === 3 ? "rank-3" : "rank-other") : "";
+      let rankBadge = (data.locked && data.official) ? `<span class="entry-rank ${rankClass}">#${item.rank}</span>` : "";
+
+      let cardVignetteClass = "";
+      if (data.locked && data.official) {
+        if (item.rank === 1) cardVignetteClass = "card-rank-1";
+        else if (item.rank === 2) cardVignetteClass = "card-rank-2";
+        else if (item.rank === 3) cardVignetteClass = "card-rank-3";
+      }
+
+      let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score" style="${getScoreBadgeStyle(item.scores.total, 120)}">${item.scores.total} pont</span>` : "";
+      let s1Badge = data.locked && data.official ? `<span class="score-badge" style="${getScoreBadgeStyle(item.scores.score1, 100)}">${item.scores.score1} pont</span>` : "";
+      let s2Badge = data.locked && data.official ? `<span class="score-badge" style="${getScoreBadgeStyle(item.scores.score2, 10)}">${item.scores.score2} pont</span>` : "";
+      let s3Badge = data.locked && data.official ? `<span class="score-badge" style="${getScoreBadgeStyle(item.scores.score3, 10)}">${item.scores.score3} pont</span>` : "";
+
+      return `
+        <div class="entry-card ${cardVignetteClass}">
+          <div class="entry-header">
+            <div class="entry-header-left">
+              ${rankBadge}
+              <span class="entry-name">${escapeHtml(item.name)}</span>
+              ${totalScoreBadge}
+            </div>
+            <div class="entry-header-right"><span class="entry-date">${formatDateString(item.date)}</span></div>
+          </div>
+          <div class="entry-body">
+            ${buildColoredCardChar(item.a1)}
+            <div class="entry-rows">
+              <div class="entry-row"><span class="entry-q">Milyen színű lesz Berci?</span><div class="entry-ans-container"><span class="entry-a">${item.a1}% BBMÁ</span>${s1Badge}</div></div>
+              <div class="entry-row"><span class="entry-q">Melyik jön ki előbb?</span><div class="entry-ans-container"><span class="entry-a">${CONFIG.q2Options[item.a2] || item.a2}</span>${s2Badge}</div></div>
+              <div class="entry-row"><span class="entry-q">Kinek van nagyobb pénisze?</span><div class="entry-ans-container"><span class="entry-a">${CONFIG.q3Options[item.a3] || item.a3}</span>${s3Badge}</div></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    listEl.innerHTML = entriesHtml;
+  }
+
+  async function loadEntries() {
+    const listEl = document.getElementById("entriesList");
     listEl.innerHTML = '<div class="spinner"></div>';
 
     if (loadTimeout) clearTimeout(loadTimeout);
@@ -959,105 +1067,7 @@
       }
 
       existingNames = (data.entries && Array.isArray(data.entries)) ? data.entries.map(item => item.name) : [];
-
-      if (data.locked && data.official) {
-        newBtn.style.display = "none";
-        containerEl.classList.remove("has-button");
-        officialContainer.innerHTML = `
-          <div class="entry-card official-card">
-            <div class="entry-header">
-              <div class="entry-header-left"><span class="entry-name">Eredmény</span></div>
-              <div class="entry-header-right"><span class="entry-date">${formatDateString(data.official.date)}</span></div>
-            </div>
-            <div class="entry-body">
-              ${buildColoredCardChar(data.official.a1, "official-char")}
-              <div class="entry-rows">
-                <div class="entry-row"><span class="entry-a">Berci ${data.official.a1}% barna bőrű magyar állampolgár.</span></div>
-                <div class="entry-row"><span class="entry-a">Berci ${Number(data.official.a2) === 1 ? 'előbb' : 'később'} jött ki, mint a GTA VI.</span></div>
-                <div class="entry-row"><span class="entry-a">Bercinek ${Number(data.official.a3) === 1 ? 'nagyobb' : 'kisebb'} pénisze van, mint Zsoltinak.</span></div>
-              </div>
-            </div>
-          </div>
-        `;
-
-        data.entries.forEach(item => {
-          item.scores = calculateScores(item, data.official);
-        });
-
-        data.entries.sort((a, b) => {
-          if (b.scores.total !== a.scores.total) {
-            return b.scores.total - a.scores.total;
-          }
-          return new Date(a.date) - new Date(b.date);
-        });
-
-        let r = 0;
-        let t = 120;
-        data.entries.forEach((item) => {
-          if (item.scores.total < t) {
-            r = r + 1;
-            t = item.scores.total;
-          }
-          item.rank = r;
-        });
-
-      } else {
-        const shouldShowBtn = !data.locked;
-        newBtn.style.display = shouldShowBtn ? "block" : "none";
-        if (shouldShowBtn) {
-          containerEl.classList.add("has-button");
-        } else {
-          containerEl.classList.remove("has-button");
-        }
-        officialContainer.innerHTML = "";
-
-        data.entries.sort((a, b) => new Date(b.date) - new Date(a.date));
-      }
-
-      if (!data.entries.length && (!data.locked || !data.official)) {
-        listEl.innerHTML = '<div class="status-msg">Még nincs beküldve válasz.</div>';
-        return;
-      }
-
-      const entriesHtml = data.entries.map((item) => {
-        let rankClass = (data.locked && data.official) ? (item.rank === 1 ? "rank-1" : item.rank === 2 ? "rank-2" : item.rank === 3 ? "rank-3" : "rank-other") : "";
-        let rankBadge = (data.locked && data.official) ? `<span class="entry-rank ${rankClass}">#${item.rank}</span>` : "";
-
-        let cardVignetteClass = "";
-        if (data.locked && data.official) {
-          if (item.rank === 1) cardVignetteClass = "card-rank-1";
-          else if (item.rank === 2) cardVignetteClass = "card-rank-2";
-          else if (item.rank === 3) cardVignetteClass = "card-rank-3";
-        }
-
-        let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score" style="${getScoreBadgeStyle(item.scores.total, 120)}">${item.scores.total} pont</span>` : "";
-        let s1Badge = data.locked && data.official ? `<span class="score-badge" style="${getScoreBadgeStyle(item.scores.score1, 100)}">${item.scores.score1} pont</span>` : "";
-        let s2Badge = data.locked && data.official ? `<span class="score-badge" style="${getScoreBadgeStyle(item.scores.score2, 10)}">${item.scores.score2} pont</span>` : "";
-        let s3Badge = data.locked && data.official ? `<span class="score-badge" style="${getScoreBadgeStyle(item.scores.score3, 10)}">${item.scores.score3} pont</span>` : "";
-
-        return `
-          <div class="entry-card ${cardVignetteClass}">
-            <div class="entry-header">
-              <div class="entry-header-left">
-                ${rankBadge}
-                <span class="entry-name">${escapeHtml(item.name)}</span>
-                ${totalScoreBadge}
-              </div>
-              <div class="entry-header-right"><span class="entry-date">${formatDateString(item.date)}</span></div>
-            </div>
-            <div class="entry-body">
-              ${buildColoredCardChar(item.a1)}
-              <div class="entry-rows">
-                <div class="entry-row"><span class="entry-q">Milyen színű lesz Berci?</span><div class="entry-ans-container"><span class="entry-a">${item.a1}% BBMÁ</span>${s1Badge}</div></div>
-                <div class="entry-row"><span class="entry-q">Melyik jön ki előbb?</span><div class="entry-ans-container"><span class="entry-a">${CONFIG.q2Options[item.a2] || item.a2}</span>${s2Badge}</div></div>
-                <div class="entry-row"><span class="entry-q">Kinek van nagyobb pénisze?</span><div class="entry-ans-container"><span class="entry-a">${CONFIG.q3Options[item.a3] || item.a3}</span>${s3Badge}</div></div>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      listEl.innerHTML = entriesHtml;
+      await renderEntriesData(data);
     } catch (err) {
       if (loadTimeout) {
         clearTimeout(loadTimeout);

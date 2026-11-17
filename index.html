@@ -276,7 +276,7 @@
     }
 
 
-    /* --- PC / TABLET MÓD (1350px szélesség felett 3 oszlop, eredeti nagyméretű kártyákkal) --- */
+    /* --- PC / TABLET MÓD (1350px felett 3 oszlop, Grid alapú horizontális sorrenddel) --- */
     @media (min-width: 1350px) {
       .container {
         max-width: 1400px;
@@ -303,17 +303,16 @@
         margin: 12px auto 0 auto;
       }
 
-      /* 3 oszlopos elrendezés teli kártyamérettel */
+      /* Grid alapú 3 oszlop: balról jobbra, soronként halad */
       .entries-scroll-area {
-        display: block;
-        column-count: 3;
-        column-gap: 20px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
         padding-top: 4px;
       }
 
       .entries-scroll-area .entry-card {
-        break-inside: avoid;
-        margin-bottom: 20px;
+        margin-bottom: 0; /* A grid gap intézi a távolságot */
         padding: 16px 18px;
         border-radius: 14px;
         transition: transform 0.15s ease, border-color 0.15s ease;
@@ -595,7 +594,7 @@
 <div class="bottom-action-area" id="bottomActionArea">
   <div class="bottom-action-area-inner">
     <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
-    <div class="version-tag">v2.15</div>
+    <div class="version-tag">v2.16</div>
   </div>
 </div>
 

@@ -29,6 +29,7 @@
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
+      padding-bottom: 45px; /* Hely a fix verziószámnak */
     }
 
     /* Mobilos alapértelmezett elrendezés */
@@ -38,7 +39,7 @@
       display: flex;
       flex-direction: column;
       padding: 12px;
-      padding-bottom: 48px; 
+      padding-bottom: 24px; 
     }
 
     /* Fejléc: ragadós (sticky) a tetején */
@@ -46,7 +47,7 @@
       position: sticky;
       top: 0;
       background: var(--bg);
-      padding: 12px 0 8px 0;
+      padding: 12px 0 12px 0;
       z-index: 20;
       border-bottom: 1px solid rgba(51, 65, 85, 0.4);
       margin-bottom: 12px;
@@ -58,12 +59,17 @@
       align-items: center;
       gap: 12px;
       flex-wrap: nowrap;
-      margin-bottom: 8px;
     }
 
     h1 { margin: 0; font-size: 1.5rem; white-space: nowrap; }
 
-    /* Fejlécben lévő gomb */
+    /* Fejlécben lévő gomb vagy kis e-tábla konténer */
+    .header-right-area {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
     .header-action-btn {
       background: var(--accent);
       color: #0f172a;
@@ -74,12 +80,46 @@
       font-size: 0.85rem;
       cursor: pointer;
       transition: 0.2s;
-      display: none;
       box-shadow: 0 2px 10px rgba(56, 189, 248, 0.3);
       white-space: nowrap;
     }
     .header-action-btn:hover { background: var(--accent-hover); color: #fff; }
     .header-action-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+
+    /* Ha lezárt állapotban a hivatalos kártya van fent */
+    .official-card-inline {
+      background: var(--card-official);
+      border: 2px solid var(--border-official);
+      box-shadow: 0 4px 15px rgba(202, 138, 4, 0.15);
+      border-radius: 10px;
+      padding: 6px 10px;
+      max-width: 320px;
+    }
+    .official-card-inline .entry-name {
+      color: var(--accent-official) !important;
+      font-size: 0.95rem !important;
+      font-weight: 800 !important;
+    }
+    .official-card-inline .entry-header {
+      margin-bottom: 4px;
+      padding-bottom: 4px;
+    }
+    .official-card-inline .entry-body {
+      gap: 8px;
+    }
+    .official-card-inline .entry-rows {
+      gap: 3px;
+    }
+    .official-card-inline .entry-row {
+      font-size: 0.75rem;
+    }
+    .official-card-inline .entry-char-side {
+      width: 34px;
+      padding-right: 4px;
+    }
+    .official-card-inline .entry-char-side svg {
+      max-height: 40px;
+    }
 
     /* Mobilon egymás alatt vannak a kártyák */
     .entries-scroll-area {
@@ -89,15 +129,22 @@
       padding-top: 4px;
     }
 
-    /* Verziószám alul */
+    /* Fix alsó verziószám (nem görgethető) */
     .version-tag {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(4px);
       font-size: 0.65rem;
       color: var(--muted);
-      opacity: 0.5;
+      opacity: 0.6;
       letter-spacing: 0.5px;
-      margin: 24px 0 12px 0;
+      padding: 4px 0;
       text-align: center;
-      width: 100%;
+      z-index: 40;
+      border-top: 1px solid rgba(51, 65, 85, 0.2);
     }
 
     .entry-card {
@@ -114,18 +161,6 @@
     .card-rank-1 { box-shadow: inset 0 0 45px rgba(250, 204, 21, 0.3); }
     .card-rank-2 { box-shadow: inset 0 0 45px rgba(148, 163, 184, 0.28); }
     .card-rank-3 { box-shadow: inset 0 0 45px rgba(251, 146, 60, 0.28); }
-
-    .official-card {
-      background: var(--card-official);
-      border: 2px solid var(--border-official);
-      box-shadow: 0 4px 20px rgba(202, 138, 4, 0.15);
-      margin-top: 4px;
-    }
-    .official-card .entry-name {
-      color: var(--accent-official) !important;
-      font-size: 1.2rem !important;
-      font-weight: 800 !important;
-    }
 
     .entry-header {
       display: flex;
@@ -280,6 +315,24 @@
         border-radius: 12px;
       }
 
+      .official-card-inline {
+        max-width: 440px;
+        padding: 10px 14px;
+      }
+      .official-card-inline .entry-name {
+        font-size: 1.1rem !important;
+      }
+      .official-card-inline .entry-row {
+        font-size: 0.9rem;
+      }
+      .official-card-inline .entry-char-side {
+        width: 48px;
+        padding-right: 8px;
+      }
+      .official-card-inline .entry-char-side svg {
+        max-height: 54px;
+      }
+
       /* Grid alapú 3 oszlop: balról jobbra, soronként halad */
       .entries-scroll-area {
         display: grid;
@@ -353,7 +406,10 @@
     }
 
     @media (max-width: 480px) {
-      .container { padding: 8px; padding-bottom: 24px; }
+      .container { padding: 8px; padding-bottom: 16px; }
+      .sticky-header-area { padding: 8px 0; }
+      h1 { font-size: 1.2rem; }
+      .header-action-btn { padding: 6px 10px; font-size: 0.75rem; }
       .entry-card { padding: 10px 10px; }
       .entry-row { font-size: 0.76rem; gap: 6px; }
       .entry-char-side { width: 40px; padding-right: 4px; }
@@ -553,17 +609,18 @@
   <div class="sticky-header-area">
     <header>
       <h1 id="pageTitle">Berci Tipszmiksz</h1>
-      <button id="openModalBtn" class="header-action-btn" onclick="openModal()">Válasz beküldése</button>
+      <div class="header-right-area" id="headerRightArea">
+        <button id="openModalBtn" class="header-action-btn" onclick="openModal()">Válasz beküldése</button>
+      </div>
     </header>
-    <div id="officialCardContainer"></div>
   </div>
 
   <div id="entriesList" class="entries-scroll-area">
     <div class="spinner"></div>
   </div>
-
-  <div class="version-tag">v2.17</div>
 </div>
+
+<div class="version-tag">v2.18</div>
 
 <!-- Modal űrlap -->
 <div class="modal-backdrop" id="modalBackdrop">
@@ -901,8 +958,7 @@
 
   async function loadEntries() {
     const listEl = document.getElementById("entriesList");
-    const newBtn = document.getElementById("openModalBtn");
-    const officialContainer = document.getElementById("officialCardContainer");
+    const headerRightArea = document.getElementById("headerRightArea");
     
     listEl.innerHTML = '<div class="spinner"></div>';
 
@@ -924,9 +980,8 @@
       existingNames = (data.entries && Array.isArray(data.entries)) ? data.entries.map(item => item.name) : [];
 
       if (data.locked && data.official) {
-        newBtn.style.display = "none";
-        officialContainer.innerHTML = `
-          <div class="entry-card official-card" style="margin-top: 8px;">
+        headerRightArea.innerHTML = `
+          <div class="entry-card official-card-inline">
             <div class="entry-header">
               <div class="entry-header-left"><span class="entry-name">Eredmény</span></div>
               <div class="entry-header-right"><span class="entry-date">${formatDateString(data.official.date)}</span></div>
@@ -934,7 +989,7 @@
             <div class="entry-body">
               ${buildColoredCardChar(data.official.a1, "official-char")}
               <div class="entry-rows">
-                <div class="entry-row"><span class="entry-a">Berci ${data.official.a1}% barna bőrű magyar állampolgár.</span></div>
+                <div class="entry-row"><span class="entry-a">Berci ${data.official.a1}% BBMÁ.</span></div>
                 <div class="entry-row"><span class="entry-a">Berci ${Number(data.official.a2) === 1 ? 'előbb' : 'később'} jött ki, mint a GTA VI.</span></div>
                 <div class="entry-row"><span class="entry-a">Bercinek ${Number(data.official.a3) === 1 ? 'nagyobb' : 'kisebb'} pénisze van, mint Zsoltinak.</span></div>
               </div>
@@ -965,8 +1020,7 @@
 
       } else {
         const shouldShowBtn = !data.locked;
-        newBtn.style.display = shouldShowBtn ? "block" : "none";
-        officialContainer.innerHTML = "";
+        headerRightArea.innerHTML = shouldShowBtn ? `<button id="openModalBtn" class="header-action-btn" onclick="openModal()">Válasz beküldése</button>` : "";
 
         data.entries.sort((a, b) => new Date(b.date) - new Date(a.date));
       }

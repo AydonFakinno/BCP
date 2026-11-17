@@ -66,7 +66,7 @@
       font-size: 0.95rem;
       cursor: pointer;
       transition: 0.2s;
-      display: none; /* Alapból rejtve, amíg be nem tölt */
+      display: none;
     }
     header button:hover { background: var(--accent-hover); color: #fff; }
     header button:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -351,7 +351,7 @@
     <form id="pollForm" onsubmit="return false;">
       
       <div class="step-pane active" id="step1">
-        <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lesz Berci?</span></div>
+        <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lett Berci?</span></div>
         <div class="question-img-box">
           <object id="charSvg" type="image/svg+xml" data="char.svg"></object>
         </div>
@@ -455,14 +455,14 @@
   </div>
 </div>
 
-<div class="version-tag">ans-v1.7</div>
+<div class="version-tag">ans-v1.8</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
 
   const CONFIG = {
     q1Prefix: "1. Kérdés:",
-    q1Text: "Milyen színű lesz Berci?",
+    q1Text: "Milyen színű lett Berci?",
     q2Prefix: "2. Kérdés:",
     q2Text: "Melyik jött ki előbb?",
     q2Options: { 1: "Berci", 2: "GTA VI" },
@@ -600,7 +600,7 @@
 
     if (!currentAnswers) {
       headerBtn.textContent = "Eredmény beküldése";
-      headerBtn.style.display = "block"; // Betöltés után megjelenik
+      headerBtn.style.display = "block";
       container.innerHTML = "";
       return;
     }

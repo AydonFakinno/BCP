@@ -116,6 +116,20 @@
       padding: 16px 20px;
     }
 
+    /* Glow effektek a dobogósoknak */
+    .card-rank-1 {
+      border: 1px solid rgba(250, 204, 21, 0.6);
+      box-shadow: 0 0 15px rgba(250, 204, 21, 0.2);
+    }
+    .card-rank-2 {
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      box-shadow: 0 0 15px rgba(148, 163, 184, 0.2);
+    }
+    .card-rank-3 {
+      border: 1px solid rgba(251, 146, 60, 0.6);
+      box-shadow: 0 0 15px rgba(251, 146, 60, 0.2);
+    }
+
     .official-card {
       background: var(--card-official);
       border: 2px solid var(--border-official);
@@ -553,7 +567,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.54</div>
+<div class="version-tag">v1.55</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -887,6 +901,14 @@
         let rankClass = item.rank === 1 ? "rank-1" : item.rank === 2 ? "rank-2" : item.rank === 3 ? "rank-3" : "rank-other";
         let rankBadge = data.locked && data.official ? `<span class="entry-rank ${rankClass}">#${item.rank}</span>` : "";
         
+        // Dinamikus glow effekt osztály hozzárendelése az első 3 helyezetthez
+        let glowClass = "";
+        if (data.locked && data.official) {
+          if (item.rank === 1) glowClass = "card-rank-1";
+          else if (item.rank === 2) glowClass = "card-rank-2";
+          else if (item.rank === 3) glowClass = "card-rank-3";
+        }
+
         let totalStyle = data.locked && data.official ? getScoreBadgeStyle(item.scores.total, 110) : "";
         let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score" style="${totalStyle}">${item.scores.total} pont</span>` : "";
 
@@ -900,7 +922,7 @@
         let s3Badge = data.locked && data.official ? `<span class="score-badge" style="${s3Style}">${item.scores.score3} pont</span>` : "";
 
         return `
-          <div class="entry-card">
+          <div class="entry-card ${glowClass}">
             <div class="entry-header">
               <div class="entry-header-left">
                 ${rankBadge}

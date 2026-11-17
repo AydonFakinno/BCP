@@ -19,15 +19,16 @@
     }
 
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
-    body {
+    
+    html, body {
       background: var(--bg);
       color: var(--text);
       margin: 0;
       padding: 0;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       justify-content: center;
-      min-height: 100vh;
-      position: relative;
     }
 
     .container {
@@ -37,6 +38,7 @@
       flex-direction: column;
       height: 100vh;
       padding: 12px;
+      padding-bottom: 85px; /* Hely a fix alsó gombnak */
     }
 
     .sticky-header-area {
@@ -48,33 +50,57 @@
       z-index: 10;
       border-bottom: 1px solid rgba(51, 65, 85, 0.4);
       margin-bottom: 8px;
+      flex-shrink: 0;
     }
 
     header {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
       margin-bottom: 8px;
+      text-align: center;
     }
 
     h1 { margin: 0; font-size: 1.5rem; }
 
-    header button {
+    /* Beküldés gomb fixen alul */
+    .bottom-action-area {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 12px 16px;
+      border-top: 1px solid rgba(51, 65, 85, 0.4);
+      z-index: 50;
+      display: flex;
+      justify-content: center;
+    }
+
+    .bottom-action-area-inner {
+      width: 100%;
+      max-width: 580px;
+    }
+
+    .bottom-action-area button {
       background: var(--accent);
       color: #0f172a;
       border: none;
-      padding: 10px 16px;
-      border-radius: 10px;
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 1rem;
       cursor: pointer;
       transition: 0.2s;
       display: none;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
     }
-    header button:hover { background: var(--accent-hover); color: #fff; }
-    header button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .bottom-action-area button:hover { background: var(--accent-hover); color: #fff; }
+    .bottom-action-area button:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
 
     .modal button {
       background: var(--accent);
@@ -102,7 +128,7 @@
     .entries-scroll-area {
       flex: 1;
       overflow-y: auto;
-      padding-bottom: 30px;
+      padding-bottom: 10px;
       padding-top: 4px;
       display: flex;
       flex-direction: column;
@@ -114,6 +140,7 @@
       border: 2px solid #64748b;
       border-radius: 12px;
       padding: 12px 14px;
+      flex-shrink: 0;
     }
 
     .card-rank-1 { box-shadow: inset 0 0 45px rgba(250, 204, 21, 0.3); }
@@ -260,9 +287,9 @@
       display: block;
     }
 
-    /* Mobilos finomhangolás, hogy garantáltan minden beférjen */
+    /* Mobilos finomhangolás */
     @media (max-width: 480px) {
-      .container { padding: 8px; }
+      .container { padding: 8px; padding-bottom: 80px; }
       .entry-card { padding: 10px 10px; }
       .entry-row { font-size: 0.76rem; gap: 6px; }
       .entry-char-side { width: 40px; padding-right: 4px; }
@@ -432,13 +459,14 @@
 
     .version-tag {
       position: fixed;
-      bottom: 10px;
+      bottom: 70px;
       right: 15px;
       font-size: 0.75rem;
       color: var(--muted);
       opacity: 0.5;
       pointer-events: none;
       letter-spacing: 0.5px;
+      z-index: 40;
     }
   </style>
 </head>
@@ -448,13 +476,19 @@
   <div class="sticky-header-area">
     <header>
       <div><h1 id="pageTitle">Berci Tipszmiksz</h1></div>
-      <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
     </header>
     <div id="officialCardContainer"></div>
   </div>
 
   <div id="entriesList" class="entries-scroll-area">
     <div class="spinner"></div>
+  </div>
+</div>
+
+<!-- Beküldés gomb fixen alul -->
+<div class="bottom-action-area">
+  <div class="bottom-action-area-inner">
+    <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
   </div>
 </div>
 
@@ -552,7 +586,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.86</div>
+<div class="version-tag">v1.94</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";

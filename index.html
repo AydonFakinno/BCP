@@ -61,7 +61,8 @@
 
     h1 { margin: 0; font-size: 1.6rem; }
 
-    button {
+    /* Fő gombok (pl. Válasz beküldése) */
+    header button {
       background: var(--accent);
       color: #0f172a;
       border: none;
@@ -73,16 +74,32 @@
       transition: 0.2s;
       display: none;
     }
-    button:hover { background: var(--accent-hover); color: #fff; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    header button:hover { background: var(--accent-hover); color: #fff; }
+    header button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    .btn-secondary {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--border);
+    /* Modal / űrlap gombok külön definiálva, hogy ne keveredjenek a grid-del */
+    .modal button {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.2s;
       display: inline-block;
     }
-    .btn-secondary:hover { background: var(--border); color: var(--text); }
+    .modal button:hover { background: var(--accent-hover); color: #fff; }
+    .modal button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: transparent !important;
+      color: var(--muted) !important;
+      border: 1px solid var(--border) !important;
+      display: inline-block !important;
+    }
+    .btn-secondary:hover { background: var(--border) !important; color: var(--text) !important; }
 
     .entries-scroll-area {
       flex: 1;
@@ -530,7 +547,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1043</div>
+<div class="version-tag">v1045</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -802,7 +819,9 @@
             <div class="entry-header">
               <span class="entry-name">Eredmény</span>
               <span></span>
-              <span class="entry-date">${formatDateString(data.official.date)}</span>
+              <div class="entry-header-right">
+                <span class="entry-date">${formatDateString(data.official.date)}</span>
+              </div>
             </div>
             <div class="entry-body">
               ${buildColoredCardChar(data.official.a1, "official-char")}

@@ -61,7 +61,6 @@
 
     h1 { margin: 0; font-size: 1.6rem; }
 
-    /* Fő gombok (pl. Válasz beküldése) */
     header button {
       background: var(--accent);
       color: #0f172a;
@@ -77,7 +76,6 @@
     header button:hover { background: var(--accent-hover); color: #fff; }
     header button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-    /* Modal / űrlap gombok külön definiálva, hogy ne keveredjenek a grid-del */
     .modal button {
       background: var(--accent);
       color: #0f172a;
@@ -509,7 +507,7 @@
       </div>
 
       <div class="step-pane" id="step4">
-        <div class="question-title" id="q3HeaderTitle">3. Kérdés: <span class="sub-text">Kinek nagyobb a pénisze?</span></div>
+        <div class="question-title" id="q3HeaderTitle">3. Kérdés: <span class="sub-text">Kinek van nagyobb pénisze?</span></div>
         <div class="dual-card-grid">
           <div style="position: relative;">
             <input type="radio" name="q3" value="1" id="q3_opt1" class="choice-card-option" checked>
@@ -547,7 +545,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1045</div>
+<div class="version-tag">v1047</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -561,7 +559,7 @@
     q2Text: "Melyik jött ki előbb?",
     q2Options: { 1: "Berci", 2: "GTA VI" },
     q3Prefix: "3. Kérdés:",
-    q3Text: "Kinek nagyobb a pénisze?",
+    q3Text: "Kinek van nagyobb pénisze?",
     q3Options: { 1: "Berci", 2: "Zsolt" }
   };
 
@@ -835,7 +833,7 @@
                   <span class="entry-a">${CONFIG.q2Options[data.official.a2] || data.official.a2}</span>
                 </div>
                 <div class="entry-row">
-                  <span class="entry-q">Kinek nagyobb a pénisze?</span>
+                  <span class="entry-q">Kinek van nagyobb pénisze?</span>
                   <span class="entry-a">${CONFIG.q3Options[data.official.a3] || data.official.a3}</span>
                 </div>
               </div>
@@ -894,21 +892,21 @@
               ${buildColoredCardChar(item.a1)}
               <div class="entry-rows">
                 <div class="entry-row">
-                  <span class="entry-q">Milyen színű lett Berci?</span>
+                  <span class="entry-q">Milyen színű lesz Berci?</span>
                   <div class="entry-ans-container">
                     <span class="entry-a">${item.a1}% BBMÁ</span>
                     ${s1Badge}
                   </div>
                 </div>
                 <div class="entry-row">
-                  <span class="entry-q">Melyik jött ki előbb?</span>
+                  <span class="entry-q">Melyik jön ki előbb?</span>
                   <div class="entry-ans-container">
                     <span class="entry-a">${CONFIG.q2Options[item.a2] || item.a2}</span>
                     ${s2Badge}
                   </div>
                 </div>
                 <div class="entry-row">
-                  <span class="entry-q">Kinek nagyobb a pénisze?</span>
+                  <span class="entry-q">Kinek van nagyobb pénisze?</span>
                   <div class="entry-ans-container">
                     <span class="entry-a">${CONFIG.q3Options[item.a3] || item.a3}</span>
                     ${s3Badge}

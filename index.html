@@ -1,3 +1,583 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Berci Tipszmiksz</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --card-official: #0a2f23;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-official: #facc15;
+      --accent-hover: #0284c7;
+      --border: #334155;
+      --border-official: #ca8a04;
+    }
+
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    
+    body {
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 580px;
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      padding-bottom: 95px;
+    }
+
+    .sticky-header-area {
+      position: sticky;
+      top: 0;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 12px 0 8px 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+      margin-bottom: 8px;
+    }
+
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    h1 { margin: 0; font-size: 1.5rem; }
+
+    .bottom-action-area {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 12px 16px;
+      border-top: 1px solid rgba(51, 65, 85, 0.4);
+      z-index: 50;
+      display: flex;
+      justify-content: center;
+    }
+
+    .bottom-action-area-inner {
+      width: 100%;
+      max-width: 580px;
+    }
+
+    .bottom-action-area button {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      display: none;
+      box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+    }
+    .bottom-action-area button:hover { background: var(--accent-hover); color: #fff; }
+    .bottom-action-area button:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+
+    .modal button {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-block;
+    }
+    .modal button:hover { background: var(--accent-hover); color: #fff; }
+    .modal button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: transparent !important;
+      color: var(--muted) !important;
+      border: 1px solid var(--border) !important;
+      display: inline-block !important;
+    }
+    .btn-secondary:hover { background: var(--border) !important; color: var(--text) !important; }
+
+    .entries-scroll-area {
+      flex: 1;
+      padding-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .entry-card {
+      background: var(--card);
+      border: 2px solid #64748b;
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .card-rank-1 { box-shadow: inset 0 0 45px rgba(250, 204, 21, 0.3); }
+    .card-rank-2 { box-shadow: inset 0 0 45px rgba(148, 163, 184, 0.28); }
+    .card-rank-3 { box-shadow: inset 0 0 45px rgba(251, 146, 60, 0.28); }
+
+    .official-card {
+      background: var(--card-official);
+      border: 2px solid var(--border-official);
+      box-shadow: 0 4px 20px rgba(202, 138, 4, 0.15);
+      margin-top: 4px;
+    }
+    .official-card .entry-name {
+      color: var(--accent-official) !important;
+      font-size: 1.2rem !important;
+      font-weight: 800 !important;
+    }
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+    
+    .entry-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .entry-name { font-weight: 700; font-size: 1rem; color: var(--accent); }
+
+    .entry-rank {
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 2px 0;
+      border-radius: 6px;
+      width: 28px;
+      text-align: center;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .rank-1 { 
+      background: rgba(250, 204, 21, 0.25); 
+      color: #facc15; 
+      border: 1px solid rgba(250, 204, 21, 0.9); 
+      box-shadow: 0 0 10px rgba(250, 204, 21, 0.5), inset 0 0 0 1px #ffffff; 
+    }
+    .rank-2 { 
+      background: rgba(148, 163, 184, 0.25); 
+      color: #cbd5e1; 
+      border: 1px solid rgba(148, 163, 184, 0.9); 
+      box-shadow: 0 0 10px rgba(148, 163, 184, 0.4), inset 0 0 0 1px #ffffff; 
+    }
+    .rank-3 { 
+      background: rgba(180, 83, 9, 0.25); 
+      color: #fb923c; 
+      border: 1px solid rgba(251, 146, 60, 0.9); 
+      box-shadow: 0 0 10px rgba(251, 146, 60, 0.4), inset 0 0 0 1px #ffffff; 
+    }
+    .rank-other { 
+      background: rgba(100, 116, 139, 0.25); 
+      color: #94a3b8; 
+      border: 1px solid rgba(100, 116, 139, 0.5); 
+    }
+
+    .entry-total-score {
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .entry-header-right { display: flex; align-items: center; }
+    .entry-date { font-size: 0.75rem; color: var(--muted); }
+    
+    .entry-body {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .entry-rows {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      min-width: 0;
+    }
+    .entry-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1px 0;
+      font-size: 0.82rem;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .entry-q { 
+      color: var(--muted); 
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .entry-ans-container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .entry-a { font-weight: 600; text-align: left; }
+    
+    .score-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 4px;
+      border-radius: 4px;
+      width: 52px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .entry-char-side {
+      width: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding-right: 6px;
+      border-right: 1px solid rgba(51, 65, 85, 0.6);
+    }
+    .entry-char-side svg {
+      max-width: 100%;
+      max-height: 54px;
+      width: auto;
+      height: auto;
+      display: block;
+    }
+
+    @media (max-width: 480px) {
+      .container { padding: 8px; padding-bottom: 95px; }
+      .entry-card { padding: 10px 10px; }
+      .entry-row { font-size: 0.76rem; gap: 6px; }
+      .entry-char-side { width: 40px; padding-right: 4px; }
+      .entry-char-side svg { max-height: 48px; }
+      .score-badge { width: 48px; font-size: 0.6rem; padding: 1px 3px; }
+      .entry-name { font-size: 0.9rem; }
+    }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      z-index: 100;
+    }
+    .modal-backdrop.active { display: flex; }
+
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .step-pane { display: none; }
+    .step-pane.active { display: block; }
+
+    .form-group { margin-bottom: 20px; }
+    label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .question-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+    .question-title .sub-text { font-weight: 400; color: var(--muted); font-size: 1rem; }
+
+    .question-img-box {
+      width: 100%;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      overflow: hidden;
+      padding: 10px;
+    }
+    .question-img-box object { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+    .dual-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .choice-card {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 170px;
+      position: relative;
+    }
+    .choice-card:hover { border-color: rgba(56, 189, 248, 0.5); }
+    
+    .choice-card-option { position: absolute; opacity: 0; pointer-events: none; }
+    .choice-card-option:checked + .choice-card {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+    }
+    .choice-card-option:checked + .choice-card .custom-radio {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: inset 0 0 0 3px var(--bg);
+    }
+
+    .img-container {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .choice-card object { max-width: 100%; max-height: 80px; object-fit: contain; }
+
+    .choice-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+    
+    .custom-radio {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--muted);
+      border-radius: 50%;
+      background: var(--bg);
+      transition: 0.15s;
+    }
+
+    .slider-value-display {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .slider-wrap { display: flex; align-items: center; gap: 14px; }
+    input[type="range"] { flex: 1; accent-color: var(--accent); cursor: pointer; }
+
+    .modal-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; }
+    .modal-actions-right { display: flex; gap: 10px; }
+    .status-msg { text-align: center; color: var(--muted); padding: 40px 0; }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border);
+      border-top: 4px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 40px auto;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .version-tag {
+      position: fixed;
+      bottom: 75px;
+      right: 15px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      opacity: 0.5;
+      pointer-events: none;
+      letter-spacing: 0.5px;
+      z-index: 40;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="sticky-header-area">
+    <header>
+      <div><h1 id="pageTitle">Berci Tipszmiksz</h1></div>
+    </header>
+    <div id="officialCardContainer"></div>
+  </div>
+
+  <div id="entriesList" class="entries-scroll-area">
+    <div class="spinner"></div>
+  </div>
+</div>
+
+<div class="bottom-action-area">
+  <div class="bottom-action-area-inner">
+    <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <form id="pollForm" onsubmit="return false;">
+      <div class="step-pane active" id="step1">
+        <h2 style="margin-top:0; margin-bottom: 16px;">Add meg a neved!</h2>
+        <div class="form-group">
+          <label for="userName" style="display: none;"></label>
+          <input type="text" id="userName" maxlength="10" onkeydown="handleNameKeydown(event)">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" tabindex="-1" onclick="closeModal()">Mégse</button>
+          <button type="button" tabindex="-1" id="step1NextBtn" onclick="nextStep(1)">Tovább</button>
+        </div>
+      </div>
+
+      <div class="step-pane" id="step2">
+        <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lesz Berci?</span></div>
+        <div class="question-img-box">
+          <object id="charSvg" type="image/svg+xml" data="char.svg"></object>
+        </div>
+        <div class="form-group">
+          <div class="slider-value-display" id="sliderDisplayVal">50% barna bőrű magyar állampolgár</div>
+          <div class="slider-labels">
+            <span>Tekla</span>
+            <span>Zsolti</span>
+          </div>
+          <div class="slider-wrap">
+            <input type="range" id="q1Slider" min="0" max="100" value="50" oninput="updateSliderColor(this.value)">
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(2)">Vissza</button>
+          <div class="modal-actions-right">
+            <button type="button" tabindex="-1" onclick="nextStep(2)">Tovább</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-pane" id="step3">
+        <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jön ki előbb?</span></div>
+        <div class="dual-card-grid">
+          <div style="position: relative;">
+            <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option" checked>
+            <label for="q2_opt1" class="choice-card" id="q2_label1" tabindex="0">
+              <div class="img-container"><object id="charSvgStep3" type="image/svg+xml" data="char.svg"></object></div>
+              <div class="choice-card-footer"><div class="custom-radio"></div><span>Berci</span></div>
+            </label>
+          </div>
+          <div style="position: relative;">
+            <input type="radio" name="q2" value="2" id="q2_opt2" class="choice-card-option">
+            <label for="q2_opt2" class="choice-card" id="q2_label2" tabindex="0">
+              <div class="img-container"><object type="image/svg+xml" data="logo.svg"></object></div>
+              <div class="choice-card-footer"><div class="custom-radio"></div><span>GTA VI</span></div>
+            </label>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(3)">Vissza</button>
+          <div class="modal-actions-right">
+            <button type="button" tabindex="-1" onclick="nextStep(3)">Tovább</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-pane" id="step4">
+        <div class="question-title" id="q3HeaderTitle">3. Kérdés: <span class="sub-text">Kinek van nagyobb pénisze?</span></div>
+        <div class="dual-card-grid">
+          <div style="position: relative;">
+            <input type="radio" name="q3" value="1" id="q3_opt1" class="choice-card-option" checked>
+            <label for="q3_opt1" class="choice-card" id="q3_label1" tabindex="0">
+              <div class="img-container"><object id="charSvgStep4" type="image/svg+xml" data="char.svg"></object></div>
+              <div class="choice-card-footer"><div class="custom-radio"></div><span>Berci</span></div>
+            </label>
+          </div>
+          <div style="position: relative;">
+            <input type="radio" name="q3" value="2" id="q3_opt2" class="choice-card-option">
+            <label for="q3_opt2" class="choice-card" id="q3_label2" tabindex="0">
+              <div class="img-container"><object type="image/svg+xml" data="zso.svg"></object></div>
+              <div class="choice-card-footer"><div class="custom-radio"></div><span>Zsolti</span></div>
+            </label>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(4)">Vissza</button>
+          <div class="modal-actions-right">
+            <button type="button" tabindex="-1" id="submitBtn" onclick="submitPoll()">Beküldés</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="version-tag">v1.98</div>
+
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
 
@@ -31,7 +611,6 @@
     document.getElementById("pollForm").reset();
     document.getElementById("q2_opt1").checked = true;
     document.getElementById("q3_opt1").checked = true;
-    // Megnyitáskor is beállítjuk az 50%-os alapértéket és színt
     document.getElementById("q1Slider").value = 50;
     updateSliderColor(50);
     modal.classList.add("active");
@@ -181,7 +760,6 @@
 
   function buildColoredCardChar(val, customId = "") {
     if (!charSvgRaw) return "";
-    // Ha nincs megadva érték (pl. valamiért üres), alapból az 50%-os középső színt (#B07E6A) kapja
     const color = (val !== undefined && val !== null && val !== "") ? getInterpolatedColor(val) : "#B07E6A";
     const parser = new DOMParser();
     const doc = parser.parseFromString(charSvgRaw, "image/svg+xml");
@@ -382,7 +960,7 @@
         a3: Number(q3Checked.value)
       };
 
-      await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload)	});
+      await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
       closeModal();
       await loadEntries();
 
@@ -400,3 +978,5 @@
 
   loadEntries();
 </script>
+</body>
+</html>

@@ -31,7 +31,7 @@
       min-height: 100vh;
     }
 
-    /* Mobilos alapértelmezett elrendezés (egyetlen oszlop) */
+    /* Mobilos alapértelmezett elrendezés */
     .container {
       width: 100%;
       max-width: 580px;
@@ -52,7 +52,7 @@
       padding: 12px 0 8px 0;
       z-index: 20;
       border-bottom: 1px solid rgba(51, 65, 85, 0.4);
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
 
     header {
@@ -66,6 +66,7 @@
 
     h1 { margin: 0; font-size: 1.5rem; }
 
+    /* Mobilon egymás alatt vannak a kártyák */
     .entries-scroll-area {
       display: flex;
       flex-direction: column;
@@ -131,58 +132,62 @@
         padding: 24px;
       }
 
+      /* Kiterjesztjük a konténert, hogy legyen hely a rácsnak */
       .container {
-        max-width: 1100px;
-        display: grid;
-        grid-template-columns: 380px 1fr;
-        gap: 24px;
-        align-items: start;
+        max-width: 1160px;
+        display: flex;
+        flex-direction: column;
         padding: 0 !important;
       }
 
-      /* Bal oldali oszlop: fixen ragad fenn */
       .sticky-header-area {
-        position: sticky;
-        top: 24px;
-        background: transparent;
-        border-bottom: none;
-        margin-bottom: 0;
-        padding: 0;
+        position: relative; /* PC-n nem kell sticky-ként ragadnia, mert felül van a gomb is */
+        background: #0f172a;
+        padding: 0 0 16px 0;
+        border-bottom: 1px solid rgba(51, 65, 85, 0.4);
       }
 
       header {
-        justify-content: flex-start;
-        margin-bottom: 16px;
+        justify-content: center;
+        margin-bottom: 12px;
       }
 
-      h1 { font-size: 2rem; }
+      h1 { font-size: 2.2rem; }
 
-      /* Jobb oldali oszlop: a lista önállóan scrollosodik, ha hosszú */
-      .entries-scroll-area {
-        max-height: calc(100vh - 48px);
-        overflow-y: auto;
-        padding-right: 4px;
-      }
-
-      /* Mobilos alsó sáv eltüntetése PC-n, helyette a bal oldali sávba tesszük a gombot */
+      /* PC-n a gombot szépen felülre, a fejlécbe igazítjuk */
       .bottom-action-area {
         position: static;
         background: transparent;
         backdrop-filter: none;
         border-top: none;
         padding: 0;
-        margin-top: 16px;
-        justify-content: flex-start;
+        margin-top: 12px;
+        display: flex;
+        justify-content: center;
       }
 
       .bottom-action-area-inner {
-        max-width: 100%;
+        max-width: 320px;
       }
 
       .bottom-action-area button {
         border-radius: 12px;
-        font-size: 1.05rem;
-        padding: 14px;
+        font-size: 1rem;
+        padding: 12px;
+      }
+
+      /* Az eredmény kártya PC-n is teljes szélességű marad felül kiemelve */
+      #officialCardContainer {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      /* ITT A LÉNYEG: A tippek listája PC-n 2 oszlopos rácsba rendeződik! */
+      .entries-scroll-area {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        padding-top: 16px;
       }
 
       .entry-card {
@@ -550,11 +555,11 @@
     </header>
     <div id="officialCardContainer"></div>
     
-    <!-- Gomb és verziószám PC-n a bal oszlopba építve -->
+    <!-- Gomb és verziószám PC-n a fejléc alatt, mobilon fixen alul -->
     <div class="bottom-action-area" id="bottomActionArea">
       <div class="bottom-action-area-inner">
         <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
-        <div class="version-tag">v2.08</div>
+        <div class="version-tag">v2.09</div>
       </div>
     </div>
   </div>

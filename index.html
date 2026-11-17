@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Babaváró Tipszmiksz - Ranglista</title>
+  <title>Babaváró Tipszmiksz</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -284,7 +284,6 @@
       font-size: 1rem;
     }
 
-    /* Szaggatott keret eltávolítva, tiszta megjelenés */
     .question-img-box {
       width: 100%;
       height: 160px;
@@ -540,7 +539,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1053</div>
+<div class="version-tag">v1054</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -953,27 +952,6 @@
       btn.textContent = "Beküldés";
     }
   }
-
-  document.addEventListener("keydown", async (e) => {
-    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
-
-    if (e.key.toLowerCase() === "x") {
-      if (!confirm("DEBUG: Tényleg törlöd az összes eddigi választ a táblázatból?")) return;
-
-      const listEl = document.getElementById("entriesList");
-      listEl.innerHTML = '<div class="status-msg">Táblázat ürítése...</div>';
-
-      try {
-        await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify({ action: "reset" })
-        });
-        await loadEntries();
-      } catch (err) {
-        alert("Hiba a reset során!");
-      }
-    }
-  });
 
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, m => ({

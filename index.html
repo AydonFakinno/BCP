@@ -126,9 +126,10 @@
       color: var(--accent-official) !important;
     }
 
+    /* Flexbox elrendezés: Név és pontszám balra, dátum jobbra */
     .entry-header {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
       border-bottom: 1px solid var(--border);
@@ -139,7 +140,6 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      justify-self: start;
     }
 
     .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
@@ -161,16 +161,14 @@
 
     .entry-total-score {
       font-weight: 800;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       padding: 2px 8px;
       border-radius: 6px;
-      justify-self: center;
     }
 
     .entry-header-right {
       display: flex;
       align-items: center;
-      justify-self: end;
     }
 
     .entry-date { font-size: 0.8rem; color: var(--muted); }
@@ -545,7 +543,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1049</div>
+<div class="version-tag">v1050</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -815,8 +813,9 @@
         officialContainer.innerHTML = `
           <div class="entry-card official-card">
             <div class="entry-header">
-              <span class="entry-name">Eredmény</span>
-              <span></span>
+              <div class="entry-header-left">
+                <span class="entry-name">Eredmény</span>
+              </div>
               <div class="entry-header-right">
                 <span class="entry-date">${formatDateString(data.official.date)}</span>
               </div>
@@ -882,8 +881,8 @@
               <div class="entry-header-left">
                 ${rankBadge}
                 <span class="entry-name">${escapeHtml(item.name)}</span>
+                ${totalScoreBadge}
               </div>
-              ${totalScoreBadge}
               <div class="entry-header-right">
                 <span class="entry-date">${formatDateString(item.date)}</span>
               </div>

@@ -31,14 +31,19 @@
       min-height: 100vh;
     }
 
-    /* A fő konténer normálisan scrollozik, alul pontosan annyi helyet hagyva, amennyit a gomb elfoglal */
+    /* Alapértelmezett padding, ha van gomb */
     .container {
       width: 100%;
       max-width: 580px;
       display: flex;
       flex-direction: column;
       padding: 12px;
-      padding-bottom: 85px; /* Pont akkora hely, hogy az utolsó kártya alja se lógjon be a gomb alá */
+      padding-bottom: 85px; 
+    }
+
+    /* Ha nincs gomb (lezárt állapot), nincs felesleges rés alul sem */
+    .container.no-button {
+      padding-bottom: 16px;
     }
 
     .sticky-header-area {
@@ -69,7 +74,7 @@
       padding-top: 4px;
     }
 
-    /* Fix alsó sáv (gomb + verziószám) teljesen függetlenítve, fixen a viewport alján */
+    /* Fix alsó sáv (gomb + verziószám) */
     .bottom-action-area {
       position: fixed;
       bottom: 0;
@@ -294,6 +299,7 @@
 
     @media (max-width: 480px) {
       .container { padding: 8px; padding-bottom: 85px; }
+      .container.no-button { padding-bottom: 12px; }
       .entry-card { padding: 10px 10px; }
       .entry-row { font-size: 0.76rem; gap: 6px; }
       .entry-char-side { width: 40px; padding-right: 4px; }
@@ -464,7 +470,7 @@
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="mainContainer">
   <div class="sticky-header-area">
     <header>
       <div><h1 id="pageTitle">Berci Tipszmiksz</h1></div>
@@ -481,7 +487,7 @@
 <div class="bottom-action-area">
   <div class="bottom-action-area-inner">
     <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
-    <div class="version-tag">v2.04</div>
+    <div class="version-tag">v2.05</div>
   </div>
 </div>
 
@@ -823,6 +829,7 @@
     const listEl = document.getElementById("entriesList");
     const newBtn = document.getElementById("openModalBtn");
     const officialContainer = document.getElementById("officialCardContainer");
+    const containerEl = document.getElementById("mainContainer");
     
     listEl.innerHTML = '<div class="spinner"></div>';
 
@@ -845,6 +852,7 @@
 
       if (data.locked && data.official) {
         newBtn.style.display = "none";
+        containerEl.classList.add("no-button");
         officialContainer.innerHTML = `
           <div class="entry-card official-card">
             <div class="entry-header">
@@ -884,7 +892,13 @@
         });
 
       } else {
-        newBtn.style.display = data.locked ? "none" : "block";
+        const shouldShowBtn = !data.locked;
+        newBtn.style.display = shouldShowBtn ? "block" : "none";
+        if (shouldShowBtn) {
+          containerEl.classList.remove("no-button");
+        } else {
+          containerEl.classList.add("no-button");
+        }
         officialContainer.innerHTML = "";
 
         data.entries.sort((a, b) => new Date(b.date) - new Date(a.date));

@@ -56,7 +56,22 @@
 
     h1 { margin: 0; font-size: 1.6rem; }
 
-    button {
+    header button {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.2s;
+      display: none; /* Alapból rejtve, amíg be nem tölt */
+    }
+    header button:hover { background: var(--accent-hover); color: #fff; }
+    header button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .modal button {
       background: var(--accent);
       color: #0f172a;
       border: none;
@@ -67,8 +82,7 @@
       cursor: pointer;
       transition: 0.2s;
     }
-    button:hover { background: var(--accent-hover); color: #fff; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .modal button:hover { background: var(--accent-hover); color: #fff; }
 
     .btn-secondary {
       background: transparent;
@@ -441,7 +455,7 @@
   </div>
 </div>
 
-<div class="version-tag">ans-v1.6</div>
+<div class="version-tag">ans-v1.7</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -467,6 +481,8 @@
 
   async function checkLockStatus() {
     const container = document.getElementById("cardContainer");
+    const headerBtn = document.getElementById("headerActionBtn");
+    
     try {
       const res = await fetch(SCRIPT_URL);
       const data = await res.json();
@@ -480,6 +496,7 @@
       renderLocalCard();
     } catch (err) {
       container.innerHTML = '<div class="status-msg">Hiba a státusz ellenőrzésekor. Ellenőrizd a SCRIPT_URL-t!</div>';
+      headerBtn.style.display = "none";
     }
   }
 
@@ -583,11 +600,13 @@
 
     if (!currentAnswers) {
       headerBtn.textContent = "Eredmény beküldése";
+      headerBtn.style.display = "block"; // Betöltés után megjelenik
       container.innerHTML = "";
       return;
     }
 
     headerBtn.textContent = "Szerkesztés";
+    headerBtn.style.display = "block";
 
     container.innerHTML = `
       <div class="entry-card">

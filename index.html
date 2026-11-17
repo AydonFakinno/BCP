@@ -206,7 +206,7 @@
       flex-direction: column;
       justify-content: center;
       gap: 6px;
-      min-width: 0; /* Fontos, hogy a flexbox engedje összébb menni a szöveget törés nélkül */
+      min-width: 0;
     }
     .entry-row {
       display: flex;
@@ -215,12 +215,12 @@
       padding: 2px 0;
       font-size: 0.9rem;
       gap: 8px;
-      white-space: nowrap; /* Biztosítja, hogy ne törjön új sorba */
+      white-space: nowrap;
     }
     .entry-q { 
       color: var(--muted); 
       overflow: hidden; 
-      text-overflow: ellipsis; /* Ha picit szűk lenne, elegánsan csonkítja ahelyett, hogy törne */
+      text-overflow: ellipsis;
     }
     
     .entry-ans-container {
@@ -541,7 +541,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.84</div>
+<div class="version-tag">v1.85</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -568,6 +568,7 @@
   let charSvgRaw = null;
   let existingNames = [];
   let isSubmitting = false;
+  let loadTimeout = null; // Biztosíték időzítő a beragadt betöltéshez
   
   function openModal() {
     if (isSubmitting) return;
@@ -787,10 +788,22 @@
     
     listEl.innerHTML = '<div class="spinner"></div>';
 
+    // Ha 6 másodpercen belül nem érkezik válasz (beragad a karika), automatikusan frissítünk egyet
+    if (loadTimeout) clearTimeout(loadTimeout);
+    loadTimeout = setTimeout(() => {
+      location.reload();
+    }, 6000);
+
     try {
       await loadCharSvgTemplate();
       const res = await fetch(SCRIPT_URL);
       const data = await res.json();
+
+      // Sikeres válasz érkezett, töröljük a kényszerfrissítés időzítőjét!
+      if (loadTimeout) {
+        clearTimeout(loadTimeout);
+        loadTimeout = null;
+      }
 
       existingNames = (data.entries && Array.isArray(data.entries)) ? data.entries.map(item => item.name) : [];
 
@@ -885,7 +898,11 @@
       }).join("");
 
       listEl.innerHTML = entriesHtml;
-    } chants (err) {
+    } catch (err) {
+      if (loadTimeout) {
+        clearTimeout(loadTimeout);
+        loadTimeout = null;
+      }
       listEl.innerHTML = '<div class="status-msg">Hiba a betöltéskor.</div>';
     }
   }

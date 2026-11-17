@@ -129,7 +129,7 @@
 
     .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
 
-    /* Fix szélességű, középre igazított pozíció dobozok 2 számjegyhez is */
+    /* Pozíció dobozok 2 számjegyhez igazítva */
     .entry-rank {
       font-weight: 800;
       font-size: 0.85rem;
@@ -147,7 +147,6 @@
     .entry-total-score {
       font-weight: 800;
       font-size: 0.9rem;
-      color: #fff;
       padding: 3px 10px;
       border-radius: 6px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.2);
@@ -202,7 +201,6 @@
       width: 68px;
       text-align: center;
       flex-shrink: 0;
-      color: #fff;
       box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     }
 
@@ -535,7 +533,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1037</div>
+<div class="version-tag">v1038</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -546,7 +544,7 @@
     q1Prefix: "1. Kérdés:",
     q1Text: "Milyen színű lesz Berci?",
     q2Prefix: "2. Kérdés:",
-    q2Text: "Melyik jött ki előbb?",
+    q2Text: "Melyik jön ki előbb?",
     q2Options: { 1: "Berci", 2: "GTA VI" },
     q3Prefix: "3. Kérdés:",
     q3Text: "Kinek nagyobb a pénisze?",
@@ -768,7 +766,6 @@
   // Dinamikus piros-zöld színkeverés (value: aktuális érték, max: maximum érték)
   function getScoreColor(value, max) {
     let ratio = Math.max(0, Math.min(1, value / max));
-    // Piros (239, 68, 68) -> Zöld (34, 197, 94) átmenet
     let r = Math.round(239 + (34 - 239) * ratio);
     let g = Math.round(68 + (197 - 68) * ratio);
     let b = Math.round(68 + (94 - 68) * ratio);
@@ -853,20 +850,20 @@
         let rankClass = index === 0 ? "rank-1" : index === 1 ? "rank-2" : index === 2 ? "rank-3" : "rank-other";
         let rankBadge = data.locked && data.official ? `<span class="entry-rank ${rankClass}">#${index + 1}</span>` : "";
         
-        // Összpontszám színkeverés (0 - 110 skálán)
+        // Összpontszám háttérszín (0 - 110 skálán)
         let totalBgColor = data.locked && data.official ? getScoreColor(item.scores.total, 110) : "";
-        let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score" style="background-color: ${totalBgColor};">${item.scores.total} pont</span>` : "";
+        let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score" style="background-color: ${totalBgColor}; color: #fff;">${item.scores.total} pont</span>` : "";
 
-        // 1. kérdés pontszín (0 - 100 skálán)
+        // 1. kérdés háttérszín (0 - 100 skálán)
         let s1BgColor = data.locked && data.official ? getScoreColor(item.scores.score1, 100) : "";
-        let s1Badge = data.locked && data.official ? `<span class="score-badge" style="background-color: ${s1BgColor};">${item.scores.score1} pont</span>` : "";
+        let s1Badge = data.locked && data.official ? `<span class="score-badge" style="background-color: ${s1BgColor}; color: #fff;">${item.scores.score1} pont</span>` : "";
 
-        // 2. és 3. kérdés pontszín (0 vagy 5 pont)
+        // 2. és 3. kérdés háttérszín (0 vagy 5 pont -> tiszta piros vagy tiszta zöld)
         let s2BgColor = data.locked && data.official ? getScoreColor(item.scores.score2, 5) : "";
-        let s2Badge = data.locked && data.official ? `<span class="score-badge" style="background-color: ${s2BgColor};">${item.scores.score2} pont</span>` : "";
+        let s2Badge = data.locked && data.official ? `<span class="score-badge" style="background-color: ${s2BgColor}; color: #fff;">${item.scores.score2} pont</span>` : "";
 
         let s3BgColor = data.locked && data.official ? getScoreColor(item.scores.score3, 5) : "";
-        let s3Badge = data.locked && data.official ? `<span class="score-badge" style="background-color: ${s3BgColor};">${item.scores.score3} pont</span>` : "";
+        let s3Badge = data.locked && data.official ? `<span class="score-badge" style="background-color: ${s3BgColor}; color: #fff;">${item.scores.score3} pont</span>` : "";
 
         return `
           <div class="entry-card">

@@ -534,7 +534,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.82</div>
+<div class="version-tag">v1.83</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -568,7 +568,6 @@
     document.getElementById("pollForm").reset();
     document.getElementById("q2_opt1").checked = true;
     document.getElementById("q3_opt1").checked = true;
-    updateSliderColor(50);
     modal.classList.add("active");
   }
 
@@ -596,7 +595,10 @@
       else if (step === 4) document.getElementById("q3_label1").focus();
     }, 50);
 
-    updateSliderColor(document.getElementById('q1Slider').value);
+    // Kicsit várunk, hogy mobilon az <object> tag betöltse a DOM-ját, aztán azonnal beállítjuk a színt
+    setTimeout(() => {
+      updateSliderColor(document.getElementById('q1Slider').value);
+    }, 100);
   }
 
   async function nextStep(current) {
@@ -619,7 +621,6 @@
         return;
       }
 
-      // Kapuőr ellenőrzés a név utáni "Tovább"-nál
       isSubmitting = true;
       const nextBtn = document.getElementById("step1NextBtn");
       let originalText = nextBtn.textContent;
@@ -835,7 +836,7 @@
       }
 
       if (!data.entries.length && (!data.locked || !data.official)) {
-        listEl.innerHTML = '<div class="status-msg">Még nincs beküldve válasz.</div>';
+        listEl.innerHTML = '<div class="status-msg">Még nem érkezett válasz.</div>';
         return;
       }
 
@@ -879,7 +880,7 @@
 
       listEl.innerHTML = entriesHtml;
     } catch (err) {
-      listEl.innerHTML = '<div class="status-msg"></div>';
+      listEl.innerHTML = '<div class="status-msg">Hiba a betöltéskor.</div>';
     }
   }
 

@@ -2,7 +2,7 @@
 <html lang="hu">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=2.0">
   <title>Berci Tipszmiksz</title>
   <style>
     :root {
@@ -143,8 +143,8 @@
     }
     .official-card .entry-name {
       color: var(--accent-official) !important;
-      font-size: 1.2rem !important;
-      font-weight: 800 !important;
+      font-size: 1rem !important;
+      font-weight: 700 !important;
     }
 
     .entry-header {
@@ -326,6 +326,10 @@
         font-size: 1.15rem;
       }
 
+      .official-card .entry-name {
+        font-size: 1.15rem !important;
+      }
+
       .entries-scroll-area .entry-rank {
         font-size: 0.9rem;
         width: 32px;
@@ -360,6 +364,10 @@
 
       .entries-scroll-area .entry-row {
         font-size: 0.95rem;
+      }
+
+      .official-card .entry-row {
+        font-size: 0.95rem !important;
       }
 
       .entries-scroll-area .score-badge {
@@ -589,7 +597,7 @@
 <div class="bottom-action-area" id="bottomActionArea">
   <div class="bottom-action-area-inner">
     <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
-    <div class="version-tag">v2.21</div>
+    <div class="version-tag">v2.22</div>
   </div>
 </div>
 
@@ -1055,7 +1063,7 @@
         clearTimeout(loadTimeout);
         loadTimeout = null;
       }
-      listEl.innerHTML = '<div class="status-msg">Hiba a betöltéskor.</div>';
+      listEl.innerHTML = '<div class="status-msg"></div>';
     }
   }
 

@@ -607,14 +607,14 @@
       const nameInput = document.getElementById("userName");
       nameInput.value = nameInput.value.trim();
       if (!nameInput.value) {
-        alert("Kérlek add meg a neved!");
+        alert("Add meg a neved!");
         nameInput.focus();
         return;
       }
     } else if (current === 3) {
       const q2Checked = document.querySelector('input[name="q2"]:checked');
       if (!q2Checked) {
-        alert("Kérlek válassz egy opciót!");
+        alert("Válassz egy opciót!");
         return;
       }
     }

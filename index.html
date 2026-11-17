@@ -284,12 +284,10 @@
       font-size: 1rem;
     }
 
+    /* Szaggatott keret eltávolítva, tiszta megjelenés */
     .question-img-box {
       width: 100%;
       height: 160px;
-      background: rgba(56, 189, 248, 0.05);
-      border: 2px dashed var(--border);
-      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -433,10 +431,10 @@
   <div class="modal">
     <form id="pollForm" onsubmit="return false;">
       <div class="step-pane active" id="step1">
-        <h2 style="margin-top:0; margin-bottom: 16px;">Ki vagy te?</h2>
+        <h2 style="margin-top:0; margin-bottom: 16px;">Add meg a neved!</h2>
         <div class="form-group">
-          <label for="userName">Neved / Beceneved (max 10 karakter)</label>
-          <input type="text" id="userName" placeholder="Pl. János" maxlength="10" onkeydown="handleNameKeydown(event)">
+          <label for="userName" style="display: none;"></label>
+          <input type="text" id="userName" maxlength="10" onkeydown="handleNameKeydown(event)">
         </div>
         <div class="modal-actions">
           <button type="button" class="btn-secondary" tabindex="-1" onclick="closeModal()">Mégse</button>
@@ -542,7 +540,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1051</div>
+<div class="version-tag">v1053</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";

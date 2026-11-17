@@ -109,7 +109,6 @@
       gap: 14px;
     }
 
-    /* Válaszkártyák vastag szürke kerettel */
     .entry-card {
       background: var(--card);
       border: 2px solid #64748b;
@@ -117,7 +116,6 @@
       padding: 16px 20px;
     }
 
-    /* Erősebb belső felé ragyogó (inset) vignette az első 3 helyezett kártyáján */
     .card-rank-1 {
       box-shadow: inset 0 0 45px rgba(250, 204, 21, 0.3);
     }
@@ -134,7 +132,6 @@
       box-shadow: 0 4px 20px rgba(202, 138, 4, 0.15);
       margin-top: 5px;
     }
-    /* Nagyobb, hangsúlyosabb Eredmény felirat a hivatalos kártyán */
     .official-card .entry-name {
       color: var(--accent-official) !important;
       font-size: 1.3rem !important;
@@ -169,7 +166,6 @@
       flex-shrink: 0;
     }
 
-    /* Emblémák (badgek) ragyogással és belső fehér borderrel */
     .rank-1 { 
       background: rgba(250, 204, 21, 0.25); 
       color: #facc15; 
@@ -589,7 +585,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.65</div>
+<div class="version-tag">v1.66</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -615,8 +611,11 @@
 
   const modal = document.getElementById("modalBackdrop");
   let charSvgRaw = null;
+  let existingNames = []; // Itt tároljuk a már létező neveket
+  let isSubmitting = false; // Dupla küldés gátló flag
   
   function openModal() {
+    isSubmitting = false;
     showStep(1);
     document.getElementById("pollForm").reset();
     document.getElementById("q2_opt1").checked = true;
@@ -627,6 +626,7 @@
 
   function closeModal() {
     modal.classList.remove("active");
+    isSubmitting = false;
   }
 
   function getCurrentStep() {
@@ -653,11 +653,23 @@
   }
 
   function nextStep(current) {
+    if (isSubmitting) return;
+
     if (current === 1) {
       const nameInput = document.getElementById("userName");
-      nameInput.value = nameInput.value.trim();
-      if (!nameInput.value) {
+      const trimmedName = nameInput.value.trim();
+      nameInput.value = trimmedName;
+
+      if (!trimmedName) {
         alert("Add meg a neved!");
+        nameInput.focus();
+        return;
+      }
+
+      // Név ellenőrzése, hogy létezik-e már (kis-nagybetű függetlenül)
+      const nameLower = trimmedName.toLowerCase();
+      if (existingNames.some(n => n.toLowerCase() === nameLower)) {
+        alert("Már van beküldve válasz ezzel a névvel.");
         nameInput.focus();
         return;
       }
@@ -674,6 +686,7 @@
   }
 
   function prevStep(current) {
+    if (isSubmitting) return;
     if (current <= 1) closeModal();
     else showStep(current - 1);
   }
@@ -686,7 +699,7 @@
   }
 
   document.addEventListener("keydown", (e) => {
-    if (!modal.classList.contains("active")) return;
+    if (!modal.classList.contains("active") || isSubmitting) return;
     const current = getCurrentStep();
     const activeEl = document.activeElement;
     const isNameInputActive = activeEl && activeEl.id === "userName";
@@ -855,6 +868,13 @@
       const res = await fetch(SCRIPT_URL);
       const data = await res.json();
 
+      // Frissítjük a létező nevek tömbjét a beküldések alapján
+      if (data.entries && Array.isArray(data.entries)) {
+        existingNames = data.entries.map(item => item.name);
+      } else {
+        existingNames = [];
+      }
+
       if (data.locked && data.official) {
         newBtn.style.display = "none";
         
@@ -889,7 +909,6 @@
           item.scores = calculateScores(item, data.official);
         });
 
-        // Pontszám szerinti csökkenő, majd holtverseny esetén dátum szerinti növekvő rendezés
         data.entries.sort((a, b) => {
           if (b.scores.total !== a.scores.total) {
             return b.scores.total - a.scores.total;
@@ -897,7 +916,6 @@
           return new Date(a.date) - new Date(b.date);
         });
 
-        // Helyezések kiszámítása holtverseny (tie) kezeléssel
         let currentRank = 1;
         data.entries.forEach((item, index) => {
           if (index > 0 && item.scores.total < data.entries[index - 1].scores.total) {
@@ -923,7 +941,6 @@
         let rankClass = item.rank === 1 ? "rank-1" : item.rank === 2 ? "rank-2" : item.rank === 3 ? "rank-3" : "rank-other";
         let rankBadge = data.locked && data.official ? `<span class="entry-rank ${rankClass}">#${item.rank}</span>` : "";
 
-        // Dinamikus belső vignette osztály az első 3 helyezett kártyájához
         let cardVignetteClass = "";
         if (data.locked && data.official) {
           if (item.rank === 1) cardVignetteClass = "card-rank-1";
@@ -992,12 +1009,15 @@
   }
 
   async function submitPoll() {
+    if (isSubmitting) return;
+
     const q3Checked = document.querySelector('input[name="q3"]:checked');
     if (!q3Checked) {
       alert("Kérlek válassz egy opciót!");
       return;
     }
 
+    isSubmitting = true;
     const btn = document.getElementById("submitBtn");
     btn.disabled = true;
     btn.textContent = "Küldés...";
@@ -1019,7 +1039,7 @@
       await loadEntries();
     } catch (err) {
       alert("Hiba történt a mentés közben, próbáld újra!");
-    } finally {
+      isSubmitting = false;
       btn.disabled = false;
       btn.textContent = "Beküldés";
     }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Babaváró Tippmix</title>
+  <title>Babaváró Tippmix - Ranglista</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -39,7 +39,6 @@
       padding: 20px;
     }
 
-    /* Fixen ragadó fejléc és hivatalos kártya konténer */
     .sticky-header-area {
       position: sticky;
       top: 0;
@@ -73,7 +72,7 @@
       font-size: 0.95rem;
       cursor: pointer;
       transition: 0.2s;
-      display: none; /* Alapból rejtve, amíg a JS be nem tölti, hogy nyitva van */
+      display: none;
     }
     button:hover { background: var(--accent-hover); color: #fff; }
     button:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -86,7 +85,6 @@
     }
     .btn-secondary:hover { background: var(--border); color: var(--text); }
 
-    /* Külön görgethető kártya lista */
     .entries-scroll-area {
       flex: 1;
       overflow-y: auto;
@@ -104,7 +102,6 @@
       padding: 16px 20px;
     }
 
-    /* Hivatalos Eredmények kártya egyedi stílusa a ragadó sávban */
     .official-card {
       background: var(--card-official);
       border: 2px solid var(--border-official);
@@ -123,7 +120,40 @@
       border-bottom: 1px solid var(--border);
       padding-bottom: 8px;
     }
+    
+    .entry-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .entry-rank {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--accent-official);
+      background: rgba(250, 204, 21, 0.1);
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(250, 204, 21, 0.3);
+    }
+
     .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
+    
+    .entry-header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .entry-total-score {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--text);
+      background: rgba(56, 189, 248, 0.15);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
     .entry-date { font-size: 0.8rem; color: var(--muted); }
     
     .entry-body {
@@ -137,7 +167,7 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 4px;
+      gap: 6px;
     }
     .entry-row {
       display: flex;
@@ -148,7 +178,27 @@
       gap: 12px;
     }
     .entry-q { color: var(--muted); }
-    .entry-a { font-weight: 600; text-align: right; }
+    
+    .entry-ans-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-align: right;
+    }
+    .entry-a { font-weight: 600; }
+    
+    .score-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: rgba(51, 65, 85, 0.8);
+      color: var(--muted);
+    }
+    .score-badge.positive {
+      background: rgba(34, 197, 94, 0.2);
+      color: #4ade80;
+    }
 
     .entry-char-side {
       width: 68px;
@@ -167,7 +217,6 @@
       display: block;
     }
 
-    /* Modal (Lépésenkénti űrlap) */
     .modal-backdrop {
       display: none;
       position: fixed;
@@ -261,9 +310,7 @@
       height: 170px;
       position: relative;
     }
-    .choice-card:hover {
-      border-color: rgba(56, 189, 248, 0.5);
-    }
+    .choice-card:hover { border-color: rgba(56, 189, 248, 0.5); }
     
     .choice-card-option {
       position: absolute;
@@ -360,22 +407,18 @@
       </div>
       <button id="openModalBtn" onclick="openModal()">+ Új válasz beküldése</button>
     </header>
-    <!-- Itt ragad meg a hivatalos Eredmények kártya, ha le van zárva -->
     <div id="officialCardContainer"></div>
   </div>
 
-  <!-- Külön görgethető konténer a haverok kártyáinak -->
   <div id="entriesList" class="entries-scroll-area">
     <div class="status-msg">Válaszok betöltése...</div>
   </div>
 </div>
 
-<!-- Többlépcsős Beküldő Modal -->
+<!-- Modal űrlap -->
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">
     <form id="pollForm" onsubmit="return false;">
-      
-      <!-- 1. LÉPÉS: NÉV -->
       <div class="step-pane active" id="step1">
         <h2 style="margin-top:0; margin-bottom: 16px;">Ki vagy te?</h2>
         <div class="form-group">
@@ -388,9 +431,8 @@
         </div>
       </div>
 
-      <!-- 2. LÉPÉS: 1. KÉRDÉS -->
       <div class="step-pane" id="step2">
-        <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lett Berci?</span></div>
+        <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lesz Berci?</span></div>
         <div class="question-img-box">
           <object id="charSvg" type="image/svg+xml" data="char.svg"></object>
         </div>
@@ -412,9 +454,8 @@
         </div>
       </div>
 
-      <!-- 3. LÉPÉS: 2. KÉRDÉS -->
       <div class="step-pane" id="step3">
-        <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jött ki előbb?</span></div>
+        <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jön ki előbb?</span></div>
         <div class="dual-card-grid">
           <div style="position: relative;">
             <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option" checked>
@@ -428,7 +469,6 @@
               </div>
             </label>
           </div>
-
           <div style="position: relative;">
             <input type="radio" name="q2" value="2" id="q2_opt2" class="choice-card-option">
             <label for="q2_opt2" class="choice-card" id="q2_label2" tabindex="0">
@@ -442,7 +482,6 @@
             </label>
           </div>
         </div>
-
         <div class="modal-actions">
           <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(3)">Vissza</button>
           <div class="modal-actions-right">
@@ -451,7 +490,6 @@
         </div>
       </div>
 
-      <!-- 4. LÉPÉS: 3. KÉRDÉS + BEKÜLDÉS -->
       <div class="step-pane" id="step4">
         <div class="question-title" id="q3HeaderTitle">3. Kérdés: <span class="sub-text">Kinek nagyobb a pénisze?</span></div>
         <div class="dual-card-grid">
@@ -467,7 +505,6 @@
               </div>
             </label>
           </div>
-
           <div style="position: relative;">
             <input type="radio" name="q3" value="2" id="q3_opt2" class="choice-card-option">
             <label for="q3_opt2" class="choice-card" id="q3_label2" tabindex="0">
@@ -481,7 +518,6 @@
             </label>
           </div>
         </div>
-
         <div class="modal-actions">
           <button type="button" class="btn-secondary" tabindex="-1" onclick="prevStep(4)">Vissza</button>
           <div class="modal-actions-right">
@@ -489,12 +525,11 @@
           </div>
         </div>
       </div>
-
     </form>
   </div>
 </div>
 
-<div class="version-tag">v1033</div>
+<div class="version-tag">v1035</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -502,7 +537,6 @@
   const CONFIG = {
     title: "Babaváró Tippmix",
     subtitle: "Tippelj, és nézd meg mit mondtak a többiek!",
-    // Aktuális kérdések a beküldéshez (maradnak jelen/jövő időben a tippeléshez, vagy ha átírod, itt tudod)
     q1Prefix: "1. Kérdés:",
     q1Text: "Milyen színű lett Berci?",
     q2Prefix: "2. Kérdés:",
@@ -725,6 +759,21 @@
     return rawDate;
   }
 
+  // Pontszámító függvény (100 - eltérés, nincs mínusz)
+  function calculateScores(item, official) {
+    if (!official) return { total: 0, s1: 0, s2: 0, s3: 0 };
+
+    let diff1 = Math.abs(Number(item.a1) - Number(official.a1));
+    let score1 = 100 - diff1; // 0% eltérés = 100 pont
+
+    let score2 = (Number(item.a2) === Number(official.a2)) ? 5 : 0;
+    let score3 = (Number(item.a3) === Number(official.a3)) ? 5 : 0;
+
+    let total = score1 + score2 + score3;
+
+    return { total, score1, score2, score3 };
+  }
+
   async function loadEntries() {
     const listEl = document.getElementById("entriesList");
     const newBtn = document.getElementById("openModalBtn");
@@ -735,44 +784,47 @@
       const res = await fetch(SCRIPT_URL);
       const data = await res.json();
 
-      let htmlContent = "";
-
-      // Ha le van zárva a játék, beillesztjük a hivatalos Eredmények kártyát a ragadó sávba
       if (data.locked && data.official) {
-        newBtn.style.display = "none"; // Gomb elrejtése
-        document.getElementById("pageSubtitle").textContent = "A tippmix lezárult! Hivatalos eredmények fent.";
+        newBtn.style.display = "none";
+        document.getElementById("pageSubtitle").textContent = "A tippmix lezárult! Íme a végeredmény:";
         
         officialContainer.innerHTML = `
           <div class="entry-card official-card">
             <div class="entry-header">
-              <span class="entry-name">Eredmények</span>
+              <span class="entry-name">Hivatalos Eredmények</span>
               <span class="entry-date">${formatDateString(data.official.date)}</span>
             </div>
             <div class="entry-body">
               ${buildColoredCardChar(data.official.a1, "official-char")}
               <div class="entry-rows">
                 <div class="entry-row">
-                  <span class="entry-q">${CONFIG.q1Text}</span>
+                  <span class="entry-q">Milyen színű lett Berci?</span>
                   <span class="entry-a">${data.official.a1}% BBMÁ</span>
                 </div>
                 <div class="entry-row">
-                  <span class="entry-q">${CONFIG.q2Text}</span>
+                  <span class="entry-q">Melyik jött ki előbb?</span>
                   <span class="entry-a">${CONFIG.q2Options[data.official.a2] || data.official.a2}</span>
                 </div>
                 <div class="entry-row">
-                  <span class="entry-q">${CONFIG.q3Text}</span>
+                  <span class="entry-q">Kinek nagyobb a pénisze?</span>
                   <span class="entry-a">${CONFIG.q3Options[data.official.a3] || data.official.a3}</span>
                 </div>
               </div>
             </div>
           </div>
         `;
+
+        data.entries.forEach(item => {
+          item.scores = calculateScores(item, data.official);
+        });
+
+        data.entries.sort((a, b) => b.scores.total - a.scores.total);
+
       } else if (data.locked) {
         newBtn.style.display = "none";
         officialContainer.innerHTML = "";
         document.getElementById("pageSubtitle").textContent = "A tippmix lezárult! Az eredmények hamarosan érkeznek...";
       } else {
-        // Ha NINCS lezárva, akkor most teszjük láthatóvá a gombot, és kiürítjük a hivatalos kártya helyét
         newBtn.style.display = "block";
         officialContainer.innerHTML = "";
       }
@@ -782,32 +834,55 @@
         return;
       }
 
-      // Haverok listájának renderelése
-      const entriesHtml = data.entries.map(item => `
-        <div class="entry-card">
-          <div class="entry-header">
-            <span class="entry-name">${escapeHtml(item.name)}</span>
-            <span class="entry-date">${formatDateString(item.date)}</span>
-          </div>
-          <div class="entry-body">
-            ${buildColoredCardChar(item.a1)}
-            <div class="entry-rows">
-              <div class="entry-row">
-                <span class="entry-q">${CONFIG.q1Text}</span>
-                <span class="entry-a">${item.a1}% BBMÁ</span>
+      const entriesHtml = data.entries.map((item, index) => {
+        let rankBadge = data.locked && data.official ? `<span class="entry-rank">#${index + 1}</span>` : "";
+        let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score">${item.scores.total} pont</span>` : "";
+
+        let s1Badge = data.locked && data.official ? `<span class="score-badge positive">${item.scores.score1}p</span>` : "";
+        let s2Badge = data.locked && data.official ? `<span class="score-badge ${item.scores.score2 > 0 ? 'positive' : ''}">${item.scores.score2}p</span>` : "";
+        let s3Badge = data.locked && data.official ? `<span class="score-badge ${item.scores.score3 > 0 ? 'positive' : ''}">${item.scores.score3}p</span>` : "";
+
+        return `
+          <div class="entry-card">
+            <div class="entry-header">
+              <div class="entry-header-left">
+                ${rankBadge}
+                <span class="entry-name">${escapeHtml(item.name)}</span>
               </div>
-              <div class="entry-row">
-                <span class="entry-q">${CONFIG.q2Text}</span>
-                <span class="entry-a">${CONFIG.q2Options[item.a2] || item.a2}</span>
+              <div class="entry-header-right">
+                ${totalScoreBadge}
+                <span class="entry-date">${formatDateString(item.date)}</span>
               </div>
-              <div class="entry-row">
-                <span class="entry-q">${CONFIG.q3Text}</span>
-                <span class="entry-a">${CONFIG.q3Options[item.a3] || item.a3}</span>
+            </div>
+            <div class="entry-body">
+              ${buildColoredCardChar(item.a1)}
+              <div class="entry-rows">
+                <div class="entry-row">
+                  <span class="entry-q">Milyen színű lett Berci?</span>
+                  <div class="entry-ans-container">
+                    <span class="entry-a">${item.a1}% BBMÁ</span>
+                    ${s1Badge}
+                  </div>
+                </div>
+                <div class="entry-row">
+                  <span class="entry-q">Melyik jött ki előbb?</span>
+                  <div class="entry-ans-container">
+                    <span class="entry-a">${CONFIG.q2Options[item.a2] || item.a2}</span>
+                    ${s2Badge}
+                  </div>
+                </div>
+                <div class="entry-row">
+                  <span class="entry-q">Kinek nagyobb a pénisze?</span>
+                  <div class="entry-ans-container">
+                    <span class="entry-a">${CONFIG.q3Options[item.a3] || item.a3}</span>
+                    ${s3Badge}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      `).join("");
+        `;
+      }).join("");
 
       listEl.innerHTML = entriesHtml;
     } catch (err) {

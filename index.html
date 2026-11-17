@@ -20,7 +20,6 @@
 
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
     
-    /* Teljes képernyős fix layout, hogy csak a kártyák listája görögjön */
     html, body {
       background: var(--bg);
       color: var(--text);
@@ -39,10 +38,9 @@
       flex-direction: column;
       height: 100vh;
       padding: 12px;
-      padding-bottom: 85px; /* Hely a fix gombnak alul */
+      padding-bottom: 85px;
     }
 
-    /* Fixen fenti cím zóna */
     .sticky-header-area {
       position: sticky;
       top: 0;
@@ -71,17 +69,15 @@
       letter-spacing: 0.5px;
     }
 
-    /* Csak ez a rész görög a cím alatt és a gomb felett */
     .entries-scroll-area {
       flex: 1;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 14px;
       padding-bottom: 10px;
     }
 
-    /* Beküldés gomb fixen alul */
     .bottom-action-area {
       position: fixed;
       bottom: 0;
@@ -141,11 +137,12 @@
     }
     .btn-secondary:hover { background: var(--border) !important; color: var(--text) !important; }
 
+    /* Eredeti méretű kártyák */
     .entry-card {
       background: var(--card);
       border: 2px solid #64748b;
-      border-radius: 12px;
-      padding: 12px 14px;
+      border-radius: 14px;
+      padding: 16px 20px;
       flex-shrink: 0;
     }
 
@@ -161,7 +158,7 @@
     }
     .official-card .entry-name {
       color: var(--accent-official) !important;
-      font-size: 1.2rem !important;
+      font-size: 1.3rem !important;
       font-weight: 800 !important;
     }
 
@@ -169,25 +166,25 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 6px;
+      padding-bottom: 8px;
     }
     
     .entry-header-left {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
-    .entry-name { font-weight: 700; font-size: 1rem; color: var(--accent); }
+    .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
 
     .entry-rank {
       font-weight: 800;
-      font-size: 0.8rem;
-      padding: 2px 0;
+      font-size: 0.85rem;
+      padding: 3px 0;
       border-radius: 6px;
-      width: 28px;
+      width: 32px;
       text-align: center;
       display: inline-block;
       flex-shrink: 0;
@@ -219,65 +216,62 @@
 
     .entry-total-score {
       font-weight: 800;
-      font-size: 0.8rem;
-      padding: 2px 6px;
+      font-size: 0.85rem;
+      padding: 2px 8px;
       border-radius: 6px;
     }
 
     .entry-header-right { display: flex; align-items: center; }
-    .entry-date { font-size: 0.75rem; color: var(--muted); }
+    .entry-date { font-size: 0.8rem; color: var(--muted); }
     
     .entry-body {
       display: flex;
       align-items: stretch;
       justify-content: space-between;
-      gap: 10px;
+      gap: 16px;
     }
     .entry-rows {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 5px;
-      min-width: 0;
+      gap: 6px;
     }
     .entry-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1px 0;
-      font-size: 0.82rem;
-      gap: 8px;
+      padding: 2px 0;
+      font-size: 0.9rem;
+      gap: 12px;
       white-space: nowrap;
     }
     .entry-q { 
       color: var(--muted); 
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
     
     .entry-ans-container {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 6px;
+      gap: 8px;
       text-align: right;
       flex-shrink: 0;
     }
     .entry-a { font-weight: 600; text-align: left; }
     
     .score-badge {
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       font-weight: 700;
-      padding: 2px 4px;
+      padding: 2px 6px;
       border-radius: 4px;
-      width: 52px;
+      width: 62px;
       text-align: center;
       flex-shrink: 0;
     }
 
     .entry-char-side {
-      width: 46px;
+      width: 58px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -287,22 +281,10 @@
     }
     .entry-char-side svg {
       max-width: 100%;
-      max-height: 54px;
+      max-height: 68px;
       width: auto;
       height: auto;
       display: block;
-    }
-
-    /* Mobilos finomhangolás */
-    @media (max-width: 480px) {
-      .container { padding: 8px; padding-bottom: 80px; }
-      h1 { font-size: 1.6rem; }
-      .entry-card { padding: 10px 10px; }
-      .entry-row { font-size: 0.76rem; gap: 6px; }
-      .entry-char-side { width: 40px; padding-right: 4px; }
-      .entry-char-side svg { max-height: 48px; }
-      .score-badge { width: 48px; font-size: 0.6rem; padding: 1px 3px; }
-      .entry-name { font-size: 0.9rem; }
     }
 
     .modal-backdrop {
@@ -593,7 +575,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.92</div>
+<div class="version-tag">v1.93</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";

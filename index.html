@@ -45,6 +45,7 @@
       padding-bottom: 85px;
     }
 
+    /* Fejléc: mobilon és PC-n is fixen ragad (sticky) a tetején */
     .sticky-header-area {
       position: sticky;
       top: 0;
@@ -286,12 +287,13 @@
         padding-bottom: 105px;
       }
 
-      /* PC-n megszüntetjük a sticky ragadást, a fejléc normálisan fent marad */
+      /* PC-n is visszakerült a sticky, így fixen fent ragad a cím és az eredmény kártya */
       .sticky-header-area {
-        position: static;
-        background: transparent;
-        padding: 0 0 16px 0;
-        margin-bottom: 16px;
+        position: sticky;
+        top: 0;
+        background: var(--bg);
+        padding: 16px 0 16px 0;
+        margin-bottom: 20px;
         border-bottom: 1px solid rgba(51, 65, 85, 0.4);
       }
 
@@ -595,7 +597,7 @@
 <div class="bottom-action-area" id="bottomActionArea">
   <div class="bottom-action-area-inner">
     <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
-    <div class="version-tag">v2.11</div>
+    <div class="version-tag">v2.13</div>
   </div>
 </div>
 

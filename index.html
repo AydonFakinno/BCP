@@ -31,19 +31,19 @@
       min-height: 100vh;
     }
 
-    /* Alapértelmezett padding, ha van gomb */
+    /* Alapértelmezésben nincs felesleges alsó rés (ha nincs gomb) */
     .container {
       width: 100%;
       max-width: 580px;
       display: flex;
       flex-direction: column;
       padding: 12px;
-      padding-bottom: 85px; 
+      padding-bottom: 16px; 
     }
 
-    /* Ha nincs gomb (lezárt állapot), nincs felesleges rés alul sem */
-    .container.no-button {
-      padding-bottom: 16px;
+    /* Ha van gomb, dinamikusan kapja meg az alsó helyet a paddinghez */
+    .container.has-button {
+      padding-bottom: 85px;
     }
 
     .sticky-header-area {
@@ -298,8 +298,8 @@
     }
 
     @media (max-width: 480px) {
-      .container { padding: 8px; padding-bottom: 85px; }
-      .container.no-button { padding-bottom: 12px; }
+      .container { padding: 8px; padding-bottom: 12px; }
+      .container.has-button { padding-bottom: 85px; }
       .entry-card { padding: 10px 10px; }
       .entry-row { font-size: 0.76rem; gap: 6px; }
       .entry-char-side { width: 40px; padding-right: 4px; }
@@ -487,7 +487,7 @@
 <div class="bottom-action-area">
   <div class="bottom-action-area-inner">
     <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
-    <div class="version-tag">v2.05</div>
+    <div class="version-tag">v2.06</div>
   </div>
 </div>
 
@@ -852,7 +852,7 @@
 
       if (data.locked && data.official) {
         newBtn.style.display = "none";
-        containerEl.classList.add("no-button");
+        containerEl.classList.remove("has-button");
         officialContainer.innerHTML = `
           <div class="entry-card official-card">
             <div class="entry-header">
@@ -895,9 +895,9 @@
         const shouldShowBtn = !data.locked;
         newBtn.style.display = shouldShowBtn ? "block" : "none";
         if (shouldShowBtn) {
-          containerEl.classList.remove("no-button");
+          containerEl.classList.add("has-button");
         } else {
-          containerEl.classList.add("no-button");
+          containerEl.classList.remove("has-button");
         }
         officialContainer.innerHTML = "";
 

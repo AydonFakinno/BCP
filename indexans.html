@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Babaváró Tipszmiksz</title>
+  <title>Berci Tipszmiksz</title>
   <style>
     :root {
       --bg: #1e1b4b; /* Lilás oldalháttér */
@@ -351,7 +351,7 @@
 <div class="container">
   <header>
     <div>
-      <h1 id="pageTitle">Babaváró Tipszmiksz</h1>
+      <h1 id="pageTitle">Berci Tipszmiksz</h1>
     </div>
     <button id="headerActionBtn" onclick="openModal()">Eredmény beküldése</button>
   </header>
@@ -469,7 +469,7 @@
   </div>
 </div>
 
-<div class="version-tag">ans-v1.26</div>
+<div class="version-tag">v2.23</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -511,7 +511,7 @@
 
       renderLocalCard();
     } catch (err) {
-      container.innerHTML = '<div class="status-msg">Hiba a státusz ellenőrzésekor. Ellenőrizd a SCRIPT_URL-t!</div>';
+      container.innerHTML = '<div class="status-msg"></div>';
       headerBtn.style.display = "none";
     }
   }

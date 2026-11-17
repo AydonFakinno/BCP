@@ -126,9 +126,10 @@
       color: var(--accent-official) !important;
     }
 
+    /* Pontosan beállított grid: Bal oldalon név/rang, középen pontszám, jobbra dátum */
     .entry-header {
       display: grid;
-      grid-template-columns: 1fr auto 1fr;
+      grid-template-columns: auto 1fr auto;
       align-items: center;
       margin-bottom: 12px;
       border-bottom: 1px solid var(--border);
@@ -471,7 +472,7 @@
       </div>
 
       <div class="step-pane" id="step3">
-        <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jött ki előbb?</span></div>
+        <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jön ki előbb?</span></div>
         <div class="dual-card-grid">
           <div style="position: relative;">
             <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option" checked>
@@ -545,7 +546,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1047</div>
+<div class="version-tag">v1048</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -556,7 +557,7 @@
     q1Prefix: "1. Kérdés:",
     q1Text: "Milyen színű lesz Berci?",
     q2Prefix: "2. Kérdés:",
-    q2Text: "Melyik jött ki előbb?",
+    q2Text: "Melyik jön ki előbb?",
     q2Options: { 1: "Berci", 2: "GTA VI" },
     q3Prefix: "3. Kérdés:",
     q3Text: "Kinek van nagyobb pénisze?",
@@ -833,7 +834,7 @@
                   <span class="entry-a">${CONFIG.q2Options[data.official.a2] || data.official.a2}</span>
                 </div>
                 <div class="entry-row">
-                  <span class="entry-q">Kinek van nagyobb pénisze?</span>
+                  <span class="entry-q">Kinek lett nagyobb a pénisze?</span>
                   <span class="entry-a">${CONFIG.q3Options[data.official.a3] || data.official.a3}</span>
                 </div>
               </div>

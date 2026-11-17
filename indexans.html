@@ -469,7 +469,7 @@
   </div>
 </div>
 
-<div class="version-tag">ans-v1.23</div>
+<div class="version-tag">ans-v1.24</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -497,7 +497,6 @@
     const container = document.getElementById("cardContainer");
     const headerBtn = document.getElementById("headerActionBtn");
     
-    // Töltés közben spinner mutatása a kártya helyén
     container.innerHTML = '<div class="spinner"></div>';
     
     try {
@@ -675,7 +674,6 @@
         body: JSON.stringify(payload)
       });
 
-      alert("Sikeres véglegesítés! A játék lezárult.");
       window.location.href = "./";
     } catch (err) {
       alert("Hiba történt a véglegesítés során, próbáld újra!");

@@ -109,22 +109,23 @@
       gap: 14px;
     }
 
+    /* Minden válaszkártya megkapta a vastag fehér keretet */
     .entry-card {
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 2px solid #ffffff;
       border-radius: 14px;
       padding: 16px 20px;
     }
 
-    /* Belső felé ragyogó (inset) vignette az első 3 helyezett kártyáján */
+    /* Erősebb belső felé ragyogó (inset) vignette az első 3 helyezett kártyáján */
     .card-rank-1 {
-      box-shadow: inset 0 0 30px rgba(250, 204, 21, 0.15);
+      box-shadow: inset 0 0 45px rgba(250, 204, 21, 0.3);
     }
     .card-rank-2 {
-      box-shadow: inset 0 0 30px rgba(148, 163, 184, 0.15);
+      box-shadow: inset 0 0 45px rgba(148, 163, 184, 0.28);
     }
     .card-rank-3 {
-      box-shadow: inset 0 0 30px rgba(251, 146, 60, 0.15);
+      box-shadow: inset 0 0 45px rgba(251, 146, 60, 0.28);
     }
 
     .official-card {
@@ -165,7 +166,7 @@
       flex-shrink: 0;
     }
 
-    /* Emblémák (badgek) maradtak a gyönyörű belső fehér borderrel és ragyogással */
+    /* Emblémák (badgek) ragyogással és belső fehér borderrel */
     .rank-1 { 
       background: rgba(250, 204, 21, 0.25); 
       color: #facc15; 
@@ -585,7 +586,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.62</div>
+<div class="version-tag">v1.63</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";

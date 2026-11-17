@@ -452,7 +452,7 @@
         </div>
         <div class="modal-actions">
           <button type="button" class="btn-secondary" tabindex="-1" onclick="closeModal()">Mégse</button>
-          <button type="button" tabindex="-1" onclick="nextStep(1)">Tovább</button>
+          <button type="button" tabindex="-1" id="step1NextBtn" onclick="nextStep(1)">Tovább</button>
         </div>
       </div>
 
@@ -534,7 +534,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.79</div>
+<div class="version-tag">v1.80</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -617,7 +617,7 @@
     updateSliderColor(document.getElementById('q1Slider').value);
   }
 
-  function nextStep(current) {
+  async function nextStep(current) {
     if (isSubmitting) return;
 
     if (current === 1) {
@@ -636,6 +636,32 @@
         nameInput.focus();
         return;
       }
+
+      // Plusz biztonsági csekk a nevértesítés / tovább lépés pillanatában is!
+      isSubmitting = true;
+      const nextBtn = document.getElementById("step1NextBtn");
+      let originalText = nextBtn.textContent;
+      nextBtn.textContent = "Ellenőrzés...";
+      nextBtn.disabled = true;
+
+      try {
+        const res = await fetch(SCRIPT_URL);
+        const data = await res.json();
+
+        if (data.locked) {
+          closeModal();
+          await loadEntries();
+          isSubmitting = false;
+          nextBtn.textContent = originalText;
+          nextBtn.disabled = false;
+          return;
+        }
+      } catch (e) {}
+
+      isSubmitting = false;
+      nextBtn.textContent = originalText;
+      nextBtn.disabled = false;
+
     } else if (current === 3) {
       if (!document.querySelector('input[name="q2"]:checked')) {
         alert("Válassz egy opciót!");

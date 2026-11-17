@@ -116,18 +116,21 @@
       padding: 16px 20px;
     }
 
-    /* Itt voltak a hiányzó CSS szabályok a glow effekthez: */
+    /* Javított, jól látható dobogós glow effektek */
     .card-rank-1 {
-      border: 1px solid rgba(250, 204, 21, 0.6) !important;
-      box-shadow: 0 0 15px rgba(250, 204, 21, 0.25);
+      background: linear-gradient(135deg, #1e293b 0%, #292510 100%) !important;
+      border: 2px solid #facc15 !important;
+      box-shadow: 0 0 20px rgba(250, 204, 21, 0.4), inset 0 0 10px rgba(250, 204, 21, 0.1);
     }
     .card-rank-2 {
-      border: 1px solid rgba(148, 163, 184, 0.6) !important;
-      box-shadow: 0 0 15px rgba(148, 163, 184, 0.25);
+      background: linear-gradient(135deg, #1e293b 0%, #1e2633 100%) !important;
+      border: 2px solid #cbd5e1 !important;
+      box-shadow: 0 0 20px rgba(203, 213, 225, 0.35), inset 0 0 10px rgba(203, 213, 225, 0.1);
     }
     .card-rank-3 {
-      border: 1px solid rgba(251, 146, 60, 0.6) !important;
-      box-shadow: 0 0 15px rgba(251, 146, 60, 0.25);
+      background: linear-gradient(135deg, #1e293b 0%, #311e15 100%) !important;
+      border: 2px solid #fb923c !important;
+      box-shadow: 0 0 20px rgba(251, 146, 60, 0.35), inset 0 0 10px rgba(251, 146, 60, 0.1);
     }
 
     .official-card {
@@ -567,7 +570,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.56</div>
+<div class="version-tag">v1.57</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";

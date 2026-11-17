@@ -534,7 +534,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.80</div>
+<div class="version-tag">v1.82</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -562,32 +562,14 @@
   let existingNames = [];
   let isSubmitting = false;
   
-  async function openModal() {
+  function openModal() {
     if (isSubmitting) return;
-    isSubmitting = true;
-
-    try {
-      const res = await fetch(SCRIPT_URL);
-      const data = await res.json();
-
-      if (data.locked) {
-        isSubmitting = false;
-        await loadEntries();
-        return;
-      }
-
-      isSubmitting = false;
-      showStep(1);
-      document.getElementById("pollForm").reset();
-      document.getElementById("q2_opt1").checked = true;
-      document.getElementById("q3_opt1").checked = true;
-      updateSliderColor(50);
-      modal.classList.add("active");
-    } catch (e) {
-      isSubmitting = false;
-      showStep(1);
-      modal.classList.add("active");
-    }
+    showStep(1);
+    document.getElementById("pollForm").reset();
+    document.getElementById("q2_opt1").checked = true;
+    document.getElementById("q3_opt1").checked = true;
+    updateSliderColor(50);
+    modal.classList.add("active");
   }
 
   function closeModal() {
@@ -637,7 +619,7 @@
         return;
       }
 
-      // Plusz biztonsági csekk a nevértesítés / tovább lépés pillanatában is!
+      // Kapuőr ellenőrzés a név utáni "Tovább"-nál
       isSubmitting = true;
       const nextBtn = document.getElementById("step1NextBtn");
       let originalText = nextBtn.textContent;
@@ -654,6 +636,7 @@
           isSubmitting = false;
           nextBtn.textContent = originalText;
           nextBtn.disabled = false;
+          alert("A játék már lezárult.");
           return;
         }
       } catch (e) {}

@@ -20,7 +20,6 @@
 
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
     
-    /* Hagyjuk, hogy a body scrollozzon, így működik a pull-to-refresh */
     body {
       background: var(--bg);
       color: var(--text);
@@ -29,6 +28,7 @@
       display: flex;
       justify-content: center;
       min-height: 100vh;
+      position: relative;
     }
 
     .container {
@@ -37,8 +37,8 @@
       display: flex;
       flex-direction: column;
       padding: 12px;
-      /* Hatalmas hely alul, hogy a fix gomb soha ne takarja ki a kártyákat */
-      padding-bottom: 100px; 
+      /* Pontos helykihagyás alul, hogy a gomb ne takarja ki a kártyákat */
+      padding-bottom: 95px;
     }
 
     .sticky-header-area {
@@ -47,10 +47,9 @@
       background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(8px);
       padding: 12px 0 8px 0;
-      z-index: 20;
+      z-index: 10;
       border-bottom: 1px solid rgba(51, 65, 85, 0.4);
-      margin-bottom: 12px;
-      text-align: center;
+      margin-bottom: 8px;
     }
 
     header {
@@ -59,12 +58,12 @@
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
     }
 
     h1 { margin: 0; font-size: 1.5rem; }
 
-    /* Beküldés gomb fixen alul, teljes szélességben */
+    /* Beküldés gomb fixen alul, teljes szélességben a hüvelykujj alatt */
     .bottom-action-area {
       position: fixed;
       bottom: 0;
@@ -125,9 +124,11 @@
     .btn-secondary:hover { background: var(--border) !important; color: var(--text) !important; }
 
     .entries-scroll-area {
+      flex: 1;
+      padding-top: 4px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .entry-card {
@@ -281,6 +282,7 @@
       display: block;
     }
 
+    /* Mobilos finomhangolás */
     @media (max-width: 480px) {
       .container { padding: 8px; padding-bottom: 95px; }
       .entry-card { padding: 10px 10px; }
@@ -579,7 +581,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.95</div>
+<div class="version-tag">v1.96</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";

@@ -20,33 +20,30 @@
 
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
     
-    /* 1. Tiszta flex alapú layout a body-n */
     body {
       background: var(--bg);
       color: var(--text);
       margin: 0;
       padding: 0;
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      justify-content: center;
       min-height: 100vh;
-      overflow: hidden; /* A body nem scrollozik, csak a belső lista */
+      position: relative;
     }
 
-    /* 2. A konténer kitölti a teljes magasságot, alul hagyva helyet a fix gombnak */
     .container {
       width: 100%;
       max-width: 580px;
       display: flex;
       flex-direction: column;
-      height: 100vh;
       padding: 12px;
-      /* Csak annyi helyet hagyunk alul, amennyit a fix gomb sáv elfoglal, nincs felesleges rés */
-      padding-bottom: 75px;
+      /* Pontos helykihagyás alul, hogy a fix gomb soha ne takarja ki a kártyák alját */
+      padding-bottom: 110px;
     }
 
     .sticky-header-area {
-      flex-shrink: 0;
+      position: sticky;
+      top: 0;
       background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(8px);
       padding: 12px 0 8px 0;
@@ -65,20 +62,6 @@
     }
 
     h1 { margin: 0; font-size: 1.5rem; }
-
-    /* 3. A lista az úr: flex: 1-gyel kitölti a maradék teret és saját maga scrollozik */
-    .entries-scroll-area {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding-top: 4px;
-      padding-bottom: 12px;
-      /* Görgetősáv szépítése */
-      scrollbar-width: thin;
-      scrollbar-color: var(--border) transparent;
-    }
 
     /* Fix alsó sáv (gomb + verziószám) */
     .bottom-action-area {
@@ -153,12 +136,18 @@
     }
     .btn-secondary:hover { background: var(--border) !important; color: var(--text) !important; }
 
+    .entries-scroll-area {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 4px;
+    }
+
     .entry-card {
       background: var(--card);
       border: 2px solid #64748b;
       border-radius: 12px;
       padding: 12px 14px;
-      flex-shrink: 0;
     }
 
     .card-rank-1 { box-shadow: inset 0 0 45px rgba(250, 204, 21, 0.3); }
@@ -306,7 +295,7 @@
     }
 
     @media (max-width: 480px) {
-      .container { padding: 8px; padding-bottom: 70px; }
+      .container { padding: 8px; padding-bottom: 110px; }
       .entry-card { padding: 10px 10px; }
       .entry-row { font-size: 0.76rem; gap: 6px; }
       .entry-char-side { width: 40px; padding-right: 4px; }
@@ -485,17 +474,15 @@
     <div id="officialCardContainer"></div>
   </div>
 
-  <!-- A lista rugalmasan kitölti a teret és önállóan scrollozik -->
   <div id="entriesList" class="entries-scroll-area">
     <div class="spinner"></div>
   </div>
 </div>
 
-<!-- Fix alsó sáv (gomb + maradó verziószám) -->
 <div class="bottom-action-area">
   <div class="bottom-action-area-inner">
     <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
-    <div class="version-tag">v2.01</div>
+    <div class="version-tag">v2.02</div>
   </div>
 </div>
 

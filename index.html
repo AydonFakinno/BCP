@@ -553,7 +553,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.53</div>
+<div class="version-tag">v1.54</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -853,8 +853,15 @@
           item.scores = calculateScores(item, data.official);
         });
 
-        data.entries.sort((a, b) => b.scores.total - a.scores.total);
+        // Pontszám szerinti csökkenő, majd holtverseny esetén dátum szerinti növekvő rendezés
+        data.entries.sort((a, b) => {
+          if (b.scores.total !== a.scores.total) {
+            return b.scores.total - a.scores.total;
+          }
+          return new Date(a.date) - new Date(b.date);
+        });
 
+        // Helyezések kiszámítása holtverseny (tie) kezeléssel
         let currentRank = 1;
         data.entries.forEach((item, index) => {
           if (index > 0 && item.scores.total < data.entries[index - 1].scores.total) {

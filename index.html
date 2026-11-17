@@ -534,7 +534,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.76</div>
+<div class="version-tag">v1.77</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -779,12 +779,10 @@
           </div>
         `;
 
-        // 1. Pontok kiszámítása minden entry-re
         data.entries.forEach(item => {
           item.scores = calculateScores(item, data.official);
         });
 
-        // 2. Sorba rendezés pontszám szerint csökkenőbe, holtverseny esetén dátum szerint növekvőbe
         data.entries.sort((a, b) => {
           if (b.scores.total !== a.scores.total) {
             return b.scores.total - a.scores.total;
@@ -792,7 +790,6 @@
           return new Date(a.date) - new Date(b.date);
         });
 
-        // 3. A te saját r és t alapú tiszta rank-kiosztó loopod:
         let r = 0;
         let t = 120;
         data.entries.forEach((item) => {
@@ -807,7 +804,6 @@
         newBtn.style.display = data.locked ? "none" : "block";
         officialContainer.innerHTML = "";
 
-        // Nyitott állapot: csak dátum szerinti csökkenő (legfrissebb felül)
         data.entries.sort((a, b) => new Date(b.date) - new Date(a.date));
       }
 
@@ -816,7 +812,6 @@
         return;
       }
 
-      // 4. Végigmegyünk a kész, előkészített listán és generáljuk a kártyákat
       const entriesHtml = data.entries.map((item) => {
         let rankClass = (data.locked && data.official) ? (item.rank === 1 ? "rank-1" : item.rank === 2 ? "rank-2" : item.rank === 3 ? "rank-3" : "rank-other") : "";
         let rankBadge = (data.locked && data.official) ? `<span class="entry-rank ${rankClass}">#${item.rank}</span>` : "";
@@ -869,19 +864,31 @@
     isSubmitting = true;
     const btn = document.getElementById("submitBtn");
     btn.disabled = true;
-    btn.textContent = "Küldés...";
-
-    const payload = {
-      name: document.getElementById("userName").value.trim(),
-      a1: Number(document.getElementById("q1Slider").value),
-      a2: Number(document.querySelector('input[name="q2"]:checked').value),
-      a3: Number(q3Checked.value)
-    };
+    btn.textContent = "Ellenőrzés...";
 
     try {
+      // Biztonsági ellenőrzés beküldés előtt
+      const checkRes = await fetch(SCRIPT_URL);
+      const checkData = await checkRes.json();
+
+      if (checkData.locked) {
+        closeModal();
+        await loadEntries();
+        return;
+      }
+
+      btn.textContent = "Küldés...";
+      const payload = {
+        name: document.getElementById("userName").value.trim(),
+        a1: Number(document.getElementById("q1Slider").value),
+        a2: Number(document.querySelector('input[name="q2"]:checked').value),
+        a3: Number(q3Checked.value)
+      };
+
       await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
       closeModal();
       await loadEntries();
+
     } catch (err) {
       alert("Hiba történt a mentés közben, próbáld újra!");
       isSubmitting = false;

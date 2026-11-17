@@ -116,15 +116,9 @@
       padding: 16px 20px;
     }
 
-    .card-rank-1 {
-      box-shadow: inset 0 0 45px rgba(250, 204, 21, 0.3);
-    }
-    .card-rank-2 {
-      box-shadow: inset 0 0 45px rgba(148, 163, 184, 0.28);
-    }
-    .card-rank-3 {
-      box-shadow: inset 0 0 45px rgba(251, 146, 60, 0.28);
-    }
+    .card-rank-1 { box-shadow: inset 0 0 45px rgba(250, 204, 21, 0.3); }
+    .card-rank-2 { box-shadow: inset 0 0 45px rgba(148, 163, 184, 0.28); }
+    .card-rank-3 { box-shadow: inset 0 0 45px rgba(251, 146, 60, 0.28); }
 
     .official-card {
       background: var(--card-official);
@@ -197,11 +191,7 @@
       border-radius: 6px;
     }
 
-    .entry-header-right {
-      display: flex;
-      align-items: center;
-    }
-
+    .entry-header-right { display: flex; align-items: center; }
     .entry-date { font-size: 0.8rem; color: var(--muted); }
     
     .entry-body {
@@ -310,11 +300,7 @@
       margin-top: 0;
       margin-bottom: 16px;
     }
-    .question-title .sub-text {
-      font-weight: 400;
-      color: var(--muted);
-      font-size: 1rem;
-    }
+    .question-title .sub-text { font-weight: 400; color: var(--muted); font-size: 1rem; }
 
     .question-img-box {
       width: 100%;
@@ -326,11 +312,7 @@
       overflow: hidden;
       padding: 10px;
     }
-    .question-img-box object {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
+    .question-img-box object { max-width: 100%; max-height: 100%; object-fit: contain; }
 
     .dual-card-grid {
       display: grid;
@@ -355,11 +337,7 @@
     }
     .choice-card:hover { border-color: rgba(56, 189, 248, 0.5); }
     
-    .choice-card-option {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-    }
+    .choice-card-option { position: absolute; opacity: 0; pointer-events: none; }
     .choice-card-option:checked + .choice-card {
       border-color: var(--accent);
       background: rgba(56, 189, 248, 0.1);
@@ -378,11 +356,7 @@
       justify-content: center;
       pointer-events: none;
     }
-    .choice-card object {
-      max-width: 100%;
-      max-height: 80px;
-      object-fit: contain;
-    }
+    .choice-card object { max-width: 100%; max-height: 80px; object-fit: contain; }
 
     .choice-card-footer {
       display: flex;
@@ -436,10 +410,7 @@
       animation: spin 0.8s linear infinite;
       margin: 40px auto;
     }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     .version-tag {
       position: fixed;
@@ -458,9 +429,7 @@
 <div class="container">
   <div class="sticky-header-area">
     <header>
-      <div>
-        <h1 id="pageTitle">Berci Tipszmiksz</h1>
-      </div>
+      <div><h1 id="pageTitle">Berci Tipszmiksz</h1></div>
       <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
     </header>
     <div id="officialCardContainer"></div>
@@ -516,25 +485,15 @@
           <div style="position: relative;">
             <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option" checked>
             <label for="q2_opt1" class="choice-card" id="q2_label1" tabindex="0">
-              <div class="img-container">
-                <object id="charSvgStep3" type="image/svg+xml" data="char.svg"></object>
-              </div>
-              <div class="choice-card-footer">
-                <div class="custom-radio"></div>
-                <span>Berci</span>
-              </div>
+              <div class="img-container"><object id="charSvgStep3" type="image/svg+xml" data="char.svg"></object></div>
+              <div class="choice-card-footer"><div class="custom-radio"></div><span>Berci</span></div>
             </label>
           </div>
           <div style="position: relative;">
             <input type="radio" name="q2" value="2" id="q2_opt2" class="choice-card-option">
             <label for="q2_opt2" class="choice-card" id="q2_label2" tabindex="0">
-              <div class="img-container">
-                <object type="image/svg+xml" data="logo.svg"></object>
-              </div>
-              <div class="choice-card-footer">
-                <div class="custom-radio"></div>
-                <span>GTA VI</span>
-              </div>
+              <div class="img-container"><object type="image/svg+xml" data="logo.svg"></object></div>
+              <div class="choice-card-footer"><div class="custom-radio"></div><span>GTA VI</span></div>
             </label>
           </div>
         </div>
@@ -552,25 +511,15 @@
           <div style="position: relative;">
             <input type="radio" name="q3" value="1" id="q3_opt1" class="choice-card-option" checked>
             <label for="q3_opt1" class="choice-card" id="q3_label1" tabindex="0">
-              <div class="img-container">
-                <object id="charSvgStep4" type="image/svg+xml" data="char.svg"></object>
-              </div>
-              <div class="choice-card-footer">
-                <div class="custom-radio"></div>
-                <span>Berci</span>
-              </div>
+              <div class="img-container"><object id="charSvgStep4" type="image/svg+xml" data="char.svg"></object></div>
+              <div class="choice-card-footer"><div class="custom-radio"></div><span>Berci</span></div>
             </label>
           </div>
           <div style="position: relative;">
             <input type="radio" name="q3" value="2" id="q3_opt2" class="choice-card-option">
             <label for="q3_opt2" class="choice-card" id="q3_label2" tabindex="0">
-              <div class="img-container">
-                <object type="image/svg+xml" data="zso.svg"></object>
-              </div>
-              <div class="choice-card-footer">
-                <div class="custom-radio"></div>
-                <span>Zsolti</span>
-              </div>
+              <div class="img-container"><object type="image/svg+xml" data="zso.svg"></object></div>
+              <div class="choice-card-footer"><div class="custom-radio"></div><span>Zsolti</span></div>
             </label>
           </div>
         </div>
@@ -585,7 +534,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.71</div>
+<div class="version-tag">v1.73</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -604,7 +553,6 @@
   };
 
   document.getElementById("pageTitle").textContent = CONFIG.title;
-  
   document.getElementById("q1HeaderTitle").innerHTML = `${CONFIG.q1Prefix} <span class="sub-text">${CONFIG.q1Text}</span>`;
   document.getElementById("q2HeaderTitle").innerHTML = `${CONFIG.q2Prefix} <span class="sub-text">${CONFIG.q2Text}</span>`;
   document.getElementById("q3HeaderTitle").innerHTML = `${CONFIG.q3Prefix} <span class="sub-text">${CONFIG.q3Text}</span>`;
@@ -648,8 +596,7 @@
       else if (step === 4) document.getElementById("q3_label1").focus();
     }, 50);
 
-    const currentSliderVal = document.getElementById('q1Slider').value;
-    updateSliderColor(currentSliderVal);
+    updateSliderColor(document.getElementById('q1Slider').value);
   }
 
   function nextStep(current) {
@@ -666,15 +613,13 @@
         return;
       }
 
-      const nameLower = trimmedName.toLowerCase();
-      if (existingNames.some(n => n.toLowerCase() === nameLower)) {
+      if (existingNames.some(n => n.toLowerCase() === trimmedName.toLowerCase())) {
         alert("Már van beküldve válasz ezzel a névvel.");
         nameInput.focus();
         return;
       }
     } else if (current === 3) {
-      const q2Checked = document.querySelector('input[name="q2"]:checked');
-      if (!q2Checked) {
+      if (!document.querySelector('input[name="q2"]:checked')) {
         alert("Válassz egy opciót!");
         return;
       }
@@ -700,22 +645,18 @@
   document.addEventListener("keydown", (e) => {
     if (!modal.classList.contains("active") || isSubmitting) return;
     const current = getCurrentStep();
-    const activeEl = document.activeElement;
-    const isNameInputActive = activeEl && activeEl.id === "userName";
+    const isNameInputActive = document.activeElement && document.activeElement.id === "userName";
 
     if (e.key === "Escape") {
       e.preventDefault();
       closeModal();
-    } else if (e.key === "Backspace") {
-      if (isNameInputActive) return;
+    } else if (e.key === "Backspace" && !isNameInputActive) {
       e.preventDefault();
       prevStep(current);
-    } else if (e.key === "Enter") {
-      if (!isNameInputActive) {
-        e.preventDefault();
-        if (current < 4) nextStep(current);
-        else submitPoll();
-      }
+    } else if (e.key === "Enter" && !isNameInputActive) {
+      e.preventDefault();
+      if (current < 4) nextStep(current);
+      else submitPoll();
     } else if ((current === 3 || current === 4) && (e.key === "ArrowLeft" || e.key === "ArrowRight")) {
       e.preventDefault();
       const groupName = current === 3 ? "q2" : "q3";
@@ -724,13 +665,8 @@
       const label1 = document.getElementById(`${groupName}_label1`);
       const label2 = document.getElementById(`${groupName}_label2`);
 
-      if (opt1.checked) {
-        opt2.checked = true;
-        label2.focus();
-      } else {
-        opt1.checked = true;
-        label1.focus();
-      }
+      if (opt1.checked) { opt2.checked = true; label2.focus(); }
+      else { opt1.checked = true; label1.focus(); }
     }
   });
 
@@ -747,10 +683,7 @@
     let t = Math.max(0, Math.min(100, Number(val) || 0)) / 100;
     let c1 = hexToRgb("#BF998F");
     let c2 = hexToRgb("#A26346");
-    let r = Math.round(c1[0] + (c2[0] - c1[0]) * t);
-    let g = Math.round(c1[1] + (c2[1] - c1[1]) * t);
-    let b = Math.round(c1[2] + (c2[2] - c1[2]) * t);
-    return rgbToHex(r, g, b);
+    return rgbToHex(Math.round(c1[0] + (c2[0] - c1[0]) * t), Math.round(c1[1] + (c2[1] - c1[1]) * t), Math.round(c1[2] + (c2[2] - c1[2]) * t));
   }
 
   function buildColoredCardChar(val, customId = "") {
@@ -760,39 +693,18 @@
     const doc = parser.parseFromString(charSvgRaw, "image/svg+xml");
     const svgEl = doc.querySelector("svg");
     if (!svgEl) return "";
-
-    svgEl.querySelectorAll('[fill], .fill, #fill').forEach(el => {
-      el.style.fill = color;
-    });
-    const idAttr = customId ? ` id="${customId}"` : "";
-    return `<div class="entry-char-side"${idAttr}>${svgEl.outerHTML}</div>`;
+    svgEl.querySelectorAll('[fill], .fill, #fill').forEach(el => { el.style.fill = color; });
+    return `<div class="entry-char-side"${customId ? ` id="${customId}"` : ""}>${svgEl.outerHTML}</div>`;
   }
 
   function updateSliderColor(val) {
     document.getElementById('sliderDisplayVal').textContent = val + '% barna bőrű magyar állampolgár';
     const currentColor = getInterpolatedColor(val);
-
     ['charSvg', 'charSvgStep3', 'charSvgStep4'].forEach(id => {
       try {
         let svgObj = document.getElementById(id);
-        if (svgObj) {
-          if (svgObj.contentDocument) {
-            let svgDoc = svgObj.contentDocument;
-            let fillElements = svgDoc.querySelectorAll('[fill], .fill, #fill');
-            fillElements.forEach(el => {
-              el.style.fill = currentColor;
-            });
-          }
-          svgObj.onload = function() {
-            try {
-              let svgDoc = svgObj.contentDocument;
-              if (svgDoc) {
-                svgDoc.querySelectorAll('[fill], .fill, #fill').forEach(el => {
-                  el.style.fill = currentColor;
-                });
-              }
-            } catch(ex) {}
-          };
+        if (svgObj && svgObj.contentDocument) {
+          svgObj.contentDocument.querySelectorAll('[fill], .fill, #fill').forEach(el => { el.style.fill = currentColor; });
         }
       } catch (e) {}
     });
@@ -802,9 +714,7 @@
     if (charSvgRaw) return;
     try {
       const res = await fetch("char.svg");
-      if (res.ok) {
-        charSvgRaw = await res.text();
-      }
+      if (res.ok) charSvgRaw = await res.text();
     } catch (e) {}
   }
 
@@ -813,21 +723,11 @@
     try {
       let d = new Date(rawDate);
       if (!isNaN(d.getTime())) {
-        let yyyy = d.getFullYear();
-        let mm = String(d.getMonth() + 1).padStart(2, '0');
-        let dd = String(d.getDate()).padStart(2, '0');
-        let hh = String(d.getHours()).padStart(2, '0');
-        let min = String(d.getMinutes()).padStart(2, '0');
-        return `${yyyy}.${mm}.${dd} ${hh}:${min}`;
+        return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
       }
     } catch (e) {}
-    
     let clean = String(rawDate).replace('T', ' ').split('.')[0];
-    let parts = clean.split(':');
-    if (parts.length >= 2) {
-      return clean.substring(0, 16).replace(/-/g, '.');
-    }
-    return rawDate;
+    return clean.length >= 16 ? clean.substring(0, 16).replace(/-/g, '.') : rawDate;
   }
 
   function getScoreBadgeStyle(value, max) {
@@ -835,24 +735,15 @@
     let r = Math.round(239 + (34 - 239) * ratio);
     let g = Math.round(68 + (197 - 68) * ratio);
     let b = Math.round(68 + (94 - 68) * ratio);
-
-    let bgColor = `rgba(${r}, ${g}, ${b}, 0.2)`;
-    let textColor = `rgb(${r}, ${g}, ${b})`;
-    return `background-color: ${bgColor}; color: ${textColor};`;
+    return `background-color: rgba(${r}, ${g}, ${b}, 0.2); color: rgb(${r}, ${g}, ${b});`;
   }
 
   function calculateScores(item, official) {
     if (!official) return { total: 0, s1: 0, s2: 0, s3: 0 };
-
-    let diff1 = Math.abs(Number(item.a1) - Number(official.a1));
-    let score1 = 100 - diff1;
-
+    let score1 = 100 - Math.abs(Number(item.a1) - Number(official.a1));
     let score2 = (Number(item.a2) === Number(official.a2)) ? 10 : 0;
     let score3 = (Number(item.a3) === Number(official.a3)) ? 10 : 0;
-
-    let total = score1 + score2 + score3;
-
-    return { total, score1, score2, score3 };
+    return { total: score1 + score2 + score3, score1, score2, score3 };
   }
 
   async function loadEntries() {
@@ -867,37 +758,22 @@
       const res = await fetch(SCRIPT_URL);
       const data = await res.json();
 
-      if (data.entries && Array.isArray(data.entries)) {
-        existingNames = data.entries.map(item => item.name);
-      } else {
-        existingNames = [];
-      }
+      existingNames = (data.entries && Array.isArray(data.entries)) ? data.entries.map(item => item.name) : [];
 
       if (data.locked && data.official) {
         newBtn.style.display = "none";
-        
         officialContainer.innerHTML = `
           <div class="entry-card official-card">
             <div class="entry-header">
-              <div class="entry-header-left">
-                <span class="entry-name">Eredmény</span>
-              </div>
-              <div class="entry-header-right">
-                <span class="entry-date">${formatDateString(data.official.date)}</span>
-              </div>
+              <div class="entry-header-left"><span class="entry-name">Eredmény</span></div>
+              <div class="entry-header-right"><span class="entry-date">${formatDateString(data.official.date)}</span></div>
             </div>
             <div class="entry-body">
               ${buildColoredCardChar(data.official.a1, "official-char")}
               <div class="entry-rows">
-                <div class="entry-row">
-                  <span class="entry-a">Berci ${data.official.a1}% barna bőrű magyar állampolgár.</span>
-                </div>
-                <div class="entry-row">
-                  <span class="entry-a">Berci ${Number(data.official.a2) === 1 ? 'előbb' : 'később'} jött ki, mint a GTA VI.</span>
-                </div>
-                <div class="entry-row">
-                  <span class="entry-a">Bercinek ${Number(data.official.a3) === 1 ? 'nagyobb' : 'kisebb'} pénisze van, mint Zsoltinak.</span>
-                </div>
+                <div class="entry-row"><span class="entry-a">Berci ${data.official.a1}% barna bőrű magyar állampolgár.</span></div>
+                <div class="entry-row"><span class="entry-a">Berci ${Number(data.official.a2) === 1 ? 'előbb' : 'később'} jött ki, mint a GTA VI.</span></div>
+                <div class="entry-row"><span class="entry-a">Bercinek ${Number(data.official.a3) === 1 ? 'nagyobb' : 'kisebb'} pénisze van, mint Zsoltinak.</span></div>
               </div>
             </div>
           </div>
@@ -907,7 +783,7 @@
           item.scores = calculateScores(item, data.official);
         });
 
-        // Pontszám szerinti csökkenő, majd holtverseny esetén dátum szerinti növekvő rendezés
+        // Lezárt állapot: pontszám szerint csökkenő, holtverseny esetén dátum szerint növekvő
         data.entries.sort((a, b) => {
           if (b.scores.total !== a.scores.total) {
             return b.scores.total - a.scores.total;
@@ -915,34 +791,31 @@
           return new Date(a.date) - new Date(b.date);
         });
 
-        // EGYSZERŰ ÉS TISZTA LOGIKA: Végigmegyünk, ha azonos a pontszám, marad a sorszám, ha nem, a következő index+1 lesz
+        // Sorszámozás holtversennyel (pl. 1, 1, 3, 4)
         let currentRank = 1;
         data.entries.forEach((item, index) => {
-          if (index > 0) {
-            if (item.scores.total < data.entries[index - 1].scores.total) {
-              currentRank = index + 1; // Ha kevesebb a pont, a sorszám a tényleges sorszám lesz (pl. 2, 3, 4)
-            }
-            // Ha egyenlő a pontszám, a currentRank változatlan marad (pl. marad 1)
+          if (index > 0 && item.scores.total < data.entries[index - 1].scores.total) {
+            currentRank = index + 1;
           }
           item.rank = currentRank;
         });
 
-      } else if (data.locked) {
-        newBtn.style.display = "none";
-        officialContainer.innerHTML = "";
       } else {
-        newBtn.style.display = "block";
+        newBtn.style.display = data.locked ? "none" : "block";
         officialContainer.innerHTML = "";
+
+        // Nyitott állapot: csak dátum szerinti növekvő (érkezési sorrend)
+        data.entries.sort((a, b) => new Date(a.date) - new Date(b.date));
       }
 
       if (!data.entries.length && (!data.locked || !data.official)) {
-        listEl.innerHTML = '<div class="status-msg">Még nem érkezett válasz.';
+        listEl.innerHTML = '<div class="status-msg">Még nem érkezett válasz.</div>';
         return;
       }
 
       const entriesHtml = data.entries.map((item) => {
-        let rankClass = item.rank === 1 ? "rank-1" : item.rank === 2 ? "rank-2" : item.rank === 3 ? "rank-3" : "rank-other";
-        let rankBadge = data.locked && data.official ? `<span class="entry-rank ${rankClass}">#${item.rank}</span>` : "";
+        let rankClass = (data.locked && data.official) ? (item.rank === 1 ? "rank-1" : item.rank === 2 ? "rank-2" : item.rank === 3 ? "rank-3" : "rank-other") : "";
+        let rankBadge = (data.locked && data.official) ? `<span class="entry-rank ${rankClass}">#${item.rank}</span>` : "";
 
         let cardVignetteClass = "";
         if (data.locked && data.official) {
@@ -951,17 +824,10 @@
           else if (item.rank === 3) cardVignetteClass = "card-rank-3";
         }
 
-        let totalStyle = data.locked && data.official ? getScoreBadgeStyle(item.scores.total, 120) : "";
-        let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score" style="${totalStyle}">${item.scores.total} pont</span>` : "";
-
-        let s1Style = data.locked && data.official ? getScoreBadgeStyle(item.scores.score1, 100) : "";
-        let s1Badge = data.locked && data.official ? `<span class="score-badge" style="${s1Style}">${item.scores.score1} pont</span>` : "";
-
-        let s2Style = data.locked && data.official ? getScoreBadgeStyle(item.scores.score2, 10) : "";
-        let s2Badge = data.locked && data.official ? `<span class="score-badge" style="${s2Style}">${item.scores.score2} pont</span>` : "";
-
-        let s3Style = data.locked && data.official ? getScoreBadgeStyle(item.scores.score3, 10) : "";
-        let s3Badge = data.locked && data.official ? `<span class="score-badge" style="${s3Style}">${item.scores.score3} pont</span>` : "";
+        let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score" style="${getScoreBadgeStyle(item.scores.total, 120)}">${item.scores.total} pont</span>` : "";
+        let s1Badge = data.locked && data.official ? `<span class="score-badge" style="${getScoreBadgeStyle(item.scores.score1, 100)}">${item.scores.score1} pont</span>` : "";
+        let s2Badge = data.locked && data.official ? `<span class="score-badge" style="${getScoreBadgeStyle(item.scores.score2, 10)}">${item.scores.score2} pont</span>` : "";
+        let s3Badge = data.locked && data.official ? `<span class="score-badge" style="${getScoreBadgeStyle(item.scores.score3, 10)}">${item.scores.score3} pont</span>` : "";
 
         return `
           <div class="entry-card ${cardVignetteClass}">
@@ -971,34 +837,14 @@
                 <span class="entry-name">${escapeHtml(item.name)}</span>
                 ${totalScoreBadge}
               </div>
-              <div class="entry-header-right">
-                <span class="entry-date">${formatDateString(item.date)}</span>
-              </div>
+              <div class="entry-header-right"><span class="entry-date">${formatDateString(item.date)}</span></div>
             </div>
             <div class="entry-body">
               ${buildColoredCardChar(item.a1)}
               <div class="entry-rows">
-                <div class="entry-row">
-                  <span class="entry-q">Milyen színű lesz Berci?</span>
-                  <div class="entry-ans-container">
-                    <span class="entry-a">${item.a1}% BBMÁ</span>
-                    ${s1Badge}
-                  </div>
-                </div>
-                <div class="entry-row">
-                  <span class="entry-q">Melyik jön ki előbb?</span>
-                  <div class="entry-ans-container">
-                    <span class="entry-a">${CONFIG.q2Options[item.a2] || item.a2}</span>
-                    ${s2Badge}
-                  </div>
-                </div>
-                <div class="entry-row">
-                  <span class="entry-q">Kinek van nagyobb pénisze?</span>
-                  <div class="entry-ans-container">
-                    <span class="entry-a">${CONFIG.q3Options[item.a3] || item.a3}</span>
-                    ${s3Badge}
-                  </div>
-                </div>
+                <div class="entry-row"><span class="entry-q">Milyen színű lesz Berci?</span><div class="entry-ans-container"><span class="entry-a">${item.a1}% BBMÁ</span>${s1Badge}</div></div>
+                <div class="entry-row"><span class="entry-q">Melyik jön ki előbb?</span><div class="entry-ans-container"><span class="entry-a">${CONFIG.q2Options[item.a2] || item.a2}</span>${s2Badge}</div></div>
+                <div class="entry-row"><span class="entry-q">Kinek van nagyobb pénisze?</span><div class="entry-ans-container"><span class="entry-a">${CONFIG.q3Options[item.a3] || item.a3}</span>${s3Badge}</div></div>
               </div>
             </div>
           </div>
@@ -1013,12 +859,8 @@
 
   async function submitPoll() {
     if (isSubmitting) return;
-
     const q3Checked = document.querySelector('input[name="q3"]:checked');
-    if (!q3Checked) {
-      alert("Kérlek válassz egy opciót!");
-      return;
-    }
+    if (!q3Checked) { alert("Kérlek válassz egy opciót!"); return; }
 
     isSubmitting = true;
     const btn = document.getElementById("submitBtn");
@@ -1033,11 +875,7 @@
     };
 
     try {
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify(payload)
-      });
-
+      await fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) });
       closeModal();
       await loadEntries();
     } catch (err) {
@@ -1049,9 +887,7 @@
   }
 
   function escapeHtml(str) {
-    return String(str).replace(/[&<>"']/g, m => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[m]));
+    return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
   }
 
   loadEntries();

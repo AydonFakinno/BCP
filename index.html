@@ -147,9 +147,8 @@
     .entry-total-score {
       font-weight: 800;
       font-size: 0.9rem;
-      padding: 3px 10px;
+      padding: 2px 8px;
       border-radius: 6px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
     .entry-header-right {
@@ -192,16 +191,15 @@
     }
     .entry-a { font-weight: 600; }
     
-    /* Fix oszlop a jobb oldali pontoknak */
+    /* Jobb oldali pontok: átlátszó háttér + színes szöveg */
     .score-badge {
       font-size: 0.75rem;
       font-weight: 700;
-      padding: 3px 6px;
+      padding: 2px 6px;
       border-radius: 4px;
       width: 68px;
       text-align: center;
       flex-shrink: 0;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     }
 
     .entry-char-side {
@@ -533,7 +531,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1038</div>
+<div class="version-tag">v1039</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -763,13 +761,16 @@
     return rawDate;
   }
 
-  // Dinamikus piros-zöld színkeverés (value: aktuális érték, max: maximum érték)
-  function getScoreColor(value, max) {
+  // Segédfüggvény az átlátszó háttér + színes szöveg stílus generálásához a piros-zöld skálán
+  function getScoreBadgeStyle(value, max) {
     let ratio = Math.max(0, Math.min(1, value / max));
     let r = Math.round(239 + (34 - 239) * ratio);
     let g = Math.round(68 + (197 - 68) * ratio);
     let b = Math.round(68 + (94 - 68) * ratio);
-    return `rgb(${r}, ${g}, ${b})`;
+
+    let bgColor = `rgba(${r}, ${g}, ${b}, 0.2)`;
+    let textColor = `rgb(${r}, ${g}, ${b})`;
+    return `background-color: ${bgColor}; color: ${textColor};`;
   }
 
   function calculateScores(item, official) {
@@ -850,20 +851,20 @@
         let rankClass = index === 0 ? "rank-1" : index === 1 ? "rank-2" : index === 2 ? "rank-3" : "rank-other";
         let rankBadge = data.locked && data.official ? `<span class="entry-rank ${rankClass}">#${index + 1}</span>` : "";
         
-        // Összpontszám háttérszín (0 - 110 skálán)
-        let totalBgColor = data.locked && data.official ? getScoreColor(item.scores.total, 110) : "";
-        let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score" style="background-color: ${totalBgColor}; color: #fff;">${item.scores.total} pont</span>` : "";
+        // Összpontszám (0 - 110 skálán) átlátszó háttér + színes szöveg
+        let totalStyle = data.locked && data.official ? getScoreBadgeStyle(item.scores.total, 110) : "";
+        let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score" style="${totalStyle}">${item.scores.total} pont</span>` : "";
 
-        // 1. kérdés háttérszín (0 - 100 skálán)
-        let s1BgColor = data.locked && data.official ? getScoreColor(item.scores.score1, 100) : "";
-        let s1Badge = data.locked && data.official ? `<span class="score-badge" style="background-color: ${s1BgColor}; color: #fff;">${item.scores.score1} pont</span>` : "";
+        // 1. kérdés pontszám (0 - 100 skálán) átlátszó háttér + színes szöveg
+        let s1Style = data.locked && data.official ? getScoreBadgeStyle(item.scores.score1, 100) : "";
+        let s1Badge = data.locked && data.official ? `<span class="score-badge" style="${s1Style}">${item.scores.score1} pont</span>` : "";
 
-        // 2. és 3. kérdés háttérszín (0 vagy 5 pont -> tiszta piros vagy tiszta zöld)
-        let s2BgColor = data.locked && data.official ? getScoreColor(item.scores.score2, 5) : "";
-        let s2Badge = data.locked && data.official ? `<span class="score-badge" style="background-color: ${s2BgColor}; color: #fff;">${item.scores.score2} pont</span>` : "";
+        // 2. és 3. kérdés pontszám (0 vagy 5 pont) átlátszó háttér + színes szöveg
+        let s2Style = data.locked && data.official ? getScoreBadgeStyle(item.scores.score2, 5) : "";
+        let s2Badge = data.locked && data.official ? `<span class="score-badge" style="${s2Style}">${item.scores.score2} pont</span>` : "";
 
-        let s3BgColor = data.locked && data.official ? getScoreColor(item.scores.score3, 5) : "";
-        let s3Badge = data.locked && data.official ? `<span class="score-badge" style="background-color: ${s3BgColor}; color: #fff;">${item.scores.score3} pont</span>` : "";
+        let s3Style = data.locked && data.official ? getScoreBadgeStyle(item.scores.score3, 5) : "";
+        let s3Badge = data.locked && data.official ? `<span class="score-badge" style="${s3Style}">${item.scores.score3} pont</span>` : "";
 
         return `
           <div class="entry-card">

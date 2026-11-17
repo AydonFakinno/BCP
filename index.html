@@ -129,25 +129,28 @@
 
     .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
 
-    /* Pozíció színek (Arany, Ezüst, Bronz, Szürke) */
+    /* Fix szélességű, középre igazított pozíció dobozok 2 számjegyhez is */
     .entry-rank {
       font-weight: 800;
       font-size: 0.85rem;
-      padding: 2px 7px;
+      padding: 3px 0;
       border-radius: 6px;
+      width: 32px;
+      text-align: center;
+      display: inline-block;
     }
-    .rank-1 { background: rgba(250, 204, 21, 0.2); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.4); }
-    .rank-2 { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.4); }
-    .rank-3 { background: rgba(180, 83, 9, 0.2); color: #fb923c; border: 1px solid rgba(180, 83, 9, 0.4); }
-    .rank-other { background: rgba(100, 116, 139, 0.2); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.4); }
+    .rank-1 { background: rgba(250, 204, 21, 0.25); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.5); }
+    .rank-2 { background: rgba(148, 163, 184, 0.25); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.5); }
+    .rank-3 { background: rgba(180, 83, 9, 0.25); color: #fb923c; border: 1px solid rgba(180, 83, 9, 0.5); }
+    .rank-other { background: rgba(100, 116, 139, 0.25); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.5); }
 
     .entry-total-score {
       font-weight: 800;
       font-size: 0.9rem;
-      color: var(--text);
-      background: rgba(56, 189, 248, 0.15);
-      padding: 2px 8px;
+      color: #fff;
+      padding: 3px 10px;
       border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
     .entry-header-right {
@@ -190,21 +193,17 @@
     }
     .entry-a { font-weight: 600; }
     
-    /* Jobbra zárt fix oszlop a pontszámoknak, hogy ne ugráljanak */
+    /* Fix oszlop a jobb oldali pontoknak */
     .score-badge {
       font-size: 0.75rem;
       font-weight: 700;
-      padding: 2px 6px;
+      padding: 3px 6px;
       border-radius: 4px;
-      background: rgba(51, 65, 85, 0.8);
-      color: var(--muted);
-      width: 62px;
+      width: 68px;
       text-align: center;
       flex-shrink: 0;
-    }
-    .score-badge.positive {
-      background: rgba(34, 197, 94, 0.2);
-      color: #4ade80;
+      color: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
     }
 
     .entry-char-side {
@@ -536,7 +535,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1036</div>
+<div class="version-tag">v1037</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -547,7 +546,7 @@
     q1Prefix: "1. Kérdés:",
     q1Text: "Milyen színű lesz Berci?",
     q2Prefix: "2. Kérdés:",
-    q2Text: "Melyik jön ki előbb?",
+    q2Text: "Melyik jött ki előbb?",
     q2Options: { 1: "Berci", 2: "GTA VI" },
     q3Prefix: "3. Kérdés:",
     q3Text: "Kinek nagyobb a pénisze?",
@@ -766,6 +765,16 @@
     return rawDate;
   }
 
+  // Dinamikus piros-zöld színkeverés (value: aktuális érték, max: maximum érték)
+  function getScoreColor(value, max) {
+    let ratio = Math.max(0, Math.min(1, value / max));
+    // Piros (239, 68, 68) -> Zöld (34, 197, 94) átmenet
+    let r = Math.round(239 + (34 - 239) * ratio);
+    let g = Math.round(68 + (197 - 68) * ratio);
+    let b = Math.round(68 + (94 - 68) * ratio);
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+
   function calculateScores(item, official) {
     if (!official) return { total: 0, s1: 0, s2: 0, s3: 0 };
 
@@ -843,18 +852,28 @@
       const entriesHtml = data.entries.map((item, index) => {
         let rankClass = index === 0 ? "rank-1" : index === 1 ? "rank-2" : index === 2 ? "rank-3" : "rank-other";
         let rankBadge = data.locked && data.official ? `<span class="entry-rank ${rankClass}">#${index + 1}</span>` : "";
-        let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score">${item.scores.total} pont</span>` : "";
+        
+        // Összpontszám színkeverés (0 - 110 skálán)
+        let totalBgColor = data.locked && data.official ? getScoreColor(item.scores.total, 110) : "";
+        let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score" style="background-color: ${totalBgColor};">${item.scores.total} pont</span>` : "";
 
-        let s1Badge = data.locked && data.official ? `<span class="score-badge positive">${item.scores.score1} pont</span>` : "";
-        let s2Badge = data.locked && data.official ? `<span class="score-badge ${item.scores.score2 > 0 ? 'positive' : ''}">${item.scores.score2} pont</span>` : "";
-        let s3Badge = data.locked && data.official ? `<span class="score-badge ${item.scores.score3 > 0 ? 'positive' : ''}">${item.scores.score3} pont</span>` : "";
+        // 1. kérdés pontszín (0 - 100 skálán)
+        let s1BgColor = data.locked && data.official ? getScoreColor(item.scores.score1, 100) : "";
+        let s1Badge = data.locked && data.official ? `<span class="score-badge" style="background-color: ${s1BgColor};">${item.scores.score1} pont</span>` : "";
+
+        // 2. és 3. kérdés pontszín (0 vagy 5 pont)
+        let s2BgColor = data.locked && data.official ? getScoreColor(item.scores.score2, 5) : "";
+        let s2Badge = data.locked && data.official ? `<span class="score-badge" style="background-color: ${s2BgColor};">${item.scores.score2} pont</span>` : "";
+
+        let s3BgColor = data.locked && data.official ? getScoreColor(item.scores.score3, 5) : "";
+        let s3Badge = data.locked && data.official ? `<span class="score-badge" style="background-color: ${s3BgColor};">${item.scores.score3} pont</span>` : "";
 
         return `
           <div class="entry-card">
             <div class="entry-header">
               <div class="entry-header-left">
-                <span class="entry-name">${escapeHtml(item.name)}</span>
                 ${rankBadge}
+                <span class="entry-name">${escapeHtml(item.name)}</span>
                 ${totalScoreBadge}
               </div>
               <div class="entry-header-right">

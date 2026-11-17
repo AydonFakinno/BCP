@@ -32,11 +32,11 @@
 
     .container {
       width: 100%;
-      max-width: 520px; /* Karcsúsítva, hogy a kártyák kitöltsék a teret */
+      max-width: 600px;
       display: flex;
       flex-direction: column;
       height: 100vh;
-      padding: 12px;
+      padding: 16px;
     }
 
     .sticky-header-area {
@@ -113,7 +113,7 @@
       background: var(--card);
       border: 2px solid #64748b;
       border-radius: 14px;
-      padding: 12px 14px; /* Tömörebb belső margó */
+      padding: 16px 20px;
     }
 
     .card-rank-1 { box-shadow: inset 0 0 45px rgba(250, 204, 21, 0.3); }
@@ -136,9 +136,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       border-bottom: 1px solid var(--border);
-      padding-bottom: 6px;
+      padding-bottom: 8px;
     }
     
     .entry-header-left {
@@ -198,48 +198,44 @@
       display: flex;
       align-items: stretch;
       justify-content: space-between;
-      gap: 12px;
+      gap: 16px;
     }
     .entry-rows {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 6px;
-      min-width: 0;
+      gap: 8px;
     }
     .entry-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 2px 0;
-      font-size: 0.95rem; /* Kicsit nagyobb, olvashatóbb betűméret */
+      font-size: 0.9rem;
       gap: 12px;
-      white-space: nowrap; /* Nem törhet többsorossá */
+      white-space: nowrap;
     }
     .entry-q { 
       color: var(--muted); 
-      overflow: hidden; 
-      text-overflow: ellipsis;
-      flex-shrink: 1;
     }
     
     .entry-ans-container {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 6px;
+      gap: 8px;
       text-align: right;
-      flex-shrink: 0; /* A válasz és a pontszám badge fixen egy sorban marad */
+      flex-shrink: 0;
     }
     .entry-a { font-weight: 600; text-align: left; }
     
     .score-badge {
       font-size: 0.7rem;
       font-weight: 700;
-      padding: 2px 5px;
+      padding: 2px 6px;
       border-radius: 4px;
-      width: 60px;
+      width: 62px;
       text-align: center;
       flex-shrink: 0;
     }
@@ -542,7 +538,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.86</div>
+<div class="version-tag">v1.85</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";

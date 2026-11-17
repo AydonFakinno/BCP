@@ -198,7 +198,7 @@
       display: flex;
       align-items: stretch;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
     }
     .entry-rows {
       flex: 1;
@@ -206,48 +206,55 @@
       flex-direction: column;
       justify-content: center;
       gap: 6px;
+      min-width: 0; /* Fontos, hogy a flexbox engedje összébb menni a szöveget törés nélkül */
     }
     .entry-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 3px 0;
-      font-size: 0.95rem;
-      gap: 12px;
+      padding: 2px 0;
+      font-size: 0.9rem;
+      gap: 8px;
+      white-space: nowrap; /* Biztosítja, hogy ne törjön új sorba */
     }
-    .entry-q { color: var(--muted); }
+    .entry-q { 
+      color: var(--muted); 
+      overflow: hidden; 
+      text-overflow: ellipsis; /* Ha picit szűk lenne, elegánsan csonkítja ahelyett, hogy törne */
+    }
     
     .entry-ans-container {
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      gap: 8px;
+      gap: 6px;
       text-align: right;
+      flex-shrink: 0;
     }
     .entry-a { font-weight: 600; text-align: left; }
     
     .score-badge {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
-      padding: 2px 6px;
+      padding: 2px 5px;
       border-radius: 4px;
-      width: 68px;
+      width: 60px;
       text-align: center;
       flex-shrink: 0;
     }
 
     .entry-char-side {
-      width: 68px;
+      width: 58px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      padding-right: 8px;
+      padding-right: 6px;
       border-right: 1px solid rgba(51, 65, 85, 0.6);
     }
     .entry-char-side svg {
       max-width: 100%;
-      max-height: 76px;
+      max-height: 68px;
       width: auto;
       height: auto;
       display: block;
@@ -534,7 +541,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.83</div>
+<div class="version-tag">v1.84</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -595,7 +602,6 @@
       else if (step === 4) document.getElementById("q3_label1").focus();
     }, 50);
 
-    // Kicsit várunk, hogy mobilon az <object> tag betöltse a DOM-ját, aztán azonnal beállítjuk a színt
     setTimeout(() => {
       updateSliderColor(document.getElementById('q1Slider').value);
     }, 100);
@@ -879,7 +885,7 @@
       }).join("");
 
       listEl.innerHTML = entriesHtml;
-    } catch (err) {
+    } chants (err) {
       listEl.innerHTML = '<div class="status-msg">Hiba a betöltéskor.</div>';
     }
   }

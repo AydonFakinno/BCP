@@ -8,14 +8,14 @@
     :root {
       --bg: #0f172a;
       --card: #1e293b;
-      --card-official: #1e1b4b;
+      --card-official: #064e3b; /* Halványzöldes / sötétzöld háttér a hivatalos kártyának */
       --text: #f8fafc;
       --muted: #94a3b8;
       --accent: #38bdf8;
-      --accent-official: #facc15;
+      --accent-official: #34d399; /* Zöldes kiemelés a hivatalos kártyán */
       --accent-hover: #0284c7;
       --border: #334155;
-      --border-official: #ca8a04;
+      --border-official: #059669; /* Zöld keret */
     }
 
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
@@ -105,7 +105,7 @@
     .official-card {
       background: var(--card-official);
       border: 2px solid var(--border-official);
-      box-shadow: 0 4px 20px rgba(202, 138, 4, 0.15);
+      box-shadow: 0 4px 20px rgba(5, 150, 105, 0.2);
       margin-top: 5px;
     }
     .official-card .entry-name {
@@ -125,6 +125,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      flex: 1;
     }
 
     .entry-name { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
@@ -138,6 +139,7 @@
       width: 32px;
       text-align: center;
       display: inline-block;
+      flex-shrink: 0;
     }
     .rank-1 { background: rgba(250, 204, 21, 0.25); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.5); }
     .rank-2 { background: rgba(148, 163, 184, 0.25); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.5); }
@@ -149,12 +151,15 @@
       font-size: 0.9rem;
       padding: 2px 8px;
       border-radius: 6px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .entry-header-right {
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-shrink: 0;
     }
 
     .entry-date { font-size: 0.8rem; color: var(--muted); }
@@ -191,7 +196,6 @@
     }
     .entry-a { font-weight: 600; }
     
-    /* Jobb oldali pontok: átlátszó háttér + színes szöveg */
     .score-badge {
       font-size: 0.75rem;
       font-weight: 700;
@@ -424,8 +428,8 @@
       <div class="step-pane active" id="step1">
         <h2 style="margin-top:0; margin-bottom: 16px;">Ki vagy te?</h2>
         <div class="form-group">
-          <label for="userName">Neved / Beceneved</label>
-          <input type="text" id="userName" placeholder="Pl. Kovács János" onkeydown="handleNameKeydown(event)">
+          <label for="userName">Neved / Beceneved (max 10 karakter)</label>
+          <input type="text" id="userName" placeholder="Pl. János" maxlength="10" onkeydown="handleNameKeydown(event)">
         </div>
         <div class="modal-actions">
           <button type="button" class="btn-secondary" tabindex="-1" onclick="closeModal()">Mégse</button>
@@ -434,7 +438,7 @@
       </div>
 
       <div class="step-pane" id="step2">
-        <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lesz Berci?</span></div>
+        <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lett Berci?</span></div>
         <div class="question-img-box">
           <object id="charSvg" type="image/svg+xml" data="char.svg"></object>
         </div>
@@ -457,7 +461,7 @@
       </div>
 
       <div class="step-pane" id="step3">
-        <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jön ki előbb?</span></div>
+        <div class="question-title" id="q2HeaderTitle">2. Kérdés: <span class="sub-text">Melyik jött ki előbb?</span></div>
         <div class="dual-card-grid">
           <div style="position: relative;">
             <input type="radio" name="q2" value="1" id="q2_opt1" class="choice-card-option" checked>
@@ -531,7 +535,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1039</div>
+<div class="version-tag">v1040</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -540,9 +544,9 @@
     title: "Babaváró Tippmix",
     subtitle: "Tippelj, és nézd meg mit mondtak a többiek!",
     q1Prefix: "1. Kérdés:",
-    q1Text: "Milyen színű lesz Berci?",
+    q1Text: "Milyen színű lett Berci?",
     q2Prefix: "2. Kérdés:",
-    q2Text: "Melyik jön ki előbb?",
+    q2Text: "Melyik jött ki előbb?",
     q2Options: { 1: "Berci", 2: "GTA VI" },
     q3Prefix: "3. Kérdés:",
     q3Text: "Kinek nagyobb a pénisze?",
@@ -761,7 +765,6 @@
     return rawDate;
   }
 
-  // Segédfüggvény az átlátszó háttér + színes szöveg stílus generálásához a piros-zöld skálán
   function getScoreBadgeStyle(value, max) {
     let ratio = Math.max(0, Math.min(1, value / max));
     let r = Math.round(239 + (34 - 239) * ratio);
@@ -804,7 +807,7 @@
         officialContainer.innerHTML = `
           <div class="entry-card official-card">
             <div class="entry-header">
-              <span class="entry-name">Hivatalos Eredmények</span>
+              <span class="entry-name">Eredmény</span>
               <span class="entry-date">${formatDateString(data.official.date)}</span>
             </div>
             <div class="entry-body">
@@ -851,15 +854,12 @@
         let rankClass = index === 0 ? "rank-1" : index === 1 ? "rank-2" : index === 2 ? "rank-3" : "rank-other";
         let rankBadge = data.locked && data.official ? `<span class="entry-rank ${rankClass}">#${index + 1}</span>` : "";
         
-        // Összpontszám (0 - 110 skálán) átlátszó háttér + színes szöveg
         let totalStyle = data.locked && data.official ? getScoreBadgeStyle(item.scores.total, 110) : "";
         let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score" style="${totalStyle}">${item.scores.total} pont</span>` : "";
 
-        // 1. kérdés pontszám (0 - 100 skálán) átlátszó háttér + színes szöveg
         let s1Style = data.locked && data.official ? getScoreBadgeStyle(item.scores.score1, 100) : "";
         let s1Badge = data.locked && data.official ? `<span class="score-badge" style="${s1Style}">${item.scores.score1} pont</span>` : "";
 
-        // 2. és 3. kérdés pontszám (0 vagy 5 pont) átlátszó háttér + színes szöveg
         let s2Style = data.locked && data.official ? getScoreBadgeStyle(item.scores.score2, 5) : "";
         let s2Badge = data.locked && data.official ? `<span class="score-badge" style="${s2Style}">${item.scores.score2} pont</span>` : "";
 

@@ -553,7 +553,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.50</div>
+<div class="version-tag">v1.51</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -900,25 +900,16 @@
               ${buildColoredCardChar(item.a1)}
               <div class="entry-rows">
                 <div class="entry-row">
-                  <span class="entry-q">Milyen színű lesz Berci?</span>
-                  <div class="entry-ans-container">
-                    <span class="entry-a">${item.a1}% BBMÁ</span>
-                    ${s1Badge}
-                  </div>
+                  <span class="entry-a">Berci ${item.a1}% barna bőrű magyar állampolgár.</span>
+                  ${s1Badge}
                 </div>
                 <div class="entry-row">
-                  <span class="entry-q">Melyik jön ki előbb?</span>
-                  <div class="entry-ans-container">
-                    <span class="entry-a">${CONFIG.q2Options[item.a2] || item.a2}</span>
-                    ${s2Badge}
-                  </div>
+                  <span class="entry-a">Berci ${Number(item.a2) === 1 ? 'előbb' : 'később'} jött ki, mint a GTA VI.</span>
+                  ${s2Badge}
                 </div>
                 <div class="entry-row">
-                  <span class="entry-q">Kinek van nagyobb pénisze?</span>
-                  <div class="entry-ans-container">
-                    <span class="entry-a">${CONFIG.q3Options[item.a3] || item.a3}</span>
-                    ${s3Badge}
-                  </div>
+                  <span class="entry-a">Bercinek ${Number(item.a3) === 1 ? 'nagyobb' : 'kisebb'} pénisze van, mint Zsoltinak.</span>
+                  ${s3Badge}
                 </div>
               </div>
             </div>

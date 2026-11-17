@@ -37,7 +37,8 @@
       display: flex;
       flex-direction: column;
       padding: 12px;
-      padding-bottom: 95px;
+      /* Elegendő hely alul a gombnak és a verziószámnak */
+      padding-bottom: 120px;
     }
 
     .sticky-header-area {
@@ -62,6 +63,7 @@
 
     h1 { margin: 0; font-size: 1.5rem; }
 
+    /* Fixen alul lévő sáv a gombnak és a verziószámnak */
     .bottom-action-area {
       position: fixed;
       bottom: 0;
@@ -69,11 +71,12 @@
       width: 100%;
       background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(8px);
-      padding: 12px 16px;
+      padding: 10px 16px 8px 16px;
       border-top: 1px solid rgba(51, 65, 85, 0.4);
       z-index: 50;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
     }
 
     .bottom-action-area-inner {
@@ -86,7 +89,7 @@
       color: #0f172a;
       border: none;
       width: 100%;
-      padding: 15px;
+      padding: 14px;
       border-radius: 12px;
       font-weight: 700;
       font-size: 1rem;
@@ -97,6 +100,16 @@
     }
     .bottom-action-area button:hover { background: var(--accent-hover); color: #fff; }
     .bottom-action-area button:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+
+    /* Apró verziószám a gomb alatt */
+    .version-tag {
+      font-size: 0.7rem;
+      color: var(--muted);
+      opacity: 0.6;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+      text-align: center;
+    }
 
     .modal button {
       background: var(--accent);
@@ -281,7 +294,7 @@
     }
 
     @media (max-width: 480px) {
-      .container { padding: 8px; padding-bottom: 95px; }
+      .container { padding: 8px; padding-bottom: 125px; }
       .entry-card { padding: 10px 10px; }
       .entry-row { font-size: 0.76rem; gap: 6px; }
       .entry-char-side { width: 40px; padding-right: 4px; }
@@ -448,18 +461,6 @@
       margin: 40px auto;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-    .version-tag {
-      position: fixed;
-      bottom: 75px;
-      right: 15px;
-      font-size: 0.75rem;
-      color: var(--muted);
-      opacity: 0.5;
-      pointer-events: none;
-      letter-spacing: 0.5px;
-      z-index: 40;
-    }
   </style>
 </head>
 <body>
@@ -477,12 +478,15 @@
   </div>
 </div>
 
+<!-- Beküldés gomb és a verziószám fixen alul együtt -->
 <div class="bottom-action-area">
   <div class="bottom-action-area-inner">
     <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
+    <div class="version-tag">v1.99</div>
   </div>
 </div>
 
+<!-- Modal űrlap -->
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">
     <form id="pollForm" onsubmit="return false;">
@@ -575,8 +579,6 @@
     </form>
   </div>
 </div>
-
-<div class="version-tag">v1.98</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";

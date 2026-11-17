@@ -48,7 +48,7 @@
     .sticky-header-area {
       position: sticky;
       top: 0;
-      background: #0f172a;
+      background: var(--bg);
       padding: 12px 0 8px 0;
       z-index: 20;
       border-bottom: 1px solid rgba(51, 65, 85, 0.4);
@@ -278,19 +278,21 @@
     /* --- PC / TABLET MÓD (900px szélesség felett) --- */
     @media (min-width: 900px) {
       .container {
-        max-width: 900px; /* Kompaktabb összszélesség, hogy ne legyenek üresek a kártyák */
+        max-width: 900px;
         padding: 24px 16px 56px 16px;
       }
 
       .container.has-button {
-        padding-bottom: 105px; /* Hely a fix alsó gombnak */
+        padding-bottom: 105px;
       }
 
+      /* PC-n megszüntetjük a sticky ragadást, a fejléc normálisan fent marad */
       .sticky-header-area {
         position: static;
         background: transparent;
         padding: 0 0 16px 0;
         margin-bottom: 16px;
+        border-bottom: 1px solid rgba(51, 65, 85, 0.4);
       }
 
       h1 { font-size: 2.2rem; }
@@ -300,7 +302,7 @@
         margin: 12px auto 0 auto;
       }
 
-      /* Kétoszlopos elrendezés: előbb a bal oszlop telik meg fentről lefelé, utána a jobb */
+      /* Kétoszlopos elrendezés: oszloponkénti haladás (fentről le, majd a jobb oldal) */
       .entries-scroll-area {
         display: block;
         column-count: 2;
@@ -308,7 +310,7 @@
         padding-top: 4px;
       }
 
-      /* Arányosan megnövelt, feszesebb kártyaméret */
+      /* Kártyák méretezése PC-n */
       .entries-scroll-area .entry-card {
         break-inside: avoid;
         margin-bottom: 20px;
@@ -373,7 +375,6 @@
         padding: 3px 6px;
       }
 
-      /* Fix alsó gomb sáv PC-n is */
       .bottom-action-area-inner {
         max-width: 420px;
       }
@@ -594,7 +595,7 @@
 <div class="bottom-action-area" id="bottomActionArea">
   <div class="bottom-action-area-inner">
     <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
-    <div class="version-tag">v2.10</div>
+    <div class="version-tag">v2.11</div>
   </div>
 </div>
 

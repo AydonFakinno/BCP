@@ -553,7 +553,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.51</div>
+<div class="version-tag">v1.52</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -853,7 +853,17 @@
           item.scores = calculateScores(item, data.official);
         });
 
+        // Pontszám szerinti csökkenő sorrend
         data.entries.sort((a, b) => b.scores.total - a.scores.total);
+
+        // Holtverseny (tie) kezelése a rangsorolásban
+        let currentRank = 1;
+        data.entries.forEach((item, index) => {
+          if (index > 0 && item.scores.total < data.entries[index - 1].scores.total) {
+            currentRank = index + 1;
+          }
+          item.rank = currentRank;
+        });
 
       } else if (data.locked) {
         newBtn.style.display = "none";
@@ -868,9 +878,9 @@
         return;
       }
 
-      const entriesHtml = data.entries.map((item, index) => {
-        let rankClass = index === 0 ? "rank-1" : index === 1 ? "rank-2" : index === 2 ? "rank-3" : "rank-other";
-        let rankBadge = data.locked && data.official ? `<span class="entry-rank ${rankClass}">#${index + 1}</span>` : "";
+      const entriesHtml = data.entries.map((item) => {
+        let rankClass = item.rank === 1 ? "rank-1" : item.rank === 2 ? "rank-2" : item.rank === 3 ? "rank-3" : "rank-other";
+        let rankBadge = data.locked && data.official ? `<span class="entry-rank ${rankClass}">#${item.rank}</span>` : "";
         
         let totalStyle = data.locked && data.official ? getScoreBadgeStyle(item.scores.total, 110) : "";
         let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score" style="${totalStyle}">${item.scores.total} pont</span>` : "";

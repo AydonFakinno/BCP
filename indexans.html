@@ -359,7 +359,7 @@
           <div class="slider-value-display" id="sliderDisplayVal">50% barna bőrű magyar állampolgár</div>
           <div class="slider-labels">
             <span>Tekla</span>
-            <span>Zsolt</span>
+            <span>Zsolti</span>
           </div>
           <div class="slider-wrap">
             <input type="range" id="q1Slider" min="0" max="100" value="50" oninput="updateSliderColor(this.value)">
@@ -468,7 +468,7 @@
     q2Options: { 1: "Berci", 2: "GTA VI" },
     q3Prefix: "3. Kérdés:",
     q3Text: "Kinek nagyobb a pénisze?",
-    q3Options: { 1: "Berci", 2: "Zsolt" }
+    q3Options: { 1: "Berci", 2: "Zsolti" }
   };
 
   document.getElementById("q1HeaderTitle").innerHTML = `${CONFIG.q1Prefix} <span class="sub-text">${CONFIG.q1Text}</span>`;
@@ -637,7 +637,7 @@
   }
 
   async function finalizeAnswers() {
-    if (!confirm("Biztosan véglegesíted a eredményt?")) {
+    if (!confirm("Biztosan véglegesíted az eredményt?")) {
       return;
     }
 

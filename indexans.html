@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Babaváró Tippmix - Hivatalos Eredmények</title>
+  <title>Babaváró Tipszmiksz</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -55,7 +55,6 @@
     }
 
     h1 { margin: 0; font-size: 1.6rem; }
-    .subtitle { color: var(--muted); font-size: 0.95rem; margin-top: 4px; }
 
     button {
       background: var(--accent);
@@ -200,9 +199,6 @@
     .question-img-box {
       width: 100%;
       height: 160px;
-      background: rgba(56, 189, 248, 0.05);
-      border: 2px dashed var(--border);
-      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -327,14 +323,12 @@
 <div class="container">
   <header>
     <div>
-      <h1 id="pageTitle">Hivatalos Eredmények</h1>
-      <div class="subtitle" id="pageSubtitle">Add meg a helyes válaszokat a lezáráshoz!</div>
+      <h1 id="pageTitle">Babaváró Tipszmiksz</h1>
     </div>
-    <button id="headerActionBtn" onclick="openModal()">Válaszok megadása</button>
+    <button id="headerActionBtn" onclick="openModal()">Eredmény beküldése</button>
   </header>
 
   <div id="cardContainer" class="content-area">
-    <div class="status-msg">Státusz ellenőrzése...</div>
   </div>
 </div>
 
@@ -343,7 +337,7 @@
     <form id="pollForm" onsubmit="return false;">
       
       <div class="step-pane active" id="step1">
-        <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lett Berci?</span></div>
+        <div class="question-title" id="q1HeaderTitle">1. Kérdés: <span class="sub-text">Milyen színű lesz Berci?</span></div>
         <div class="question-img-box">
           <object id="charSvg" type="image/svg+xml" data="char.svg"></object>
         </div>
@@ -447,14 +441,14 @@
   </div>
 </div>
 
-<div class="version-tag">ans-v1.5</div>
+<div class="version-tag">ans-v1.6</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
 
   const CONFIG = {
     q1Prefix: "1. Kérdés:",
-    q1Text: "Milyen színű lett Berci?",
+    q1Text: "Milyen színű lesz Berci?",
     q2Prefix: "2. Kérdés:",
     q2Text: "Melyik jött ki előbb?",
     q2Options: { 1: "Berci", 2: "GTA VI" },
@@ -588,10 +582,8 @@
     const headerBtn = document.getElementById("headerActionBtn");
 
     if (!currentAnswers) {
-      headerBtn.textContent = "Válaszok megadása";
-      container.innerHTML = `
-        <div class="status-msg">Még nincsenek megadva válaszok. Kattints fent a „Válaszok megadása” gombra!</div>
-      `;
+      headerBtn.textContent = "Eredmény beküldése";
+      container.innerHTML = "";
       return;
     }
 

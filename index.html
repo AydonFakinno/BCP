@@ -19,15 +19,17 @@
     }
 
     * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
-    body {
+    
+    /* Teljes képernyős fix layout, hogy csak a kártyák listája görögjön */
+    html, body {
       background: var(--bg);
       color: var(--text);
       margin: 0;
       padding: 0;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       justify-content: center;
-      min-height: 100vh;
-      /* Hagyjuk, hogy a normál oldalsó görgetés és a lehúzás-frissítés működjön */
     }
 
     .container {
@@ -35,20 +37,23 @@
       max-width: 580px;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
+      height: 100vh;
       padding: 12px;
-      /* Hagyunk helyet alul a fix gomb miatt, hogy ne takarja ki az utolsó kártyát */
-      padding-bottom: 90px; 
+      padding-bottom: 85px; /* Hely a fix gombnak alul */
     }
 
+    /* Fixen fenti cím zóna */
     .sticky-header-area {
+      position: sticky;
+      top: 0;
       background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(8px);
-      padding: 16px 0 10px 0;
-      z-index: 10;
+      padding: 12px 0 8px 0;
+      z-index: 20;
       border-bottom: 1px solid rgba(51, 65, 85, 0.4);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       text-align: center;
+      flex-shrink: 0;
     }
 
     header {
@@ -66,14 +71,17 @@
       letter-spacing: 0.5px;
     }
 
-    /* Normál lista, aminek a végén ott van a tartalom */
+    /* Csak ez a rész görög a cím alatt és a gomb felett */
     .entries-scroll-area {
+      flex: 1;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      padding-bottom: 10px;
     }
 
-    /* Beküldés gomb fixen alul a képernyő aljára tapasztva */
+    /* Beküldés gomb fixen alul */
     .bottom-action-area {
       position: fixed;
       bottom: 0;
@@ -138,6 +146,7 @@
       border: 2px solid #64748b;
       border-radius: 12px;
       padding: 12px 14px;
+      flex-shrink: 0;
     }
 
     .card-rank-1 { box-shadow: inset 0 0 45px rgba(250, 204, 21, 0.3); }
@@ -286,7 +295,7 @@
 
     /* Mobilos finomhangolás */
     @media (max-width: 480px) {
-      .container { padding: 8px; padding-bottom: 85px; }
+      .container { padding: 8px; padding-bottom: 80px; }
       h1 { font-size: 1.6rem; }
       .entry-card { padding: 10px 10px; }
       .entry-row { font-size: 0.76rem; gap: 6px; }
@@ -457,7 +466,7 @@
 
     .version-tag {
       position: fixed;
-      bottom: 75px;
+      bottom: 70px;
       right: 15px;
       font-size: 0.75rem;
       color: var(--muted);
@@ -483,7 +492,7 @@
   </div>
 </div>
 
-<!-- Beküldés gomb fixen alul, a képernyő aljára ragasztva -->
+<!-- Beküldés gomb fixen alul -->
 <div class="bottom-action-area">
   <div class="bottom-action-area-inner">
     <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
@@ -584,7 +593,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.91</div>
+<div class="version-tag">v1.92</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";

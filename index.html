@@ -38,7 +38,7 @@
       display: flex;
       flex-direction: column;
       padding: 12px;
-      padding-bottom: 16px; 
+      padding-bottom: 48px; 
     }
 
     .container.has-button {
@@ -74,7 +74,7 @@
       padding-top: 4px;
     }
 
-    /* Fix alsó sáv mobilon */
+    /* Fix alsó sáv (mobil és PC) */
     .bottom-action-area {
       position: fixed;
       bottom: 0;
@@ -122,107 +122,6 @@
       margin-top: 4px;
       text-align: center;
     }
-
-
-    /* --- PC / TABLET MÓD (900px szélesség felett) --- */
-    @media (min-width: 900px) {
-      body {
-        align-items: center;
-        justify-content: flex-start;
-        padding: 24px;
-      }
-
-      /* Kiterjesztjük a konténert, hogy legyen hely a rácsnak */
-      .container {
-        max-width: 1160px;
-        display: flex;
-        flex-direction: column;
-        padding: 0 !important;
-      }
-
-      .sticky-header-area {
-        position: relative; /* PC-n nem kell sticky-ként ragadnia, mert felül van a gomb is */
-        background: #0f172a;
-        padding: 0 0 16px 0;
-        border-bottom: 1px solid rgba(51, 65, 85, 0.4);
-      }
-
-      header {
-        justify-content: center;
-        margin-bottom: 12px;
-      }
-
-      h1 { font-size: 2.2rem; }
-
-      /* PC-n a gombot szépen felülre, a fejlécbe igazítjuk */
-      .bottom-action-area {
-        position: static;
-        background: transparent;
-        backdrop-filter: none;
-        border-top: none;
-        padding: 0;
-        margin-top: 12px;
-        display: flex;
-        justify-content: center;
-      }
-
-      .bottom-action-area-inner {
-        max-width: 320px;
-      }
-
-      .bottom-action-area button {
-        border-radius: 12px;
-        font-size: 1rem;
-        padding: 12px;
-      }
-
-      /* Az eredmény kártya PC-n is teljes szélességű marad felül kiemelve */
-      #officialCardContainer {
-        max-width: 600px;
-        margin: 0 auto;
-      }
-
-      /* ITT A LÉNYEG: A tippek listája PC-n 2 oszlopos rácsba rendeződik! */
-      .entries-scroll-area {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-        padding-top: 16px;
-      }
-
-      .entry-card {
-        transition: transform 0.15s ease, border-color 0.15s ease;
-      }
-      .entry-card:hover {
-        border-color: rgba(56, 189, 248, 0.6);
-        transform: translateY(-2px);
-      }
-    }
-
-
-    /* Modál és többi komponens stílusa */
-    .modal button {
-      background: var(--accent);
-      color: #0f172a;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: 0.2s;
-      display: inline-block;
-    }
-    .modal button:hover { background: var(--accent-hover); color: #fff; }
-    .modal button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .btn-secondary {
-      background: transparent !important;
-      color: var(--muted) !important;
-      border: 1px solid var(--border) !important;
-      display: inline-block !important;
-    }
-    .btn-secondary:hover { background: var(--border) !important; color: var(--text) !important; }
 
     .entry-card {
       background: var(--card);
@@ -375,6 +274,111 @@
       display: block;
     }
 
+
+    /* --- PC / TABLET MÓD (900px szélesség felett) --- */
+    @media (min-width: 900px) {
+      .container {
+        max-width: 900px; /* Kompaktabb összszélesség, hogy ne legyenek üresek a kártyák */
+        padding: 24px 16px 56px 16px;
+      }
+
+      .container.has-button {
+        padding-bottom: 105px; /* Hely a fix alsó gombnak */
+      }
+
+      .sticky-header-area {
+        position: static;
+        background: transparent;
+        padding: 0 0 16px 0;
+        margin-bottom: 16px;
+      }
+
+      h1 { font-size: 2.2rem; }
+
+      #officialCardContainer {
+        max-width: 480px;
+        margin: 12px auto 0 auto;
+      }
+
+      /* Kétoszlopos elrendezés: előbb a bal oszlop telik meg fentről lefelé, utána a jobb */
+      .entries-scroll-area {
+        display: block;
+        column-count: 2;
+        column-gap: 20px;
+        padding-top: 4px;
+      }
+
+      /* Arányosan megnövelt, feszesebb kártyaméret */
+      .entries-scroll-area .entry-card {
+        break-inside: avoid;
+        margin-bottom: 20px;
+        padding: 16px 18px;
+        border-radius: 14px;
+        transition: transform 0.15s ease, border-color 0.15s ease;
+      }
+
+      .entries-scroll-area .entry-card:hover {
+        border-color: rgba(56, 189, 248, 0.6);
+        transform: translateY(-2px);
+      }
+
+      .entries-scroll-area .entry-header {
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+      }
+
+      .entries-scroll-area .entry-name {
+        font-size: 1.15rem;
+      }
+
+      .entries-scroll-area .entry-rank {
+        font-size: 0.9rem;
+        width: 32px;
+        padding: 3px 0;
+      }
+
+      .entries-scroll-area .entry-total-score {
+        font-size: 0.9rem;
+        padding: 3px 8px;
+      }
+
+      .entries-scroll-area .entry-date {
+        font-size: 0.85rem;
+      }
+
+      .entries-scroll-area .entry-body {
+        gap: 14px;
+      }
+
+      .entries-scroll-area .entry-char-side {
+        width: 58px;
+        padding-right: 10px;
+      }
+
+      .entries-scroll-area .entry-char-side svg {
+        max-height: 68px;
+      }
+
+      .entries-scroll-area .entry-rows {
+        gap: 7px;
+      }
+
+      .entries-scroll-area .entry-row {
+        font-size: 0.95rem;
+      }
+
+      .entries-scroll-area .score-badge {
+        font-size: 0.75rem;
+        width: 60px;
+        padding: 3px 6px;
+      }
+
+      /* Fix alsó gomb sáv PC-n is */
+      .bottom-action-area-inner {
+        max-width: 420px;
+      }
+    }
+
     @media (max-width: 480px) {
       .container { padding: 8px; padding-bottom: 48px; }
       .container.has-button { padding-bottom: 85px; }
@@ -385,6 +389,30 @@
       .score-badge { width: 48px; font-size: 0.6rem; padding: 1px 3px; }
       .entry-name { font-size: 0.9rem; }
     }
+
+    /* Modál és gombok */
+    .modal button {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-block;
+    }
+    .modal button:hover { background: var(--accent-hover); color: #fff; }
+    .modal button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: transparent !important;
+      color: var(--muted) !important;
+      border: 1px solid var(--border) !important;
+      display: inline-block !important;
+    }
+    .btn-secondary:hover { background: var(--border) !important; color: var(--text) !important; }
 
     .modal-backdrop {
       display: none;
@@ -532,7 +560,7 @@
 
     .modal-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; }
     .modal-actions-right { display: flex; gap: 10px; }
-    .status-msg { text-align: center; color: var(--muted); padding: 40px 0; }
+    .status-msg { text-align: center; color: var(--muted); padding: 40px 0; column-span: all; }
 
     .spinner {
       width: 40px;
@@ -542,6 +570,7 @@
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
       margin: 40px auto;
+      column-span: all;
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
@@ -554,18 +583,18 @@
       <div><h1 id="pageTitle">Berci Tipszmiksz</h1></div>
     </header>
     <div id="officialCardContainer"></div>
-    
-    <!-- Gomb és verziószám PC-n a fejléc alatt, mobilon fixen alul -->
-    <div class="bottom-action-area" id="bottomActionArea">
-      <div class="bottom-action-area-inner">
-        <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
-        <div class="version-tag">v2.09</div>
-      </div>
-    </div>
   </div>
 
   <div id="entriesList" class="entries-scroll-area">
     <div class="spinner"></div>
+  </div>
+</div>
+
+<!-- Fix alsó sáv (gomb + verziószám) -->
+<div class="bottom-action-area" id="bottomActionArea">
+  <div class="bottom-action-area-inner">
+    <button id="openModalBtn" onclick="openModal()">Válasz beküldése</button>
+    <div class="version-tag">v2.10</div>
   </div>
 </div>
 

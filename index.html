@@ -109,10 +109,10 @@
       gap: 14px;
     }
 
-    /* Minden válaszkártya megkapta a vastag fehér keretet */
+    /* Válaszkártyák vastag szürke kerettel */
     .entry-card {
       background: var(--card);
-      border: 2px solid #ffffff;
+      border: 2px solid #64748b;
       border-radius: 14px;
       padding: 16px 20px;
     }
@@ -586,7 +586,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.63</div>
+<div class="version-tag">v1.64</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -832,8 +832,8 @@
     let diff1 = Math.abs(Number(item.a1) - Number(official.a1));
     let score1 = 100 - diff1;
 
-    let score2 = (Number(item.a2) === Number(official.a2)) ? 5 : 0;
-    let score3 = (Number(item.a3) === Number(official.a3)) ? 5 : 0;
+    let score2 = (Number(item.a2) === Number(official.a2)) ? 10 : 0;
+    let score3 = (Number(item.a3) === Number(official.a3)) ? 10 : 0;
 
     let total = score1 + score2 + score3;
 
@@ -928,16 +928,16 @@
           else if (item.rank === 3) cardVignetteClass = "card-rank-3";
         }
 
-        let totalStyle = data.locked && data.official ? getScoreBadgeStyle(item.scores.total, 110) : "";
+        let totalStyle = data.locked && data.official ? getScoreBadgeStyle(item.scores.total, 120) : "";
         let totalScoreBadge = data.locked && data.official ? `<span class="entry-total-score" style="${totalStyle}">${item.scores.total} pont</span>` : "";
 
         let s1Style = data.locked && data.official ? getScoreBadgeStyle(item.scores.score1, 100) : "";
         let s1Badge = data.locked && data.official ? `<span class="score-badge" style="${s1Style}">${item.scores.score1} pont</span>` : "";
 
-        let s2Style = data.locked && data.official ? getScoreBadgeStyle(item.scores.score2, 5) : "";
+        let s2Style = data.locked && data.official ? getScoreBadgeStyle(item.scores.score2, 10) : "";
         let s2Badge = data.locked && data.official ? `<span class="score-badge" style="${s2Style}">${item.scores.score2} pont</span>` : "";
 
-        let s3Style = data.locked && data.official ? getScoreBadgeStyle(item.scores.score3, 5) : "";
+        let s3Style = data.locked && data.official ? getScoreBadgeStyle(item.scores.score3, 10) : "";
         let s3Badge = data.locked && data.official ? `<span class="score-badge" style="${s3Style}">${item.scores.score3} pont</span>` : "";
 
         return `

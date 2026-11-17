@@ -585,7 +585,7 @@
   </div>
 </div>
 
-<div class="version-tag">v1.69</div>
+<div class="version-tag">v1.71</div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEh6WAAWcRXJcsDmRY2VnqzMvvfKRvFOgOLZVNvVPLPD1CszD-oO-kGo9Q5YBPbM_K/exec";
@@ -915,6 +915,18 @@
           return new Date(a.date) - new Date(b.date);
         });
 
+        // EGYSZERŰ ÉS TISZTA LOGIKA: Végigmegyünk, ha azonos a pontszám, marad a sorszám, ha nem, a következő index+1 lesz
+        let currentRank = 1;
+        data.entries.forEach((item, index) => {
+          if (index > 0) {
+            if (item.scores.total < data.entries[index - 1].scores.total) {
+              currentRank = index + 1; // Ha kevesebb a pont, a sorszám a tényleges sorszám lesz (pl. 2, 3, 4)
+            }
+            // Ha egyenlő a pontszám, a currentRank változatlan marad (pl. marad 1)
+          }
+          item.rank = currentRank;
+        });
+
       } else if (data.locked) {
         newBtn.style.display = "none";
         officialContainer.innerHTML = "";
@@ -928,26 +940,15 @@
         return;
       }
 
-      // Legmagasabb pontszám lekérése az első helyezettek kiszűréséhez (holtverseny kezeléshez)
-      let maxScore = -1;
-      if (data.locked && data.official && data.entries.length > 0) {
-        maxScore = data.entries[0].scores.total;
-      }
-
-      const entriesHtml = data.entries.map((item, index) => {
-        // Szigorúan sorszám szerinti indexelés (1, 2, 3, 4...)
-        let rank = index + 1;
-        let rankClass = rank === 1 ? "rank-1" : rank === 2 ? "rank-2" : rank === 3 ? "rank-3" : "rank-other";
-        let rankBadge = data.locked && data.official ? `<span class="entry-rank ${rankClass}">#${rank}</span>` : "";
-
-        // Ha holtverseny van az élen, mindegyik azonos max pontszámú ember megkapja az 1. helyes stílust/badge-et, egyébként a sorszám dönt
-        let effectiveStylerRank = (data.locked && data.official && item.scores.total === maxScore) ? 1 : rank;
+      const entriesHtml = data.entries.map((item) => {
+        let rankClass = item.rank === 1 ? "rank-1" : item.rank === 2 ? "rank-2" : item.rank === 3 ? "rank-3" : "rank-other";
+        let rankBadge = data.locked && data.official ? `<span class="entry-rank ${rankClass}">#${item.rank}</span>` : "";
 
         let cardVignetteClass = "";
         if (data.locked && data.official) {
-          if (effectiveStylerRank === 1) cardVignetteClass = "card-rank-1";
-          else if (effectiveStylerRank === 2) cardVignetteClass = "card-rank-2";
-          else if (effectiveStylerRank === 3) cardVignetteClass = "card-rank-3";
+          if (item.rank === 1) cardVignetteClass = "card-rank-1";
+          else if (item.rank === 2) cardVignetteClass = "card-rank-2";
+          else if (item.rank === 3) cardVignetteClass = "card-rank-3";
         }
 
         let totalStyle = data.locked && data.official ? getScoreBadgeStyle(item.scores.total, 120) : "";

@@ -113,9 +113,19 @@
       box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
     }
     /* .bottom-action-area button:hover { background: var(--accent-hover); color: #fff; } */
-    .bottom-action-area button:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
-    .bottom-action-area button.is-disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
-    .bottom-action-area button.is-disabled:hover { background: var(--accent); color: #2a2b2e; }
+    .bottom-action-area button:disabled,
+    .bottom-action-area button.is-disabled { 
+      background: var(--border); 
+      color: var(--muted); 
+      opacity: 0.6; 
+      cursor: not-allowed; 
+      box-shadow: none; 
+    }
+    
+    .bottom-action-area button.is-disabled:hover { 
+      background: var(--border); 
+      color: var(--muted); 
+    }
 
     .version-tag {
       font-size: 0.65rem;
